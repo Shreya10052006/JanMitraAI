@@ -10,7 +10,7 @@ export function AccessibilityPanel() {
 
   return (
     <section
-      className="rounded-xl px-3.5 py-4 mb-2"
+      className="rounded-xl px-4 py-4 mb-4"
       style={{ background: "rgba(255,255,255,0.05)" }}
       aria-label="Accessibility controls"
     >
@@ -32,7 +32,7 @@ export function AccessibilityPanel() {
           Text Size
         </p>
         <div
-          className="flex items-center gap-1"
+          className="flex items-center gap-2"
           role="group"
           aria-label="Text size options"
         >
@@ -43,7 +43,7 @@ export function AccessibilityPanel() {
                 key={size}
                 onClick={() => setTextSize(size)}
                 className={cn(
-                  "flex-1 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200",
+                  "flex-1 py-2 rounded-lg text-[11px] font-semibold transition-all duration-200",
                   settings.textSize === size
                     ? "bg-[#6B3FFF] text-white"
                     : "text-[#64748B] hover:bg-white/10 hover:text-white"
@@ -66,7 +66,7 @@ export function AccessibilityPanel() {
       </div>
 
       {/* High contrast */}
-      <div className="flex items-center justify-between mb-3.5">
+      <div className="flex items-center justify-between mb-4">
         <span className="text-[11px] text-[#64748B] font-medium">
           High Contrast
         </span>

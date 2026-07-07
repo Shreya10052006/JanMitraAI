@@ -104,7 +104,7 @@ export default function ResourcesPage() {
 
   return (
     <div className="overflow-y-auto h-full" id="main-content">
-      <div className="px-10 py-8 space-y-8 max-w-[1600px] mx-auto">
+      <div className="px-10 py-8 space-y-12 max-w-[1600px] mx-auto">
 
         {/* ── Hero ── */}
         <div className="relative rounded-[28px] overflow-hidden" style={{ minHeight: "165px" }}>
@@ -115,18 +115,18 @@ export default function ResourcesPage() {
           </div>
           <div className="absolute inset-0" style={{ background: "linear-gradient(to right,rgba(245,243,255,0.97) 0%,rgba(245,243,255,0.88) 33%,transparent 58%)" }} aria-hidden="true" />
 
-          <div className="relative z-10 px-8 py-7">
+          <div className="relative z-10 px-8 py-8">
             <h1 className="text-2xl font-bold text-[#1A1340]">Resources</h1>
-            <p className="text-sm text-[#6B7280] mt-1">Curated information, guides and tools to help you stay informed</p>
+            <p className="text-sm text-[#6B7280] mt-2">Curated information, guides and tools to help you stay informed</p>
 
             <div className="flex items-center gap-2 mt-4 max-w-xl">
-              <div className="flex-1 flex items-center gap-2 bg-white border border-[#E8E4F8] rounded-xl px-4 py-2.5 shadow-sm focus-within:ring-2 focus-within:ring-[#6B3FFF]/20">
+              <div className="flex-1 flex items-center gap-2 bg-white border border-[#E8E4F8] rounded-xl px-4 py-4 shadow-sm focus-within:ring-2 focus-within:ring-[#6B3FFF]/20">
                 <Search size={15} className="text-[#9CA3AF] flex-shrink-0" aria-hidden="true" />
                 <input type="search" value={search} onChange={e => setSearch(e.target.value)} onKeyDown={handleSearchKey}
                   placeholder="Search resources, guides, documents..."
                   className="flex-1 text-sm text-[#374151] placeholder-[#9CA3AF] bg-transparent outline-none" aria-label="Search resources" />
               </div>
-              <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all"
+              <button className="flex items-center gap-2 px-4 py-4 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all"
                 style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }} aria-label="Search">
                 <Search size={14} aria-hidden="true" /> Search
               </button>
@@ -135,14 +135,14 @@ export default function ResourcesPage() {
         </div>
 
         {/* ── Tab bar ── */}
-        <div className="flex items-center gap-1 overflow-x-auto pb-1 scrollbar-none" role="tablist" aria-label="Resource categories">
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" role="tablist" aria-label="Resource categories">
           {RESOURCE_TABS.map(tab => {
             const Icon = tab.icon;
             return (
               <button key={tab.id} role="tab" aria-selected={activeTab === tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
-                  "flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all duration-200 border flex-shrink-0",
+                  "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium whitespace-nowrap transition-all duration-200 border flex-shrink-0",
                   activeTab === tab.id
                     ? "bg-[#F3F0FF] text-[#6B3FFF] border-[#6B3FFF]/30"
                     : "bg-white text-[#6B7280] border-[#E8E4F8] hover:bg-[#F9F8FF]"
@@ -164,12 +164,12 @@ export default function ResourcesPage() {
                 <h2 id="featured-res-heading" className="text-base font-bold text-[#1A1340]">Featured Resources</h2>
                 <button className="text-sm text-[#6B3FFF] hover:underline">View All</button>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {FEATURED_RESOURCES.map(res => (
                   <article key={res.id}
                     className="bg-white rounded-[20px] border border-[#E8E4F8] p-4 flex flex-col hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
                     aria-label={res.title}>
-                    <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-2 mb-4">
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: res.iconBg }} aria-hidden="true">
                         <res.icon size={18} style={{ color: res.iconColor }} />
                       </div>
@@ -177,7 +177,7 @@ export default function ResourcesPage() {
                     </div>
                     <h3 className="text-sm font-bold text-[#1A1340] leading-snug mb-2">{res.title}</h3>
                     <p className="text-xs text-[#6B7280] leading-relaxed flex-1 mb-4">{res.description}</p>
-                    <button className="flex items-center gap-1.5 text-xs font-semibold transition-colors hover:opacity-80" style={{ color: res.iconColor }}
+                    <button className="flex items-center gap-2 text-xs font-semibold transition-colors hover:opacity-80" style={{ color: res.iconColor }}
                       aria-label={`${res.cta} ${res.title}`}>
                       {res.cta} <ChevronRight size={13} aria-hidden="true" />
                     </button>
@@ -192,7 +192,7 @@ export default function ResourcesPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {QUICK_LINKS.map(link => (
                   <button key={link.id}
-                    className="flex items-center gap-4 p-5 bg-white rounded-[20px] border border-[#E8E4F8] hover:bg-[#F9F8FF] hover:border-[#6B3FFF]/20 hover:-translate-y-0.5 transition-all duration-200 text-left group"
+                    className="flex items-center gap-4 p-6 bg-white rounded-[20px] border border-[#E8E4F8] hover:bg-[#F9F8FF] hover:border-[#6B3FFF]/20 hover:-translate-y-0.5 transition-all duration-200 text-left group"
                     aria-label={link.label}>
                     <div className="w-10 h-10 rounded-xl text-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: link.iconBg }} aria-hidden="true">
                       {link.icon}
@@ -208,8 +208,8 @@ export default function ResourcesPage() {
             </section>
 
             {/* Footer contact bar */}
-            <div className="bg-white rounded-[20px] border border-[#E8E4F8] px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <div className="flex items-center gap-3 flex-1">
+            <div className="bg-white rounded-[20px] border border-[#E8E4F8] px-6 py-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <div className="flex items-center gap-4 flex-1">
                 <div className="w-10 h-10 rounded-xl bg-[#EDE9FE] flex items-center justify-center flex-shrink-0" aria-hidden="true">
                   <HelpCircle size={18} className="text-[#6B3FFF]" />
                 </div>
@@ -218,7 +218,7 @@ export default function ResourcesPage() {
                   <p className="text-xs text-[#9CA3AF]">Our support team is here to help you.</p>
                 </div>
               </div>
-              <div className="flex flex-wrap items-center gap-5">
+              <div className="flex flex-wrap items-center gap-6">
                 <div className="flex items-center gap-2">
                   <Phone size={16} className="text-[#6B3FFF]" aria-hidden="true" />
                   <div>
@@ -242,15 +242,15 @@ export default function ResourcesPage() {
           </div>
 
           {/* Right sidebar */}
-          <div className="space-y-5">
+          <div className="space-y-6">
             {/* Help & Support */}
-            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-5" aria-labelledby="help-support-heading">
-              <h2 id="help-support-heading" className="text-sm font-bold text-[#1A1340] mb-0.5">Help &amp; Support</h2>
-              <p className="text-xs text-[#9CA3AF] mb-3">Need help finding something? We&apos;re here for you.</p>
+            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6" aria-labelledby="help-support-heading">
+              <h2 id="help-support-heading" className="text-sm font-bold text-[#1A1340] mb-2">Help &amp; Support</h2>
+              <p className="text-xs text-[#9CA3AF] mb-4">Need help finding something? We&apos;re here for you.</p>
               <div className="space-y-2">
                 {HELP_LINKS.map(h => (
                   <button key={h.label}
-                    className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-[#F9F8FF] border border-transparent hover:border-[#E8E4F8] transition-all text-left group"
+                    className="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-[#F9F8FF] border border-transparent hover:border-[#E8E4F8] transition-all text-left group"
                     aria-label={h.label}>
                     <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: h.iconBg }} aria-hidden="true">
                       <h.icon size={16} style={{ color: h.iconColor }} />
@@ -266,14 +266,14 @@ export default function ResourcesPage() {
             </section>
 
             {/* Popular Downloads */}
-            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-5" aria-labelledby="downloads-heading">
-              <div className="flex items-center justify-between mb-3">
+            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6" aria-labelledby="downloads-heading">
+              <div className="flex items-center justify-between mb-4">
                 <h2 id="downloads-heading" className="text-sm font-bold text-[#1A1340]">Popular Downloads</h2>
                 <button className="text-xs text-[#6B3FFF] hover:underline">View All</button>
               </div>
               <div className="space-y-2">
                 {POPULAR_DOWNLOADS.map(dl => (
-                  <div key={dl.id} className="flex items-center gap-3 group">
+                  <div key={dl.id} className="flex items-center gap-4 group">
                     <div className="w-8 h-8 rounded-lg bg-red-50 flex items-center justify-center flex-shrink-0" aria-hidden="true">
                       <FileText size={14} className="text-[#EF4444]" />
                     </div>
@@ -281,7 +281,7 @@ export default function ResourcesPage() {
                       <p className="text-xs font-medium text-[#1A1340] truncate">{dl.name}</p>
                       <p className="text-[10px] text-[#9CA3AF]">{dl.format} · {dl.size}</p>
                     </div>
-                    <button className="p-1.5 rounded-lg hover:bg-[#F3F0FF] text-[#9CA3AF] hover:text-[#6B3FFF] transition-colors flex-shrink-0"
+                    <button className="p-2 rounded-lg hover:bg-[#F3F0FF] text-[#9CA3AF] hover:text-[#6B3FFF] transition-colors flex-shrink-0"
                       aria-label={`Download ${dl.name}`}>
                       <Download size={14} aria-hidden="true" />
                     </button>

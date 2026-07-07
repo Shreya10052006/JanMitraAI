@@ -11,7 +11,7 @@ export default function HomePage() {
       id="main-content"
       aria-label="Home Dashboard"
     >
-      <div className="px-10 py-8 space-y-8 max-w-[1600px] mx-auto">
+      <div className="px-10 py-8 space-y-12 max-w-[1600px] mx-auto">
         <HeroSection />
         <QuickActions />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

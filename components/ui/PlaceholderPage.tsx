@@ -20,12 +20,12 @@ export function PlaceholderPage({ title, description }: PlaceholderPageProps) {
         </Link>
 
         <div className="bg-white rounded-[24px] border border-[#E8E4F8] p-12 flex flex-col items-center justify-center text-center">
-          <div className="w-16 h-16 rounded-2xl bg-[#EDE9FE] flex items-center justify-center mb-5" aria-hidden="true">
+          <div className="w-16 h-16 rounded-2xl bg-[#EDE9FE] flex items-center justify-center mb-6" aria-hidden="true">
             <Construction size={28} className="text-[#6B3FFF]" />
           </div>
-          <h1 className="text-xl font-bold text-[#1A1340] mb-2.5">{title}</h1>
+          <h1 className="text-xl font-bold text-[#1A1340] mb-4">{title}</h1>
           <p className="text-sm text-[#6B7280] max-w-sm leading-relaxed">{description}</p>
-          <div className="mt-7 px-4 py-2 bg-[#F3F0FF] rounded-full text-xs font-medium text-[#6B3FFF]">
+          <div className="mt-8 px-4 py-2 bg-[#F3F0FF] rounded-full text-xs font-medium text-[#6B3FFF]">
             Coming Soon
           </div>
         </div>

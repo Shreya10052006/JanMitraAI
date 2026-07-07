@@ -115,7 +115,7 @@ export default function SchemesPage() {
 
   return (
     <div className="overflow-y-auto h-full" id="main-content">
-      <div className="px-10 py-8 space-y-8 max-w-[1600px] mx-auto">
+      <div className="px-10 py-8 space-y-12 max-w-[1600px] mx-auto">
 
         {/* ── Hero ── */}
         <div className="relative rounded-[28px] overflow-hidden" style={{ minHeight: "150px" }}>
@@ -126,22 +126,22 @@ export default function SchemesPage() {
           </div>
           <div className="absolute inset-0" style={{ background: "linear-gradient(to right,rgba(245,243,255,0.97) 0%,rgba(245,243,255,0.88) 34%,transparent 60%)" }} aria-hidden="true" />
 
-          <div className="relative z-10 px-8 py-7">
+          <div className="relative z-10 px-8 py-8">
             <h1 className="text-2xl font-bold text-[#1A1340]">Schemes</h1>
-            <p className="text-sm text-[#6B7280] mt-1">Discover government schemes that can benefit you</p>
-            <div className="flex items-center gap-3 mt-4">
-              <div className="flex items-center gap-2 bg-white border border-[#E8E4F8] rounded-xl px-4 py-2.5 shadow-sm flex-1 max-w-xl focus-within:ring-2 focus-within:ring-[#6B3FFF]/20">
+            <p className="text-sm text-[#6B7280] mt-2">Discover government schemes that can benefit you</p>
+            <div className="flex items-center gap-4 mt-4">
+              <div className="flex items-center gap-2 bg-white border border-[#E8E4F8] rounded-xl px-4 py-4 shadow-sm flex-1 max-w-xl focus-within:ring-2 focus-within:ring-[#6B3FFF]/20">
                 <Search size={15} className="text-[#9CA3AF] flex-shrink-0" aria-hidden="true" />
                 <input type="search" value={search} onChange={e => setSearch(e.target.value)} onKeyDown={handleSearchKey}
                   placeholder="Search schemes by name, keyword or category..."
                   className="flex-1 text-sm text-[#374151] placeholder-[#9CA3AF] bg-transparent outline-none" aria-label="Search schemes" />
               </div>
-              <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all"
+              <button className="flex items-center gap-2 px-4 py-4 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all"
                 style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }} aria-label="Search">
                 <Search size={14} aria-hidden="true" /> Search
               </button>
               <button onClick={() => setFiltersOpen(v => !v)}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-[#E8E4F8] bg-white text-sm font-medium text-[#374151] hover:bg-[#F9F8FF] transition-colors shadow-sm"
+                className="flex items-center gap-2 px-4 py-4 rounded-xl border border-[#E8E4F8] bg-white text-sm font-medium text-[#374151] hover:bg-[#F9F8FF] transition-colors shadow-sm"
                 aria-label="Open filters" aria-expanded={filtersOpen}>
                 <SlidersHorizontal size={15} className="text-[#6B3FFF]" aria-hidden="true" /> Filters
               </button>
@@ -155,7 +155,7 @@ export default function SchemesPage() {
             <button key={tab} role="tab" aria-selected={activeFilter === tab}
               onClick={() => setActiveFilter(tab)}
               className={cn(
-                "flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 border",
+                "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 border",
                 activeFilter === tab
                   ? "text-[#6B3FFF] bg-[#F3F0FF] border-[#6B3FFF]/30"
                   : "text-[#6B7280] bg-white border-[#E8E4F8] hover:bg-[#F9F8FF]"
@@ -172,15 +172,15 @@ export default function SchemesPage() {
           ))}
           <div className="relative">
             <button onClick={() => setMoreOpen(v => !v)}
-              className={cn("flex items-center gap-1 px-4 py-2 rounded-xl text-sm font-medium border transition-all", moreOpen ? "bg-[#F3F0FF] border-[#6B3FFF]/30 text-[#6B3FFF]" : "bg-white border-[#E8E4F8] text-[#6B7280] hover:bg-[#F9F8FF]")}
+              className={cn("flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border transition-all", moreOpen ? "bg-[#F3F0FF] border-[#6B3FFF]/30 text-[#6B3FFF]" : "bg-white border-[#E8E4F8] text-[#6B7280] hover:bg-[#F9F8FF]")}
               aria-haspopup="true" aria-expanded={moreOpen}>
               More <ChevronDown size={13} className={cn("transition-transform", moreOpen && "rotate-180")} aria-hidden="true" />
             </button>
             {moreOpen && (
-              <div className="absolute top-full mt-1 left-0 bg-white border border-[#E8E4F8] rounded-xl shadow-lg z-20 p-2 min-w-[140px]" role="menu">
+              <div className="absolute top-full mt-2 left-0 bg-white border border-[#E8E4F8] rounded-xl shadow-lg z-20 p-2 min-w-[140px]" role="menu">
                 {["Agriculture", "Women & Child", "SC/ST", "Senior Citizens", "Disability"].map(opt => (
                   <button key={opt} role="menuitem" onClick={() => { setActiveFilter(opt); setMoreOpen(false); }}
-                    className="w-full text-left px-3 py-2 text-sm text-[#374151] hover:bg-[#F9F8FF] rounded-lg transition-colors">{opt}</button>
+                    className="w-full text-left px-4 py-2 text-sm text-[#374151] hover:bg-[#F9F8FF] rounded-lg transition-colors">{opt}</button>
                 ))}
               </div>
             )}
@@ -194,7 +194,7 @@ export default function SchemesPage() {
             {/* Stats row */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4" role="list">
               {STATS.map(s => (
-                <div key={s.label} className="bg-white rounded-[20px] border border-[#E8E4F8] px-5 py-4 flex items-center gap-3" role="listitem">
+                <div key={s.label} className="bg-white rounded-[20px] border border-[#E8E4F8] px-6 py-4 flex items-center gap-4" role="listitem">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ backgroundColor: s.iconBg }} aria-hidden="true">{s.icon}</div>
                   <div>
                     <p className="text-[10px] text-[#9CA3AF]">{s.label}</p>
@@ -207,7 +207,7 @@ export default function SchemesPage() {
 
             {/* Featured Schemes */}
             <section aria-labelledby="featured-heading">
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-4">
                 <div>
                   <h2 id="featured-heading" className="text-base font-bold text-[#1A1340]">Featured Schemes</h2>
                   <p className="text-xs text-[#9CA3AF]">Popular schemes you might be eligible for</p>
@@ -218,22 +218,22 @@ export default function SchemesPage() {
               {filteredFeatured.length === 0 && (
                 <p className="text-sm text-[#9CA3AF] py-4">No schemes match &ldquo;{search}&rdquo;</p>
               )}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 {filteredFeatured.map((scheme) => (
                   <article key={scheme.id}
                     className="bg-white rounded-[20px] border border-[#E8E4F8] p-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col"
                     aria-label={scheme.name}>
-                    <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-start justify-between mb-4">
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl" style={{ backgroundColor: scheme.iconBg }} aria-hidden="true">
                         {scheme.icon}
                       </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold" style={{ backgroundColor: scheme.tagBg, color: scheme.tagColor }}>
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-2 rounded-full text-[10px] font-semibold" style={{ backgroundColor: scheme.tagBg, color: scheme.tagColor }}>
                           {scheme.tag}
                         </span>
                         <button
                           onClick={() => toggleScheme(scheme.id)}
-                          className={cn("p-1 rounded-lg transition-colors", isSchemeSaved(scheme.id) ? "text-[#6B3FFF] bg-[#EDE9FE]" : "text-[#9CA3AF] hover:text-[#6B3FFF] hover:bg-[#F3F0FF]")}
+                          className={cn("p-2 rounded-lg transition-colors", isSchemeSaved(scheme.id) ? "text-[#6B3FFF] bg-[#EDE9FE]" : "text-[#9CA3AF] hover:text-[#6B3FFF] hover:bg-[#F3F0FF]")}
                           aria-label={isSchemeSaved(scheme.id) ? `Remove ${scheme.name} from saved` : `Save ${scheme.name}`}
                           aria-pressed={isSchemeSaved(scheme.id)}
                         >
@@ -241,9 +241,9 @@ export default function SchemesPage() {
                         </button>
                       </div>
                     </div>
-                    <h3 className="text-sm font-bold text-[#1A1340] leading-snug mb-1">{scheme.name}</h3>
-                    <p className="text-xs text-[#6B7280] leading-relaxed flex-1 mb-3">{scheme.description}</p>
-                    <div className="flex items-center gap-1.5 mb-3">
+                    <h3 className="text-sm font-bold text-[#1A1340] leading-snug mb-2">{scheme.name}</h3>
+                    <p className="text-xs text-[#6B7280] leading-relaxed flex-1 mb-4">{scheme.description}</p>
+                    <div className="flex items-center gap-2 mb-4">
                       <IndianRupee size={13} className="text-[#10B981]" aria-hidden="true" />
                       <span className="text-sm font-bold text-[#1A1340]">{scheme.benefit}</span>
                     </div>
@@ -264,14 +264,14 @@ export default function SchemesPage() {
 
             {/* Schemes by Category */}
             <section aria-labelledby="by-cat-heading">
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-4">
                 <h2 id="by-cat-heading" className="text-base font-bold text-[#1A1340]">Schemes by Category</h2>
                 <button className="text-sm text-[#6B3FFF] hover:underline">View All Categories</button>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
                 {CATEGORY_BUCKETS.map(cat => (
                   <button key={cat.id}
-                    className="bg-white rounded-[20px] border border-[#E8E4F8] px-5 py-4 flex items-center gap-3 hover:bg-[#F9F8FF] hover:border-[#6B3FFF]/20 hover:-translate-y-0.5 transition-all duration-200 text-left"
+                    className="bg-white rounded-[20px] border border-[#E8E4F8] px-6 py-4 flex items-center gap-4 hover:bg-[#F9F8FF] hover:border-[#6B3FFF]/20 hover:-translate-y-0.5 transition-all duration-200 text-left"
                     aria-label={`${cat.label}: ${cat.count} schemes`}>
                     <div className="w-9 h-9 rounded-xl bg-[#F3F0FF] flex items-center justify-center flex-shrink-0" aria-hidden="true">
                       <cat.icon size={17} style={{ color: cat.iconColor }} />
@@ -286,8 +286,8 @@ export default function SchemesPage() {
             </section>
 
             {/* Bottom CTA bar */}
-            <div className="bg-[#F3F0FF] rounded-[20px] border border-[#E8E4F8] px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
+            <div className="bg-[#F3F0FF] rounded-[20px] border border-[#E8E4F8] px-6 py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-xl bg-[#6B3FFF] flex items-center justify-center flex-shrink-0" aria-hidden="true">
                   <Bot size={18} className="text-white" />
                 </div>
@@ -296,7 +296,7 @@ export default function SchemesPage() {
                   <p className="text-xs text-[#6B7280]">Let our AI Assistant help you find the perfect schemes based on your profile.</p>
                 </div>
               </div>
-              <Link href="/ai-assistant" className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all flex-shrink-0"
+              <Link href="/ai-assistant" className="flex items-center gap-2 px-6 py-4 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all flex-shrink-0"
                 style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }} aria-label="Get personalized scheme recommendations">
                 Get Personalized Recommendations <Sparkles size={14} aria-hidden="true" />
               </Link>
@@ -304,36 +304,36 @@ export default function SchemesPage() {
           </div>
 
           {/* Right sidebar */}
-          <div className="space-y-5">
+          <div className="space-y-6">
             {/* Find Schemes for You */}
             <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6 relative overflow-hidden" aria-labelledby="find-heading">
               <div className="absolute -right-4 -bottom-4 opacity-10 pointer-events-none" aria-hidden="true">
                 <div className="text-8xl">📋</div>
               </div>
-              <h2 id="find-heading" className="text-sm font-bold text-[#1A1340] mb-1">Find Schemes for You</h2>
+              <h2 id="find-heading" className="text-sm font-bold text-[#1A1340] mb-2">Find Schemes for You</h2>
               <p className="text-xs text-[#6B7280] mb-4">Answer a few questions and we&apos;ll find the best schemes for you.</p>
-              <Link href="/ai-assistant" className="w-full py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all block text-center"
+              <Link href="/ai-assistant" className="w-full py-4 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all block text-center"
                 style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }} aria-label="Find schemes matching your profile">
                 Find My Schemes
               </Link>
             </section>
 
             {/* Trending Schemes */}
-            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-5" aria-labelledby="trending-heading">
-              <div className="flex items-center justify-between mb-3">
+            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6" aria-labelledby="trending-heading">
+              <div className="flex items-center justify-between mb-4">
                 <h2 id="trending-heading" className="text-sm font-bold text-[#1A1340]">Trending Schemes</h2>
                 <button className="text-xs text-[#6B3FFF] hover:underline">View All</button>
               </div>
               <div className="space-y-2">
                 {TRENDING_SCHEMES.map(s => (
-                  <button key={s.id} className="w-full flex items-center gap-3 p-2.5 rounded-xl hover:bg-[#F9F8FF] border border-transparent hover:border-[#E8E4F8] transition-all text-left group"
+                  <button key={s.id} className="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-[#F9F8FF] border border-transparent hover:border-[#E8E4F8] transition-all text-left group"
                     aria-label={`${s.name}: ${s.sub}`}>
                     <div className="w-9 h-9 rounded-xl text-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: s.iconBg }} aria-hidden="true">{s.icon}</div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-[#1A1340] truncate">{s.name}</p>
                       <p className="text-[10px] text-[#9CA3AF]">{s.sub}</p>
                     </div>
-                    <span className="px-2 py-0.5 rounded-full text-[9px] font-semibold bg-orange-50 text-orange-600 border border-orange-100 flex-shrink-0">Trending</span>
+                    <span className="px-2 py-2 rounded-full text-[9px] font-semibold bg-orange-50 text-orange-600 border border-orange-100 flex-shrink-0">Trending</span>
                     <ChevronRight size={13} className="text-[#D1D5DB] group-hover:text-[#6B3FFF] transition-colors flex-shrink-0" aria-hidden="true" />
                   </button>
                 ))}
@@ -343,9 +343,9 @@ export default function SchemesPage() {
             {/* Need Help */}
             <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4 relative overflow-hidden" aria-labelledby="help-heading">
               <div className="absolute -right-2 -bottom-2 text-6xl opacity-10 pointer-events-none" aria-hidden="true">🤖</div>
-              <h2 id="help-heading" className="text-sm font-bold text-[#1A1340] mb-1">Need Help?</h2>
-              <p className="text-xs text-[#6B7280] mb-3">Our AI Assistant can help you find and understand the right schemes.</p>
-              <Link href="/ai-assistant" className="w-full py-2.5 rounded-xl border border-[#6B3FFF]/30 text-sm font-semibold text-[#6B3FFF] hover:bg-[#F3F0FF] transition-all block text-center" aria-label="Chat with AI Assistant">
+              <h2 id="help-heading" className="text-sm font-bold text-[#1A1340] mb-2">Need Help?</h2>
+              <p className="text-xs text-[#6B7280] mb-4">Our AI Assistant can help you find and understand the right schemes.</p>
+              <Link href="/ai-assistant" className="w-full py-4 rounded-xl border border-[#6B3FFF]/30 text-sm font-semibold text-[#6B3FFF] hover:bg-[#F3F0FF] transition-all block text-center" aria-label="Chat with AI Assistant">
                 Chat with AI Assistant
               </Link>
             </section>

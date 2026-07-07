@@ -105,16 +105,16 @@ export default function ProfilePage() {
 
   return (
     <div className="overflow-y-auto h-full" id="main-content">
-      <div className="px-10 py-8 space-y-8 max-w-[1600px] mx-auto">
+      <div className="px-10 py-8 space-y-12 max-w-[1600px] mx-auto">
 
         {/* ── Page title ── */}
         <div>
           <h1 className="text-2xl font-bold text-[#1A1340]">Profile</h1>
-          <p className="text-sm text-[#9CA3AF] mt-1">Manage your profile, activity and preferences</p>
+          <p className="text-sm text-[#9CA3AF] mt-2">Manage your profile, activity and preferences</p>
         </div>
 
         {/* ── Profile card + Impact ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6">
           {/* Profile card */}
           <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-6 flex flex-col sm:flex-row items-start gap-6">
             {/* Avatar */}
@@ -131,7 +131,7 @@ export default function ProfilePage() {
             {/* Info */}
             <div className="flex-1 min-w-0">
               <h2 className="text-xl font-bold text-[#1A1340]">{profile.name || "Citizen"}</h2>
-              <div className="space-y-1.5 mt-2">
+              <div className="space-y-2 mt-2">
                 <p className="flex items-center gap-2 text-sm text-[#6B7280]">
                   <Mail size={14} className="text-[#9CA3AF]" aria-hidden="true" /> {profile.email || "Not set"}
                 </p>
@@ -142,26 +142,26 @@ export default function ProfilePage() {
                   <MapPin size={14} className="text-[#9CA3AF]" aria-hidden="true" /> {profile.location || "India"}
                 </p>
               </div>
-              <div className="flex items-center gap-2 mt-3 flex-wrap">
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-600 border border-green-100">
+              <div className="flex items-center gap-2 mt-4 flex-wrap">
+                <span className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold bg-green-50 text-green-600 border border-green-100">
                   <CheckCircle2 size={11} aria-hidden="true" /> Verified User
                 </span>
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-[#FEF3C7] text-[#F59E0B] border border-yellow-100">
+                <span className="flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold bg-[#FEF3C7] text-[#F59E0B] border border-yellow-100">
                   <Star size={11} aria-hidden="true" /> Active Citizen
                 </span>
               </div>
             </div>
 
             {/* Level / XP */}
-            <div className="flex flex-col items-center text-center flex-shrink-0 sm:border-l sm:border-[#F3F0FF] sm:pl-5 min-w-[140px]">
+            <div className="flex flex-col items-center text-center flex-shrink-0 sm:border-l sm:border-[#F3F0FF] sm:pl-6 min-w-[140px]">
               <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-2 text-4xl"
                 style={{ background: "linear-gradient(135deg,#EDE9FE,#F3F0FF)" }} aria-hidden="true">
                 🛡️
               </div>
               <p className="text-base font-bold text-[#1A1340]">Level {level}</p>
               <p className="text-xs text-[#9CA3AF]">{levelTitle}</p>
-              <div className="w-full mt-2.5">
-                <div className="flex items-center justify-between text-[10px] text-[#9CA3AF] mb-1">
+              <div className="w-full mt-4">
+                <div className="flex items-center justify-between text-[10px] text-[#9CA3AF] mb-2">
                   <span>{xp.toLocaleString()} / {maxXp.toLocaleString()} XP</span>
                 </div>
                 <div className="h-2 bg-[#F3F0FF] rounded-full overflow-hidden" role="progressbar"
@@ -187,11 +187,11 @@ export default function ProfilePage() {
                     <stat.icon size={18} style={{ color: stat.iconColor }} />
                   </div>
                   <p className="text-xl font-bold text-[#1A1340] leading-tight">{stat.value}</p>
-                  <p className="text-[10px] text-[#9CA3AF] text-center leading-tight mt-0.5">{stat.label}</p>
+                  <p className="text-[10px] text-[#9CA3AF] text-center leading-tight mt-2">{stat.label}</p>
                 </div>
               ))}
             </div>
-            <div className="mt-4 flex items-center gap-2 bg-yellow-50 rounded-xl px-3 py-2.5 border border-yellow-100">
+            <div className="mt-4 flex items-center gap-2 bg-yellow-50 rounded-xl px-4 py-4 border border-yellow-100">
               <Star size={14} className="text-[#F59E0B] flex-shrink-0" aria-hidden="true" />
               <p className="text-xs text-[#92400E]">
                 You&apos;re in the <span className="font-bold">top 15%</span> of active citizens in your area!
@@ -201,7 +201,7 @@ export default function ProfilePage() {
         </div>
 
         {/* ── 3 columns: Quick Actions | Recent Activity | Preferences ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Quick Actions */}
           <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6" aria-labelledby="quick-actions-heading">
             <h2 id="quick-actions-heading" className="text-sm font-bold text-[#1A1340] mb-4">Quick Actions</h2>
@@ -211,7 +211,7 @@ export default function ProfilePage() {
                 const isLogout = action.id === "logout";
                 return (
                   <a key={action.id} href={action.href}
-                    className="flex flex-col items-center gap-1.5 group cursor-pointer"
+                    className="flex flex-col items-center gap-2 group cursor-pointer"
                     aria-label={action.label}>
                     <div className={cn(
                       "w-12 h-12 rounded-2xl flex items-center justify-center transition-all group-hover:-translate-y-0.5 group-hover:shadow-md",
@@ -233,33 +233,33 @@ export default function ProfilePage() {
               <h2 id="recent-act-heading" className="text-sm font-bold text-[#1A1340]">Recent Activity</h2>
               <button className="text-xs text-[#6B3FFF] hover:underline">View All</button>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {recentActivity.length > 0 ? (
                 recentActivity.map((act, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 bg-[#EDE9FE]" aria-hidden="true">
+                  <div key={i} className="flex items-start gap-4">
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-2 bg-[#EDE9FE]" aria-hidden="true">
                       <CheckCircle2 size={14} className="text-[#6B3FFF]" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-[#1A1340] truncate">{act.title}</p>
                       <p className="text-[11px] text-[#9CA3AF] truncate">{act.type}</p>
                     </div>
-                    <span className="text-[10px] text-[#9CA3AF] flex-shrink-0 mt-0.5">
+                    <span className="text-[10px] text-[#9CA3AF] flex-shrink-0 mt-2">
                       {new Date(act.timestamp).toLocaleDateString("en-IN", { month: "short", day: "numeric" })}
                     </span>
                   </div>
                 ))
               ) : (
                 RECENT_ACTIVITIES.map((act) => (
-                  <div key={act.id} className="flex items-start gap-3">
-                    <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5" style={{ backgroundColor: act.iconBg }} aria-hidden="true">
+                  <div key={act.id} className="flex items-start gap-4">
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 mt-2" style={{ backgroundColor: act.iconBg }} aria-hidden="true">
                       <act.icon size={14} style={{ color: act.iconColor }} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-[#1A1340] truncate">{act.text}</p>
                       <p className="text-[11px] text-[#9CA3AF] truncate">{act.sub}</p>
                     </div>
-                    <span className="text-[10px] text-[#9CA3AF] flex-shrink-0 mt-0.5">{act.time}</span>
+                    <span className="text-[10px] text-[#9CA3AF] flex-shrink-0 mt-2">{act.time}</span>
                   </div>
                 ))
               )}
@@ -272,16 +272,16 @@ export default function ProfilePage() {
               <h2 id="prefs-heading" className="text-sm font-bold text-[#1A1340]">Preferences</h2>
               <button className="text-xs text-[#6B3FFF] hover:underline font-semibold">Edit</button>
             </div>
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               {PREFERENCES.map(pref => (
                 <button key={pref.id}
-                  className="w-full flex items-center gap-3 px-2 py-2.5 rounded-xl hover:bg-[#F9F8FF] transition-colors group text-left"
+                  className="w-full flex items-center gap-4 px-2 py-4 rounded-xl hover:bg-[#F9F8FF] transition-colors group text-left"
                   aria-label={`${pref.label}: ${pref.value}`}>
                   <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: pref.iconBg }} aria-hidden="true">
                     <pref.icon size={13} style={{ color: pref.iconColor }} />
                   </div>
                   <span className="flex-1 text-xs text-[#374151] font-medium">{pref.label}</span>
-                  <span className="text-xs text-[#9CA3AF] mr-1">{pref.value}</span>
+                  <span className="text-xs text-[#9CA3AF] mr-2">{pref.value}</span>
                   <ChevronRight size={13} className="text-[#D1D5DB] group-hover:text-[#6B3FFF] transition-colors flex-shrink-0" aria-hidden="true" />
                 </button>
               ))}
@@ -290,14 +290,14 @@ export default function ProfilePage() {
         </div>
 
         {/* ── Badges + Account Overview ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
           {/* Badges */}
           <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6 overflow-hidden" aria-labelledby="badges-heading">
-            <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center justify-between mb-6">
               <h2 id="badges-heading" className="text-sm font-bold text-[#1A1340]">Achievements &amp; Badges</h2>
               <button className="text-xs text-[#6B3FFF] hover:underline">View All</button>
             </div>
-            <div className="flex items-center gap-3 overflow-x-auto pb-2">
+            <div className="flex items-center gap-4 overflow-x-auto pb-2">
               {BADGES.map(badge => (
                 <div key={badge.id}
                   className={cn("flex flex-col items-center gap-2 flex-shrink-0 text-center group cursor-pointer", !badge.earned && "opacity-50")}
@@ -321,14 +321,14 @@ export default function ProfilePage() {
           {/* Account Overview */}
           <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6" aria-labelledby="account-heading">
             <h2 id="account-heading" className="text-sm font-bold text-[#1A1340] mb-4">Account Overview</h2>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {[
                 { icon: Calendar, label: "Member Since", value: "15 February 2026", valueStyle: "text-[#374151] font-medium" },
                 { icon: User, label: "Account Type", value: "Individual", badge: "bg-blue-50 text-blue-600 border border-blue-100", isBadge: true },
                 { icon: Shield, label: "KYC Status", value: "Verified", badge: "bg-green-50 text-green-600 border border-green-100", isBadge: true },
                 { icon: Key, label: "Profile Completion", value: "85%", isProgress: true },
               ].map(row => (
-                <div key={row.label} className="flex items-center gap-3">
+                <div key={row.label} className="flex items-center gap-4">
                   <div className="w-7 h-7 rounded-lg bg-[#F3F0FF] flex items-center justify-center flex-shrink-0" aria-hidden="true">
                     <row.icon size={13} className="text-[#6B3FFF]" />
                   </div>
@@ -341,7 +341,7 @@ export default function ProfilePage() {
                       <span className="text-xs font-bold text-[#1A1340]">85%</span>
                     </div>
                   ) : row.isBadge ? (
-                    <span className={cn("px-2 py-0.5 rounded-full text-[10px] font-semibold", row.badge)}>{row.value}</span>
+                    <span className={cn("px-2 py-2 rounded-full text-[10px] font-semibold", row.badge)}>{row.value}</span>
                   ) : (
                     <span className="text-xs text-[#374151] font-medium">{row.value}</span>
                   )}
@@ -352,8 +352,8 @@ export default function ProfilePage() {
         </div>
 
         {/* ── Thank you banner ── */}
-        <div className="bg-[#F3F0FF] rounded-[20px] border border-[#E8E4F8] px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <div className="flex items-center gap-3 flex-1">
+        <div className="bg-[#F3F0FF] rounded-[20px] border border-[#E8E4F8] px-6 py-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          <div className="flex items-center gap-4 flex-1">
             <div className="w-10 h-10 rounded-xl bg-[#6B3FFF] flex items-center justify-center flex-shrink-0" aria-hidden="true">
               <Medal size={18} className="text-white" />
             </div>
@@ -362,7 +362,7 @@ export default function ProfilePage() {
               <p className="text-xs text-[#6B7280]">Your participation helps build a better and stronger community.</p>
             </div>
           </div>
-          <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#6B3FFF]/30 text-sm font-semibold text-[#6B3FFF] hover:bg-white transition-all flex-shrink-0"
+          <button className="flex items-center gap-2 px-6 py-4 rounded-xl border border-[#6B3FFF]/30 text-sm font-semibold text-[#6B3FFF] hover:bg-white transition-all flex-shrink-0"
             aria-label="Share your feedback">
             Share Your Feedback <ChevronRight size={15} aria-hidden="true" />
           </button>

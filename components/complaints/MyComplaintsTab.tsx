@@ -144,9 +144,9 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
   const uniqueCategories = [...new Set(complaints.map((c) => c.category))];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-5">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-6">
       {/* ── Left: stats + list ── */}
-      <div className="space-y-5">
+      <div className="space-y-6">
         {/* Stats row */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4" role="list">
           {[
@@ -156,7 +156,7 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
             { label: "Under Review", value: underReview.toString(), sub: total > 0 ? `${Math.round((underReview / total) * 100)}%` : "0%", icon: "🔍", iconBg: "#DBEAFE" },
             { label: "Avg. Resolution Time", value: "3.2 Days", sub: "This month", icon: "⏱️", iconBg: "#FCE7F3" },
           ].map((stat) => (
-            <div key={stat.label} className="bg-white rounded-[20px] border border-[#E8E4F8] px-5 py-4 flex items-center gap-3" role="listitem">
+            <div key={stat.label} className="bg-white rounded-[20px] border border-[#E8E4F8] px-6 py-4 flex items-center gap-4" role="listitem">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ backgroundColor: stat.iconBg }} aria-hidden="true">
                 {stat.icon}
               </div>
@@ -171,13 +171,13 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
 
         {/* Complaints list card */}
         <div className="bg-white rounded-[20px] border border-[#E8E4F8] overflow-hidden">
-          <div className="px-5 py-4 border-b border-[#F3F0FF]">
+          <div className="px-6 py-4 border-b border-[#F3F0FF]">
             <h2 className="text-sm font-bold text-[#1A1340]">Your Complaints</h2>
-            <p className="text-xs text-[#9CA3AF] mt-0.5">Track and manage all the issues you&apos;ve reported</p>
+            <p className="text-xs text-[#9CA3AF] mt-2">Track and manage all the issues you&apos;ve reported</p>
           </div>
 
           {/* Filters */}
-          <div className="px-5 py-3 flex flex-wrap items-center gap-2 border-b border-[#F3F0FF]">
+          <div className="px-6 py-4 flex flex-wrap items-center gap-2 border-b border-[#F3F0FF]">
             {[
               {
                 value: statusFilter,
@@ -202,7 +202,7 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
                 key={f.label}
                 value={f.value}
                 onChange={(e) => f.onChange(e.target.value)}
-                className="text-xs border border-[#E8E4F8] rounded-lg px-3 py-1.5 text-[#374151] bg-white outline-none focus:ring-1 focus:ring-[#6B3FFF]/20 focus:border-[#6B3FFF]/40"
+                className="text-xs border border-[#E8E4F8] rounded-lg px-4 py-2 text-[#374151] bg-white outline-none focus:ring-1 focus:ring-[#6B3FFF]/20 focus:border-[#6B3FFF]/40"
                 aria-label={`Filter by ${f.label}`}
               >
                 {f.opts.map((o) => <option key={o}>{o}</option>)}
@@ -215,7 +215,7 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                 placeholder="Search by ID or keyword..."
-                className="text-xs pl-8 pr-3 py-1.5 border border-[#E8E4F8] rounded-lg text-[#374151] bg-white outline-none focus:ring-1 focus:ring-[#6B3FFF]/20 w-44"
+                className="text-xs pl-8 pr-4 py-2 border border-[#E8E4F8] rounded-lg text-[#374151] bg-white outline-none focus:ring-1 focus:ring-[#6B3FFF]/20 w-44"
                 aria-label="Search complaints"
               />
             </div>
@@ -223,9 +223,9 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
 
           {/* List */}
           {paginated.length === 0 ? (
-            <div className="px-5 py-10 text-center">
+            <div className="px-6 py-10 text-center">
               <p className="text-sm font-medium text-[#1A1340]">No complaints found</p>
-              <p className="text-xs text-[#9CA3AF] mt-1">Try adjusting your filters or report a new issue</p>
+              <p className="text-xs text-[#9CA3AF] mt-2">Try adjusting your filters or report a new issue</p>
             </div>
           ) : (
             <ul className="divide-y divide-[#F9F8FF]" role="list">
@@ -233,7 +233,7 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
                 <li key={c.id}>
                   <button
                     onClick={() => onTrack(c)}
-                    className="w-full flex items-center gap-3 px-5 py-3.5 hover:bg-[#F9F8FF] transition-colors text-left group"
+                    className="w-full flex items-center gap-4 px-6 py-4 hover:bg-[#F9F8FF] transition-colors text-left group"
                     aria-label={`${c.ticketId}: ${c.title}, Status: ${STATUS_LABELS[c.status]}, Date: ${c.createdAt}`}
                   >
                     <span className="text-xl flex-shrink-0" aria-hidden="true">
@@ -242,14 +242,14 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-bold text-[#6B3FFF]">#{c.ticketId}</p>
                       <p className="text-sm font-semibold text-[#1A1340] truncate">{c.title}</p>
-                      <p className="text-[11px] text-[#9CA3AF] flex items-center gap-1 mt-0.5">
+                      <p className="text-[11px] text-[#9CA3AF] flex items-center gap-2 mt-2">
                         <MapPin size={9} aria-hidden="true" /> {c.location.split(",")[0]}
                       </p>
                     </div>
                     <div className="flex-shrink-0 text-center hidden sm:block">
                       <p className="text-[10px] text-[#9CA3AF]">{c.category}</p>
                     </div>
-                    <span className={cn("px-2.5 py-1 rounded-full text-[10px] font-semibold border flex-shrink-0", STATUS_COLORS[c.status])}>
+                    <span className={cn("px-4 py-2 rounded-full text-[10px] font-semibold border flex-shrink-0", STATUS_COLORS[c.status])}>
                       {STATUS_LABELS[c.status]}
                     </span>
                     <span className="text-xs text-[#9CA3AF] flex-shrink-0 hidden sm:block">{c.createdAt}</span>
@@ -261,8 +261,8 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
           )}
 
           {/* Pagination */}
-          <div className="px-5 py-3 border-t border-[#F3F0FF] flex items-center justify-between">
-            <div className="flex items-center gap-1" role="navigation" aria-label="Pagination">
+          <div className="px-6 py-4 border-t border-[#F3F0FF] flex items-center justify-between">
+            <div className="flex items-center gap-2" role="navigation" aria-label="Pagination">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
@@ -301,10 +301,10 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
       </div>
 
       {/* ── Right sidebar ── */}
-      <div className="space-y-5">
+      <div className="space-y-6">
         {/* Donut chart */}
         <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="chart-heading">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-4">
             <h2 id="chart-heading" className="text-sm font-semibold text-[#1A1340]">Complaints by Category</h2>
           </div>
           {total > 0 ? (
@@ -317,7 +317,7 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
                 <text x="50" y="47" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#1A1340">{total}</text>
                 <text x="50" y="57" textAnchor="middle" fontSize="6" fill="#9CA3AF">Total</text>
               </svg>
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 {donutData.map((seg) => (
                   <div key={seg.label} className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: seg.color }} aria-hidden="true" />
@@ -334,17 +334,17 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
 
         {/* Recent Activity */}
         <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="activity-heading">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-4">
             <h2 id="activity-heading" className="text-sm font-semibold text-[#1A1340]">Recent Activity</h2>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {recentActivity.length > 0 ? (
               recentActivity.map((a, i) => (
                 <div key={i} className="flex items-start gap-2">
-                  <span className={cn("w-2 h-2 rounded-full flex-shrink-0 mt-1.5", a.dot)} aria-hidden="true" />
+                  <span className={cn("w-2 h-2 rounded-full flex-shrink-0 mt-2", a.dot)} aria-hidden="true" />
                   <div>
                     <p className="text-xs text-[#374151] leading-relaxed">{a.text}</p>
-                    <p className="text-[10px] text-[#9CA3AF] mt-0.5">{a.time}</p>
+                    <p className="text-[10px] text-[#9CA3AF] mt-2">{a.time}</p>
                   </div>
                 </div>
               ))
@@ -356,10 +356,10 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
 
         {/* Make bigger impact */}
         <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="impact2-heading">
-          <div className="flex items-start gap-3">
+          <div className="flex items-start gap-4">
             <div className="flex-1">
-              <h2 id="impact2-heading" className="text-sm font-semibold text-[#1A1340] mb-1">Make a Bigger Impact!</h2>
-              <p className="text-xs text-[#6B7280] mb-3">Invite your friends and neighbors to report issues and create a better community together.</p>
+              <h2 id="impact2-heading" className="text-sm font-semibold text-[#1A1340] mb-2">Make a Bigger Impact!</h2>
+              <p className="text-xs text-[#6B7280] mb-4">Invite your friends and neighbors to report issues and create a better community together.</p>
               <button
                 onClick={() => {
                   if (navigator.share) {

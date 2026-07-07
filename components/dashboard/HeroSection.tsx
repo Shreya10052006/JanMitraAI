@@ -31,7 +31,7 @@ export function HeroSection() {
   return (
     <section
       className="relative w-full rounded-[28px] overflow-hidden"
-      style={{ minHeight: "300px" }}
+      style={{ minHeight: "320px" }}
       aria-label="JanMitra AI search and welcome section"
     >
       {/* Base gradient background */}
@@ -78,7 +78,7 @@ export function HeroSection() {
 
       {/* Tagline — top right */}
       <div
-        className="absolute right-7 top-7 text-right hidden lg:block"
+        className="absolute right-8 top-8 text-right hidden lg:block"
         aria-hidden="true"
       >
         <p className="text-[#1E1340] font-semibold text-base leading-snug drop-shadow-sm">
@@ -106,7 +106,7 @@ export function HeroSection() {
       {/* Main content */}
       <div className="relative z-10 px-10 py-10" style={{ maxWidth: "62%" }}>
         {/* Greeting */}
-        <h1 className="text-[2rem] font-bold text-[#1A1340] mb-3 leading-tight tracking-tight">
+        <h1 className="text-[2rem] font-bold text-[#1A1340] mb-4 leading-tight tracking-tight">
           Namaste, Shreya!{" "}
           <span role="img" aria-label="Namaste hands">
             🙏
@@ -152,7 +152,7 @@ export function HeroSection() {
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             placeholder="Ask JanMitra AI anything..."
-            className="flex-1 bg-transparent px-5 py-3.5 text-sm text-[#374151] placeholder-[#B0AABB] outline-none rounded-[14px]"
+            className="flex-1 bg-transparent px-6 py-4 text-sm text-[#374151] placeholder-[#B0AABB] outline-none rounded-[14px]"
             aria-label="Search query"
             autoComplete="off"
           />
@@ -181,7 +181,7 @@ export function HeroSection() {
 
         {/* Prompt chips */}
         <div
-          className="flex flex-wrap items-center gap-2 mt-5"
+          className="flex flex-wrap items-center gap-2 mt-6"
           role="group"
           aria-label="Suggested queries"
         >
@@ -192,7 +192,7 @@ export function HeroSection() {
             <button
               key={chip.id}
               onClick={() => handleChipClick(chip.label)}
-              className="px-3.5 py-1.5 bg-white/85 border border-[#E2DCF5] rounded-full text-xs text-[#4B5563] hover:bg-white hover:border-[#6B3FFF]/40 hover:text-[#6B3FFF] hover:shadow-sm transition-all duration-200 font-medium backdrop-blur-sm"
+              className="px-4 py-2 bg-white/85 border border-[#E2DCF5] rounded-full text-xs text-[#4B5563] hover:bg-white hover:border-[#6B3FFF]/40 hover:text-[#6B3FFF] hover:shadow-sm transition-all duration-200 font-medium backdrop-blur-sm"
               aria-label={`Search for ${chip.label}`}
             >
               {chip.label}

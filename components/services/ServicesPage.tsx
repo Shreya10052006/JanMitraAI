@@ -124,7 +124,7 @@ export default function ServicesPage() {
 
   return (
     <div className="overflow-y-auto h-full" id="main-content">
-      <div className="px-10 py-8 space-y-8 max-w-[1600px] mx-auto">
+      <div className="px-10 py-8 space-y-12 max-w-[1600px] mx-auto">
         {/* ── Hero header ── */}
         <div className="relative rounded-[28px] overflow-hidden" style={{ minHeight: "150px" }}>
           <div className="absolute inset-0" style={{ background: "linear-gradient(135deg,#F5F3FF,#EDE9FE 25%,#FFF7ED 70%,#FFFBEB)" }} aria-hidden="true" />
@@ -146,17 +146,17 @@ export default function ServicesPage() {
           {/* Indian flag emoji top-right */}
           <div className="absolute top-4 right-6 text-3xl" aria-hidden="true">🇮🇳</div>
 
-          <div className="relative z-10 px-8 py-7">
+          <div className="relative z-10 px-8 py-8">
             <h1 className="text-2xl font-bold text-[#1A1340]">Government Services</h1>
-            <p className="text-sm text-[#6B7280] mt-1">
+            <p className="text-sm text-[#6B7280] mt-2">
               Find and access{" "}
               <span className="text-[#6B3FFF] font-medium">1000+ government services</span>{" "}
               with AI guidance
             </p>
 
             {/* Search */}
-            <div className="flex items-center gap-3 mt-4">
-              <div className="flex-1 flex items-center gap-2 bg-white rounded-xl border border-[#E8E4F8] shadow-sm px-4 py-2.5 max-w-xl">
+            <div className="flex items-center gap-4 mt-4">
+              <div className="flex-1 flex items-center gap-2 bg-white rounded-xl border border-[#E8E4F8] shadow-sm px-4 py-4 max-w-xl">
                 <Search size={16} className="text-[#9CA3AF] flex-shrink-0" aria-hidden="true" />
                 <input
                   type="search"
@@ -175,7 +175,7 @@ export default function ServicesPage() {
                   <Search size={14} aria-hidden="true" />
                 </button>
               </div>
-              <button className="flex items-center gap-2 px-4 py-2.5 bg-white border border-[#E8E4F8] rounded-xl text-sm font-medium text-[#374151] hover:bg-[#F9F8FF] transition-colors shadow-sm">
+              <button className="flex items-center gap-2 px-4 py-4 bg-white border border-[#E8E4F8] rounded-xl text-sm font-medium text-[#374151] hover:bg-[#F9F8FF] transition-colors shadow-sm">
                 <LayoutGrid size={15} className="text-[#6B3FFF]" aria-hidden="true" />
                 Browse Categories
               </button>
@@ -185,9 +185,9 @@ export default function ServicesPage() {
 
         {/* ── Categories ── */}
         <section aria-labelledby="categories-heading">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-4">
             <h2 id="categories-heading" className="text-base font-semibold text-[#1A1340]">Popular Categories</h2>
-            <button className="flex items-center gap-1 text-sm text-[#6B3FFF] hover:underline">
+            <button className="flex items-center gap-2 text-sm text-[#6B3FFF] hover:underline">
               View All Categories <ChevronRight size={14} aria-hidden="true" />
             </button>
           </div>
@@ -195,7 +195,7 @@ export default function ServicesPage() {
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.id}
-                className="flex flex-col items-center gap-2 p-3 bg-white rounded-[20px] border border-[#E8E4F8] hover:border-[#6B3FFF]/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group"
+                className="flex flex-col items-center gap-2 p-4 bg-white rounded-[20px] border border-[#E8E4F8] hover:border-[#6B3FFF]/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group"
                 role="listitem"
                 aria-label={cat.label.replace("\n", " ")}
               >
@@ -211,10 +211,10 @@ export default function ServicesPage() {
         </section>
 
         {/* ── Three-column: Top Services | Service Detail | Right Sidebar ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr_240px] gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr_240px] gap-6">
           {/* Top Services list */}
           <aside aria-labelledby="top-services-heading">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-4">
               <h2 id="top-services-heading" className="text-sm font-semibold text-[#1A1340]">Top Services</h2>
               <button className="text-xs text-[#6B3FFF] hover:underline">View All Services</button>
             </div>
@@ -224,7 +224,7 @@ export default function ServicesPage() {
                   key={svc.id}
                   onClick={() => { setSelectedService(DL_SERVICE); setActiveTab("Overview"); }}
                   className={cn(
-                    "w-full flex items-center gap-3 p-3 rounded-xl border transition-all duration-200 text-left group",
+                    "w-full flex items-center gap-4 p-4 rounded-xl border transition-all duration-200 text-left group",
                     svc.id === selectedService.id
                       ? "bg-[#F3F0FF] border-[#6B3FFF]/30"
                       : "bg-white border-[#E8E4F8] hover:bg-[#F9F8FF] hover:border-[#E8E4F8]"
@@ -244,7 +244,7 @@ export default function ServicesPage() {
               ))}
 
               {/* Can't find CTA */}
-              <button className="w-full flex items-center gap-3 p-3 rounded-xl bg-[#F3F0FF] border border-[#E8E4F8] hover:bg-[#EDE9FE] transition-all text-left">
+              <button className="w-full flex items-center gap-4 p-4 rounded-xl bg-[#F3F0FF] border border-[#E8E4F8] hover:bg-[#EDE9FE] transition-all text-left">
                 <div className="w-9 h-9 rounded-lg bg-[#EDE9FE] flex items-center justify-center flex-shrink-0" aria-hidden="true">
                   <Sparkles size={16} className="text-[#6B3FFF]" />
                 </div>
@@ -261,28 +261,28 @@ export default function ServicesPage() {
           <article className="bg-white rounded-[20px] border border-[#E8E4F8] overflow-hidden" aria-label={`${selectedService.title} details`}>
             {/* Back + title */}
             <div className="px-6 pt-6 pb-0">
-              <button className="flex items-center gap-1.5 text-xs text-[#6B7280] hover:text-[#6B3FFF] transition-colors mb-3" aria-label="Back to all services">
+              <button className="flex items-center gap-2 text-xs text-[#6B7280] hover:text-[#6B3FFF] transition-colors mb-4" aria-label="Back to all services">
                 <ArrowLeft size={13} aria-hidden="true" /> Back to all services
               </button>
 
-              <div className="flex items-start justify-between gap-3 mb-4">
-                <div className="flex items-start gap-3">
+              <div className="flex items-start justify-between gap-4 mb-4">
+                <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-xl bg-[#EDE9FE] flex items-center justify-center flex-shrink-0 text-2xl" aria-hidden="true">🪪</div>
                   <div>
                     <div className="flex items-center gap-2 flex-wrap">
                       <h1 className="text-lg font-bold text-[#1A1340]">{selectedService.title}</h1>
                       {selectedService.isPopular && (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-[#6B3FFF] text-white">Popular</span>
+                        <span className="px-2 py-2 rounded-full text-[10px] font-semibold bg-[#6B3FFF] text-white">Popular</span>
                       )}
                     </div>
-                    <p className="text-xs text-[#6B7280] mt-0.5">{selectedService.subtitle}</p>
+                    <p className="text-xs text-[#6B7280] mt-2">{selectedService.subtitle}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <button
                     onClick={() => setSaved((v) => !v)}
                     className={cn(
-                      "flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-medium transition-all",
+                      "flex items-center gap-2 px-4 py-2 rounded-lg border text-xs font-medium transition-all",
                       saved ? "bg-[#EDE9FE] border-[#6B3FFF]/30 text-[#6B3FFF]" : "border-[#E8E4F8] text-[#6B7280] hover:bg-[#F9F8FF]"
                     )}
                     aria-pressed={saved}
@@ -290,14 +290,14 @@ export default function ServicesPage() {
                   >
                     <Bookmark size={13} aria-hidden="true" /> {saved ? "Saved" : "Save"}
                   </button>
-                  <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E8E4F8] text-xs font-medium text-[#6B7280] hover:bg-[#F9F8FF] transition-all" aria-label="Share service">
+                  <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E8E4F8] text-xs font-medium text-[#6B7280] hover:bg-[#F9F8FF] transition-all" aria-label="Share service">
                     <Share2 size={13} aria-hidden="true" /> Share
                   </button>
                 </div>
               </div>
 
               {/* Quick info row */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-5">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
                 {[
                   { icon: Users, label: "Who can apply", value: selectedService.whoCanApply },
                   { icon: Star, label: "Validity", value: selectedService.validity },
@@ -306,7 +306,7 @@ export default function ServicesPage() {
                   { icon: Globe, label: "Official Portal", value: selectedService.officialPortal, isLink: true },
                 ].map(({ icon: Icon, label, value, isLink }) => (
                   <div key={label} className="flex items-start gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-[#F3F0FF] flex items-center justify-center flex-shrink-0 mt-0.5" aria-hidden="true">
+                    <div className="w-7 h-7 rounded-lg bg-[#F3F0FF] flex items-center justify-center flex-shrink-0 mt-2" aria-hidden="true">
                       <Icon size={13} className="text-[#6B3FFF]" />
                     </div>
                     <div>
@@ -330,7 +330,7 @@ export default function ServicesPage() {
                     aria-selected={activeTab === tab}
                     onClick={() => setActiveTab(tab)}
                     className={cn(
-                      "px-4 py-2.5 text-sm font-medium whitespace-nowrap border-b-2 transition-all duration-200",
+                      "px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-all duration-200",
                       activeTab === tab
                         ? "border-[#6B3FFF] text-[#6B3FFF]"
                         : "border-transparent text-[#6B7280] hover:text-[#1A1340]"
@@ -343,13 +343,13 @@ export default function ServicesPage() {
             </div>
 
             {/* Tab content */}
-            <div className="px-6 py-5" role="tabpanel">
+            <div className="px-6 py-6" role="tabpanel">
               {activeTab === "Overview" && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
                     <h3 className="text-sm font-semibold text-[#1A1340] mb-2">Description</h3>
                     <p className="text-sm text-[#6B7280] leading-relaxed">{selectedService.description}</p>
-                    <ul className="mt-3 space-y-1.5">
+                    <ul className="mt-4 space-y-2">
                       {selectedService.features.map((f) => (
                         <li key={f} className="flex items-center gap-2 text-xs text-[#374151]">
                           <CheckCircle2 size={13} className="text-[#10B981]" aria-hidden="true" /> {f}
@@ -364,7 +364,7 @@ export default function ServicesPage() {
                 <ul className="space-y-2">
                   {selectedService.eligibility.map((e) => (
                     <li key={e} className="flex items-start gap-2 text-sm text-[#374151]">
-                      <CheckCircle2 size={15} className="text-[#10B981] flex-shrink-0 mt-0.5" aria-hidden="true" /> {e}
+                      <CheckCircle2 size={15} className="text-[#10B981] flex-shrink-0 mt-2" aria-hidden="true" /> {e}
                     </li>
                   ))}
                 </ul>
@@ -373,16 +373,16 @@ export default function ServicesPage() {
                 <ul className="space-y-2">
                   {selectedService.documents.map((d) => (
                     <li key={d} className="flex items-start gap-2 text-sm text-[#374151]">
-                      <CheckCircle2 size={15} className="text-[#10B981] flex-shrink-0 mt-0.5" aria-hidden="true" /> {d}
+                      <CheckCircle2 size={15} className="text-[#10B981] flex-shrink-0 mt-2" aria-hidden="true" /> {d}
                     </li>
                   ))}
                 </ul>
               )}
               {activeTab === "Process" && (
-                <ol className="space-y-3">
+                <ol className="space-y-4">
                   {selectedService.process.map((p, i) => (
-                    <li key={p} className="flex items-start gap-3 text-sm text-[#374151]">
-                      <span className="w-6 h-6 rounded-full bg-[#EDE9FE] text-[#6B3FFF] text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
+                    <li key={p} className="flex items-start gap-4 text-sm text-[#374151]">
+                      <span className="w-6 h-6 rounded-full bg-[#EDE9FE] text-[#6B3FFF] text-xs font-bold flex items-center justify-center flex-shrink-0 mt-2">{i + 1}</span>
                       {p}
                     </li>
                   ))}
@@ -391,14 +391,14 @@ export default function ServicesPage() {
               {activeTab === "Fees" && (
                 <div className="bg-[#F9F8FF] rounded-xl p-4 inline-block">
                   <p className="text-sm font-semibold text-[#1A1340]">{selectedService.fees}</p>
-                  <p className="text-xs text-[#9CA3AF] mt-1">Fees may vary by state and DL category</p>
+                  <p className="text-xs text-[#9CA3AF] mt-2">Fees may vary by state and DL category</p>
                 </div>
               )}
               {activeTab === "FAQs" && (
                 <div className="space-y-4">
                   {selectedService.faqs.map((faq) => (
                     <div key={faq.q}>
-                      <p className="text-sm font-semibold text-[#1A1340] mb-1">{faq.q}</p>
+                      <p className="text-sm font-semibold text-[#1A1340] mb-2">{faq.q}</p>
                       <p className="text-sm text-[#6B7280]">{faq.a}</p>
                     </div>
                   ))}
@@ -407,34 +407,34 @@ export default function ServicesPage() {
             </div>
 
             {/* CTA buttons */}
-            <div className="px-6 pb-6 flex items-center gap-3">
+            <div className="px-6 pb-6 flex items-center gap-4">
               <a
                 href="https://parivahan.gov.in"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 hover:shadow-lg transition-all"
+                className="flex items-center gap-2 px-6 py-4 rounded-xl text-sm font-semibold text-white hover:opacity-90 hover:shadow-lg transition-all"
                 style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
                 aria-label="Apply now on official portal"
               >
                 Apply Now <ExternalLink size={14} aria-hidden="true" />
               </a>
-              <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#6B3FFF]/30 text-sm font-semibold text-[#6B3FFF] hover:bg-[#F3F0FF] transition-all" aria-label="Check eligibility with AI">
+              <button className="flex items-center gap-2 px-6 py-4 rounded-xl border border-[#6B3FFF]/30 text-sm font-semibold text-[#6B3FFF] hover:bg-[#F3F0FF] transition-all" aria-label="Check eligibility with AI">
                 Check Eligibility <ChevronRight size={14} aria-hidden="true" />
               </button>
             </div>
           </article>
 
           {/* Right sidebar */}
-          <aside className="space-y-5" aria-label="Service sidebar">
+          <aside className="space-y-6" aria-label="Service sidebar">
             {/* AI Eligibility Check */}
-            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-5" aria-labelledby="elig-heading">
+            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6" aria-labelledby="elig-heading">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles size={15} className="text-[#6B3FFF]" aria-hidden="true" />
                 <h2 id="elig-heading" className="text-sm font-semibold text-[#1A1340]">AI Eligibility Check</h2>
               </div>
-              <p className="text-xs text-[#6B7280] mb-3">Answer a few questions and JanMitra AI will check your eligibility</p>
+              <p className="text-xs text-[#6B7280] mb-4">Answer a few questions and JanMitra AI will check your eligibility</p>
               <button
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all"
+                className="w-full flex items-center justify-center gap-2 py-4 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all"
                 style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
                 aria-label="Check eligibility with AI"
               >
@@ -443,9 +443,9 @@ export default function ServicesPage() {
             </section>
 
             {/* You may also need */}
-            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-5" aria-labelledby="also-heading">
-              <h2 id="also-heading" className="text-sm font-semibold text-[#1A1340] mb-3">You may also need</h2>
-              <div className="space-y-1">
+            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6" aria-labelledby="also-heading">
+              <h2 id="also-heading" className="text-sm font-semibold text-[#1A1340] mb-4">You may also need</h2>
+              <div className="space-y-2">
                 {YOU_MAY_NEED.map((s) => (
                   <button key={s} className="w-full flex items-center gap-2 px-2 py-2 rounded-lg hover:bg-[#F9F8FF] transition-colors text-left group" aria-label={s}>
                     <div className="w-5 h-5 rounded-md bg-[#EDE9FE] flex items-center justify-center flex-shrink-0" aria-hidden="true">
@@ -459,9 +459,9 @@ export default function ServicesPage() {
             </section>
 
             {/* Need help */}
-            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-5" aria-labelledby="help-heading">
-              <h2 id="help-heading" className="text-sm font-semibold text-[#1A1340] mb-1">Need help?</h2>
-              <p className="text-xs text-[#6B7280] mb-3">Chat with JanMitra AI for step-by-step guidance.</p>
+            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6" aria-labelledby="help-heading">
+              <h2 id="help-heading" className="text-sm font-semibold text-[#1A1340] mb-2">Need help?</h2>
+              <p className="text-xs text-[#6B7280] mb-4">Chat with JanMitra AI for step-by-step guidance.</p>
               <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#6B3FFF]/30 text-xs font-semibold text-[#6B3FFF] hover:bg-[#F3F0FF] transition-all" aria-label="Chat with AI">
                 <MessageCircle size={13} aria-hidden="true" /> Chat Now
               </button>
@@ -470,9 +470,9 @@ export default function ServicesPage() {
         </div>
 
         {/* Trust footer */}
-        <section className="bg-white rounded-[20px] border border-[#E8E4F8] px-6 py-5" aria-label="Security and trust">
+        <section className="bg-white rounded-[20px] border border-[#E8E4F8] px-6 py-6" aria-label="Security and trust">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-[#EDE9FE] flex items-center justify-center flex-shrink-0" aria-hidden="true">
                 <ShieldCheck size={22} className="text-[#6B3FFF]" />
               </div>

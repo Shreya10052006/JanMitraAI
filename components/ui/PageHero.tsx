@@ -48,7 +48,7 @@ export function PageHero({ title, subtitle }: PageHeroProps) {
       />
       <div className="relative z-10 px-8 py-8">
         <h1 className="text-2xl font-bold text-[#1A1340]">{title}</h1>
-        <p className="text-sm text-[#6B7280] mt-1.5">{subtitle}</p>
+        <p className="text-sm text-[#6B7280] mt-2">{subtitle}</p>
       </div>
     </div>
   );

@@ -77,15 +77,15 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
   const resolvedPercentage = c ? Math.round(((currentStepIndex + 1) / STEP_STATUSES.length) * 100) : 0;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-5">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-6">
       {/* ── Main track panel ── */}
-      <div className="space-y-5">
+      <div className="space-y-6">
         {/* Search */}
-        <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-5">
-          <h2 className="text-base font-bold text-[#1A1340] mb-1">Track Your Complaint</h2>
+        <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-6">
+          <h2 className="text-base font-bold text-[#1A1340] mb-2">Track Your Complaint</h2>
           <p className="text-xs text-[#6B7280] mb-4">Enter your complaint ID to track real-time status and timeline</p>
-          <div className="flex items-center gap-3">
-            <div className="flex-1 flex items-center gap-2 border border-[#E8E4F8] rounded-xl px-4 py-2.5 focus-within:ring-2 focus-within:ring-[#6B3FFF]/20 focus-within:border-[#6B3FFF]/40 transition-all">
+          <div className="flex items-center gap-4">
+            <div className="flex-1 flex items-center gap-2 border border-[#E8E4F8] rounded-xl px-4 py-4 focus-within:ring-2 focus-within:ring-[#6B3FFF]/20 focus-within:border-[#6B3FFF]/40 transition-all">
               <Search size={15} className="text-[#9CA3AF] flex-shrink-0" aria-hidden="true" />
               <input
                 type="text"
@@ -100,7 +100,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
             <button
               onClick={handleTrack}
               disabled={!inputId.trim() || isSearching}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed transition-all"
+              className="flex items-center gap-2 px-6 py-4 rounded-xl text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed transition-all"
               style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
               aria-label="Track complaint"
             >
@@ -115,7 +115,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
 
           {/* Not found error */}
           {notFound && (
-            <div className="mt-3 flex items-center gap-2 text-xs text-red-600 bg-red-50 rounded-xl px-3 py-2.5 border border-red-100">
+            <div className="mt-4 flex items-center gap-2 text-xs text-red-600 bg-red-50 rounded-xl px-4 py-4 border border-red-100">
               <AlertCircle size={13} aria-hidden="true" />
               Complaint ID &ldquo;{inputId}&rdquo; not found. Please check the ID and try again.
             </div>
@@ -126,10 +126,10 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
         {c && (
           <>
             {/* Complaint summary card */}
-            <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-5">
+            <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="flex items-center gap-2 mb-2">
                     <span className="text-2xl" aria-hidden="true">
                       {STATUS_ICON[c.status]}
                     </span>
@@ -137,14 +137,14 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
                   </div>
                   <h3 className="text-base font-bold text-[#1A1340]">{c.title}</h3>
                 </div>
-                <span className={cn("px-3 py-1.5 rounded-full text-xs font-semibold", STATUS_COLOR[c.status].text, STATUS_COLOR[c.status].bg)}>
+                <span className={cn("px-4 py-2 rounded-full text-xs font-semibold", STATUS_COLOR[c.status].text, STATUS_COLOR[c.status].bg)}>
                   {STATUS_LABELS[c.status]}
                 </span>
               </div>
 
               {/* Progress bar */}
               <div className="mb-4">
-                <div className="flex items-center justify-between mb-1.5">
+                <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-medium text-[#374151]">Resolution Progress</span>
                   <span className="text-xs font-bold text-[#6B3FFF]">{resolvedPercentage}%</span>
                 </div>
@@ -157,7 +157,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
               </div>
 
               {/* Details grid */}
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 {[
                   { label: "Category", value: c.category },
                   { label: "Priority", value: c.priority.charAt(0).toUpperCase() + c.priority.slice(1) },
@@ -167,23 +167,23 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
                   ...(c.assignedTo ? [{ label: "Assigned To", value: c.assignedTo, fullWidth: true }] : []),
                   ...(c.department ? [{ label: "Department", value: c.department, fullWidth: true }] : []),
                 ].map(({ label, value, fullWidth }) => (
-                  <div key={label} className={cn("bg-[#F9F8FF] rounded-xl p-3", fullWidth && "col-span-2")}>
+                  <div key={label} className={cn("bg-[#F9F8FF] rounded-xl p-4", fullWidth && "col-span-2")}>
                     <p className="text-[10px] text-[#9CA3AF]">{label}</p>
-                    <p className="text-xs font-semibold text-[#1A1340] mt-0.5">{value}</p>
+                    <p className="text-xs font-semibold text-[#1A1340] mt-2">{value}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Timeline */}
-            <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-5">
+            <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-6">
               <h3 className="text-sm font-bold text-[#1A1340] mb-4">Complaint Timeline</h3>
               <ol className="relative space-y-4 ml-2" aria-label="Complaint timeline">
                 {c.timeline.map((event, idx) => {
                   const isCompleted = true; // All timeline events in our model are completed
                   const isCurrent = idx === c.timeline.length - 1;
                   return (
-                    <li key={event.id} className="flex items-start gap-3 relative pl-6">
+                    <li key={event.id} className="flex items-start gap-4 relative pl-6">
                       {/* Connector line */}
                       {idx < c.timeline.length - 1 && (
                         <div className="absolute left-[7px] top-5 bottom-0 w-px bg-[#EDE9FE]" aria-hidden="true" />
@@ -191,26 +191,26 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
                       {/* Dot */}
                       <div
                         className={cn(
-                          "absolute left-0 w-3.5 h-3.5 rounded-full border-2 mt-0.5 flex items-center justify-center flex-shrink-0",
+                          "absolute left-0 w-3.5 h-3.5 rounded-full border-2 mt-2 flex items-center justify-center flex-shrink-0",
                           isCompleted ? "border-[#6B3FFF] bg-[#6B3FFF]" : "border-[#D1D5DB] bg-white"
                         )}
                         aria-hidden="true"
                       >
                         {isCompleted && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                       </div>
-                      <div className={cn("flex-1 pb-1", isCurrent && "")}>
+                      <div className={cn("flex-1 pb-2", isCurrent && "")}>
                         <div className="flex items-center justify-between gap-2">
                           <p className={cn("text-sm font-semibold", isCurrent ? "text-[#6B3FFF]" : "text-[#1A1340]")}>
                             {event.label}
                             {isCurrent && (
-                              <span className="ml-2 px-1.5 py-0.5 text-[9px] font-bold bg-[#6B3FFF] text-white rounded-full">Current</span>
+                              <span className="ml-2 px-2 py-2 text-[9px] font-bold bg-[#6B3FFF] text-white rounded-full">Current</span>
                             )}
                           </p>
-                          <span className="text-[10px] text-[#9CA3AF] whitespace-nowrap flex items-center gap-1 flex-shrink-0">
+                          <span className="text-[10px] text-[#9CA3AF] whitespace-nowrap flex items-center gap-2 flex-shrink-0">
                             <Clock size={9} aria-hidden="true" /> {event.timestamp}
                           </span>
                         </div>
-                        <p className="text-xs text-[#6B7280] mt-1 leading-relaxed">{event.description}</p>
+                        <p className="text-xs text-[#6B7280] mt-2 leading-relaxed">{event.description}</p>
                       </div>
                     </li>
                   );
@@ -218,18 +218,18 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
 
                 {/* Upcoming steps */}
                 {c.status !== "resolved" && c.status !== "closed" && (
-                  <li className="flex items-start gap-3 relative pl-6 opacity-40">
-                    <div className="absolute left-0 w-3.5 h-3.5 rounded-full border-2 border-dashed border-[#D1D5DB] bg-white mt-0.5" aria-hidden="true" />
+                  <li className="flex items-start gap-4 relative pl-6 opacity-40">
+                    <div className="absolute left-0 w-3.5 h-3.5 rounded-full border-2 border-dashed border-[#D1D5DB] bg-white mt-2" aria-hidden="true" />
                     <div>
                       <p className="text-sm font-semibold text-[#9CA3AF]">Resolved</p>
-                      <p className="text-xs text-[#9CA3AF] mt-0.5">Issue will be marked resolved when fixed</p>
+                      <p className="text-xs text-[#9CA3AF] mt-2">Issue will be marked resolved when fixed</p>
                     </div>
                   </li>
                 )}
               </ol>
 
               {c.status === "resolved" && (
-                <div className="mt-4 flex items-center gap-2 bg-green-50 rounded-xl px-4 py-3 border border-green-100">
+                <div className="mt-4 flex items-center gap-2 bg-green-50 rounded-xl px-4 py-4 border border-green-100">
                   <CheckCircle2 size={16} className="text-[#10B981]" aria-hidden="true" />
                   <p className="text-xs font-semibold text-[#10B981]">Your complaint has been successfully resolved!</p>
                 </div>
@@ -241,10 +241,10 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
         {/* Empty state */}
         {!c && !notFound && (
           <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-10 flex flex-col items-center text-center">
-            <div className="w-14 h-14 rounded-2xl bg-[#EDE9FE] flex items-center justify-center mb-3" aria-hidden="true">
+            <div className="w-14 h-14 rounded-2xl bg-[#EDE9FE] flex items-center justify-center mb-4" aria-hidden="true">
               <Search size={24} className="text-[#6B3FFF]" />
             </div>
-            <h3 className="text-sm font-bold text-[#1A1340] mb-1">Track Your Complaint</h3>
+            <h3 className="text-sm font-bold text-[#1A1340] mb-2">Track Your Complaint</h3>
             <p className="text-xs text-[#9CA3AF] max-w-[240px]">Enter your Complaint ID above to see real-time status and timeline.</p>
             <p className="text-[10px] text-[#9CA3AF] mt-2">Try: CMP-2026-1452</p>
           </div>
@@ -252,17 +252,17 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
       </div>
 
       {/* ── Right sidebar ── */}
-      <aside className="space-y-5" aria-label="Track complaint sidebar">
+      <aside className="space-y-6" aria-label="Track complaint sidebar">
         {/* Status guide */}
         <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="status-guide-heading">
-          <h2 id="status-guide-heading" className="text-sm font-semibold text-[#1A1340] mb-3">Status Guide</h2>
-          <div className="space-y-3">
+          <h2 id="status-guide-heading" className="text-sm font-semibold text-[#1A1340] mb-4">Status Guide</h2>
+          <div className="space-y-4">
             {STEP_STATUSES.map((status) => (
-              <div key={status} className="flex items-start gap-2.5">
-                <div className={cn("w-2.5 h-2.5 rounded-full flex-shrink-0 mt-1", STATUS_COLOR[status].dot)} aria-hidden="true" />
+              <div key={status} className="flex items-start gap-4">
+                <div className={cn("w-2.5 h-2.5 rounded-full flex-shrink-0 mt-2", STATUS_COLOR[status].dot)} aria-hidden="true" />
                 <div>
                   <p className="text-xs font-semibold text-[#1A1340]">{STATUS_LABELS[status]}</p>
-                  <p className="text-[10px] text-[#9CA3AF] mt-0.5 leading-relaxed">
+                  <p className="text-[10px] text-[#9CA3AF] mt-2 leading-relaxed">
                     {status === "submitted" && "Complaint received and registered in the system"}
                     {status === "under_review" && "Being reviewed by the concerned department"}
                     {status === "assigned" && "An officer/engineer has been assigned"}
@@ -277,7 +277,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
 
         {/* Tips */}
         <section className="bg-[#F9F8FF] rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="tips-heading">
-          <h2 id="tips-heading" className="text-sm font-semibold text-[#1A1340] mb-3">💡 Tips for Faster Resolution</h2>
+          <h2 id="tips-heading" className="text-sm font-semibold text-[#1A1340] mb-4">💡 Tips for Faster Resolution</h2>
           <ul className="space-y-2">
             {[
               "Add multiple photos for better visibility",
@@ -286,7 +286,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
               "Note peak hours when it's most problematic",
             ].map((tip) => (
               <li key={tip} className="flex items-start gap-2 text-xs text-[#374151]">
-                <ChevronRight size={13} className="text-[#6B3FFF] flex-shrink-0 mt-0.5" aria-hidden="true" />
+                <ChevronRight size={13} className="text-[#6B3FFF] flex-shrink-0 mt-2" aria-hidden="true" />
                 {tip}
               </li>
             ))}
@@ -295,8 +295,8 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
 
         {/* Need more help */}
         <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="needhelp-heading">
-          <h2 id="needhelp-heading" className="text-sm font-semibold text-[#1A1340] mb-1">Need More Help?</h2>
-          <p className="text-xs text-[#6B7280] mb-3">Chat with JanMitra AI for real-time guidance on your complaint.</p>
+          <h2 id="needhelp-heading" className="text-sm font-semibold text-[#1A1340] mb-2">Need More Help?</h2>
+          <p className="text-xs text-[#6B7280] mb-4">Chat with JanMitra AI for real-time guidance on your complaint.</p>
           <a
             href="/ai-assistant"
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white hover:opacity-90 transition-all inline-flex"

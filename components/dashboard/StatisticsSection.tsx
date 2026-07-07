@@ -53,7 +53,7 @@ export function StatisticsSection() {
         </svg>
       </div>
 
-      <div className="relative z-10 px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-8">
+      <div className="relative z-10 px-10 py-10 flex flex-col sm:flex-row items-start sm:items-center gap-8">
         {/* Heading */}
         <div className="sm:w-44 flex-shrink-0">
           <h2
@@ -62,7 +62,7 @@ export function StatisticsSection() {
           >
             Making a difference together
           </h2>
-          <p className="text-purple-300/80 text-xs mt-1.5">
+          <p className="text-purple-300/80 text-xs mt-2">
             Real impact, real change
           </p>
         </div>
@@ -80,7 +80,7 @@ export function StatisticsSection() {
             return (
               <div
                 key={stat.id}
-                className="flex items-center gap-3"
+                className="flex items-center gap-4"
                 role="figure"
                 aria-label={`${stat.value} ${stat.label}`}
               >
@@ -97,7 +97,7 @@ export function StatisticsSection() {
                   <p className="text-white font-bold text-lg leading-tight">
                     {stat.value}
                   </p>
-                  <p className="text-purple-300/80 text-[11px] mt-0.5">
+                  <p className="text-purple-300/80 text-[11px] mt-2">
                     {stat.label}
                   </p>
                 </div>

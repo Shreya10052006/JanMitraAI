@@ -52,8 +52,8 @@ export function TopBar() {
 
   return (
     <header
-      className="fixed top-0 right-0 h-[76px] bg-white/85 backdrop-blur-xl border-b border-[#EAE8F5] z-30 flex items-center justify-end px-8 gap-3"
-      style={{ left: "240px" }}
+      className="fixed top-0 right-0 h-[80px] bg-white/85 backdrop-blur-xl border-b border-[#EAE8F5] z-30 flex items-center justify-end px-8 gap-4"
+      style={{ left: "256px" }}
       role="banner"
     >
       {/* Language selector */}
@@ -64,7 +64,7 @@ export function TopBar() {
             setNotificationsOpen(false);
             setProfileOpen(false);
           }}
-          className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium text-[#374151] hover:bg-[#F3F0FF] transition-colors duration-200"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-[#374151] hover:bg-[#F3F0FF] transition-colors duration-200"
           aria-haspopup="listbox"
           aria-expanded={languageOpen}
           aria-label={`Language: ${currentLanguage.label}. Click to change.`}
@@ -98,14 +98,14 @@ export function TopBar() {
                     setLanguageOpen(false);
                   }}
                   className={cn(
-                    "w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition-colors duration-150",
+                    "w-full flex items-center justify-between px-4 py-4 rounded-xl text-sm transition-colors duration-150",
                     currentLanguage.code === lang.code
                       ? "bg-[#F3F0FF] text-[#6B3FFF] font-semibold"
                       : "text-[#374151] hover:bg-[#F9F8FF]"
                   )}
                 >
                   <span>{lang.label}</span>
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-2">
                     <span className="text-[#9CA3AF] text-xs">
                       {lang.nativeLabel}
                     </span>
@@ -153,7 +153,7 @@ export function TopBar() {
 
         {notificationsOpen && (
           <div className="absolute right-0 top-full mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-[#EAE8F5] z-50 overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#F3F0FF] flex items-center justify-between">
+            <div className="px-4 py-4 border-b border-[#F3F0FF] flex items-center justify-between">
               <h2 className="font-semibold text-sm text-[#1A1340]">
                 Notifications
               </h2>
@@ -170,15 +170,15 @@ export function TopBar() {
                 <button
                   key={notification.id}
                   className={cn(
-                    "w-full text-left px-4 py-3.5 hover:bg-[#F9F8FF] transition-colors duration-150 border-b border-[#F9F8FF] last:border-0",
+                    "w-full text-left px-4 py-4 hover:bg-[#F9F8FF] transition-colors duration-150 border-b border-[#F9F8FF] last:border-0",
                     !notification.read && "bg-[#F8F6FF]"
                   )}
                   aria-label={`${notification.title}: ${notification.body}`}
                 >
-                  <div className="flex items-start gap-2.5">
+                  <div className="flex items-start gap-4">
                     {!notification.read && (
                       <span
-                        className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#6B3FFF] flex-shrink-0"
+                        className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6B3FFF] flex-shrink-0"
                         aria-hidden="true"
                       />
                     )}
@@ -186,10 +186,10 @@ export function TopBar() {
                       <p className="text-xs font-semibold text-[#1A1340]">
                         {notification.title}
                       </p>
-                      <p className="text-xs text-[#6B7280] mt-0.5 leading-relaxed">
+                      <p className="text-xs text-[#6B7280] mt-2 leading-relaxed">
                         {notification.body}
                       </p>
-                      <p className="text-[10px] text-[#9CA3AF] mt-1.5">
+                      <p className="text-[10px] text-[#9CA3AF] mt-2">
                         {notification.time}
                       </p>
                     </div>
@@ -212,7 +212,7 @@ export function TopBar() {
             setLanguageOpen(false);
             setNotificationsOpen(false);
           }}
-          className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl hover:bg-[#F3F0FF] transition-colors duration-200"
+          className="flex items-center gap-4 px-4 py-2 rounded-xl hover:bg-[#F3F0FF] transition-colors duration-200"
           aria-haspopup="true"
           aria-expanded={profileOpen}
           aria-label={`Profile menu for ${USER_PROFILE.name}`}
@@ -242,11 +242,11 @@ export function TopBar() {
 
         {profileOpen && (
           <div className="absolute right-0 top-full mt-2 w-52 bg-white rounded-2xl shadow-2xl border border-[#EAE8F5] z-50 overflow-hidden">
-            <div className="px-4 py-3.5 border-b border-[#F3F0FF]">
+            <div className="px-4 py-4 border-b border-[#F3F0FF]">
               <p className="font-semibold text-sm text-[#1A1340]">
                 {USER_PROFILE.fullName}
               </p>
-              <p className="text-xs text-[#6B7280] mt-0.5">
+              <p className="text-xs text-[#6B7280] mt-2">
                 {USER_PROFILE.email}
               </p>
             </div>
@@ -259,14 +259,14 @@ export function TopBar() {
                 <a
                   key={label}
                   href={href}
-                  className="flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm text-[#374151] hover:bg-[#F9F8FF] transition-colors duration-150"
+                  className="flex items-center gap-4 px-4 py-4 rounded-xl text-sm text-[#374151] hover:bg-[#F9F8FF] transition-colors duration-150"
                 >
                   <Icon size={15} className="text-[#9CA3AF]" aria-hidden="true" />
                   {label}
                 </a>
               ))}
-              <div className="my-1 border-t border-[#F3F0FF]" />
-              <button className="flex items-center gap-2.5 w-full px-3 py-2.5 rounded-xl text-sm text-[#EF4444] hover:bg-red-50 transition-colors duration-150">
+              <div className="my-2 border-t border-[#F3F0FF]" />
+              <button className="flex items-center gap-4 w-full px-4 py-4 rounded-xl text-sm text-[#EF4444] hover:bg-red-50 transition-colors duration-150">
                 <LogOut size={15} aria-hidden="true" />
                 Sign Out
               </button>

@@ -133,9 +133,9 @@ export default function AIAssistantPage() {
       {/* Chat area */}
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         {/* Header */}
-        <div className="px-8 pt-6 pb-5 border-b border-[#F3F0FF] flex-shrink-0">
+        <div className="px-8 pt-6 pb-6 border-b border-[#F3F0FF] flex-shrink-0">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <div className="w-9 h-9 rounded-xl bg-[#EDE9FE] flex items-center justify-center" aria-hidden="true">
                 <Sparkles size={18} className="text-[#6B3FFF]" />
               </div>
@@ -146,7 +146,7 @@ export default function AIAssistantPage() {
             </div>
             <button
               onClick={clearHistory}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#E8E4F8] text-xs font-medium text-[#6B7280] hover:bg-[#F9F8FF] hover:text-red-500 transition-all"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E8E4F8] text-xs font-medium text-[#6B7280] hover:bg-[#F9F8FF] hover:text-red-500 transition-all"
               aria-label="Clear chat history"
             >
               <Trash2 size={13} aria-hidden="true" /> Clear
@@ -155,26 +155,26 @@ export default function AIAssistantPage() {
         </div>
 
         {/* Messages scroll area */}
-        <div className="flex-1 overflow-y-auto px-8 py-8 space-y-7" role="log" aria-label="Chat messages" aria-live="polite">
+        <div className="flex-1 overflow-y-auto px-8 py-8 space-y-8" role="log" aria-label="Chat messages" aria-live="polite">
           {messages.map((msg) =>
             msg.role === "user" ? (
-              <div key={msg.id} className="flex flex-col items-end gap-1">
+              <div key={msg.id} className="flex flex-col items-end gap-2">
                 <div
-                  className="max-w-[70%] px-5 py-3.5 rounded-2xl rounded-tr-sm text-sm text-white leading-relaxed"
+                  className="max-w-[70%] px-6 py-4 rounded-2xl rounded-tr-sm text-sm text-white leading-relaxed"
                   style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
                 >
                   {msg.content}
                 </div>
-                <span className="text-[11px] text-[#9CA3AF] pr-1 flex items-center gap-1">
+                <span className="text-[11px] text-[#9CA3AF] pr-2 flex items-center gap-2">
                   {msg.timestamp.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
                   <CheckCircle2 size={11} className="text-[#6B3FFF]" aria-label="Delivered" />
                 </span>
               </div>
             ) : (
-              <div key={msg.id} className="flex items-start gap-3">
+              <div key={msg.id} className="flex items-start gap-4">
                 <div
                   className={cn(
-                    "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5",
+                    "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-2",
                     msg.isError ? "bg-red-100" : "bg-[#1A1340]"
                   )}
                   aria-hidden="true"
@@ -186,46 +186,46 @@ export default function AIAssistantPage() {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="bg-white border border-[#E8E4F8] rounded-2xl rounded-tl-sm px-5 py-3.5 inline-block max-w-[90%]">
+                  <div className="bg-white border border-[#E8E4F8] rounded-2xl rounded-tl-sm px-6 py-4 inline-block max-w-[90%]">
                     <p className="text-sm text-[#1A1340] leading-relaxed whitespace-pre-line">{msg.content}</p>
                   </div>
 
                   {/* Driving license card */}
                   {msg.card === "driving-license" && (
-                    <div className="mt-3 space-y-3 max-w-[90%]">
-                      <div className="bg-white border border-[#E8E4F8] rounded-2xl p-5">
+                    <div className="mt-4 space-y-4 max-w-[90%]">
+                      <div className="bg-white border border-[#E8E4F8] rounded-2xl p-6">
                         <div className="flex items-center gap-2 mb-4">
                           <div className="w-7 h-7 rounded-lg bg-[#EDE9FE] flex items-center justify-center" aria-hidden="true">
                             <FileText size={14} className="text-[#6B3FFF]" />
                           </div>
                           <h3 className="font-semibold text-sm text-[#1A1340]">Driving License Renewal – Overview</h3>
                         </div>
-                        <div className="flex items-start gap-1 overflow-x-auto pb-1">
+                        <div className="flex items-start gap-2 overflow-x-auto pb-2">
                           {DL_STEPS.map((step, i) => (
-                            <div key={i} className="flex items-start gap-1 flex-shrink-0">
+                            <div key={i} className="flex items-start gap-2 flex-shrink-0">
                               <div className="flex flex-col items-center text-center w-24">
                                 <div className="w-10 h-10 rounded-full bg-[#F3F0FF] flex items-center justify-center text-lg mb-2">{step.icon}</div>
                                 <p className="text-[11px] font-semibold text-[#1A1340] leading-tight">{step.label}</p>
-                                <p className="text-[10px] text-[#9CA3AF] mt-0.5 leading-tight">{step.desc}</p>
+                                <p className="text-[10px] text-[#9CA3AF] mt-2 leading-tight">{step.desc}</p>
                               </div>
                               {i < DL_STEPS.length - 1 && (
-                                <ArrowRight size={14} className="text-[#D1D5DB] mt-3 flex-shrink-0" aria-hidden="true" />
+                                <ArrowRight size={14} className="text-[#D1D5DB] mt-4 flex-shrink-0" aria-hidden="true" />
                               )}
                             </div>
                           ))}
                         </div>
                       </div>
-                      <div className="bg-white border border-[#E8E4F8] rounded-2xl p-5">
+                      <div className="bg-white border border-[#E8E4F8] rounded-2xl p-6">
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <h4 className="font-semibold text-sm text-[#1A1340] mb-3 flex items-center gap-2">
+                            <h4 className="font-semibold text-sm text-[#1A1340] mb-4 flex items-center gap-2">
                               <FileText size={14} className="text-[#6B3FFF]" aria-hidden="true" />
                               Documents required
                             </h4>
-                            <ul className="space-y-1.5">
+                            <ul className="space-y-2">
                               {DL_DOCS.map((doc, i) => (
                                 <li key={i} className="flex items-start gap-2 text-xs text-[#374151]">
-                                  <CheckCircle2 size={13} className="text-[#10B981] flex-shrink-0 mt-0.5" aria-hidden="true" />
+                                  <CheckCircle2 size={13} className="text-[#10B981] flex-shrink-0 mt-2" aria-hidden="true" />
                                   {doc}
                                 </li>
                               ))}
@@ -233,12 +233,12 @@ export default function AIAssistantPage() {
                           </div>
                           <div className="space-y-4 border-l border-[#F3F0FF] pl-4">
                             <div>
-                              <p className="text-xs text-[#9CA3AF] mb-1">💰 Fees</p>
+                              <p className="text-xs text-[#9CA3AF] mb-2">💰 Fees</p>
                               <p className="text-sm font-semibold text-[#1A1340]">₹200 – ₹600</p>
                               <p className="text-xs text-[#9CA3AF]">(Depending on DL type)</p>
                             </div>
                             <div>
-                              <div className="flex items-center gap-1 mb-1">
+                              <div className="flex items-center gap-2 mb-2">
                                 <Clock size={12} className="text-[#9CA3AF]" aria-hidden="true" />
                                 <p className="text-xs text-[#9CA3AF]">Processing Time</p>
                               </div>
@@ -261,12 +261,12 @@ export default function AIAssistantPage() {
 
                   {/* Suggested Actions */}
                   {msg.suggestedActions && msg.suggestedActions.length > 0 && (
-                    <div className="mt-3 flex flex-wrap gap-2 max-w-[90%]">
+                    <div className="mt-4 flex flex-wrap gap-2 max-w-[90%]">
                       {msg.suggestedActions.map((action) => (
                         <Link
                           key={action.label}
                           href={action.href}
-                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-[#6B3FFF] bg-[#F3F0FF] border border-[#E8E4F8] hover:bg-[#EDE9FE] transition-colors"
+                          className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-medium text-[#6B3FFF] bg-[#F3F0FF] border border-[#E8E4F8] hover:bg-[#EDE9FE] transition-colors"
                           aria-label={action.label}
                         >
                           {action.label} <ChevronRight size={11} aria-hidden="true" />
@@ -278,26 +278,26 @@ export default function AIAssistantPage() {
                   {/* Related services */}
                   {msg.relatedServices && msg.relatedServices.length > 0 && (
                     <div className="mt-2 max-w-[90%]">
-                      <p className="text-[10px] text-[#9CA3AF] mb-1.5 font-medium uppercase tracking-wide">Related Services</p>
-                      <div className="flex flex-wrap gap-1.5">
+                      <p className="text-[10px] text-[#9CA3AF] mb-2 font-medium uppercase tracking-wide">Related Services</p>
+                      <div className="flex flex-wrap gap-2">
                         {msg.relatedServices.map((s) => (
-                          <span key={s} className="px-2 py-1 rounded-lg text-[11px] text-[#374151] bg-[#F9F8FF] border border-[#F3F0FF]">{s}</span>
+                          <span key={s} className="px-2 py-2 rounded-lg text-[11px] text-[#374151] bg-[#F9F8FF] border border-[#F3F0FF]">{s}</span>
                         ))}
                       </div>
                     </div>
                   )}
 
                   {/* Message actions */}
-                  <div className="flex items-center gap-3 mt-2 pl-0.5">
+                  <div className="flex items-center gap-4 mt-2 pl-2">
                     <span className="text-[11px] text-[#9CA3AF]">
                       {msg.timestamp.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
-                      {msg.usedGemini && <span className="ml-1 text-[#6B3FFF]">✦ Gemini</span>}
+                      {msg.usedGemini && <span className="ml-2 text-[#6B3FFF]">✦ Gemini</span>}
                     </span>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleLike(msg.id)}
                         className={cn(
-                          "p-1.5 rounded-lg transition-colors",
+                          "p-2 rounded-lg transition-colors",
                           likedIds.has(msg.id) ? "bg-green-50 text-green-600" : "hover:bg-[#F3F0FF] text-[#9CA3AF] hover:text-[#6B3FFF]"
                         )}
                         aria-label="Like response"
@@ -308,7 +308,7 @@ export default function AIAssistantPage() {
                       <button
                         onClick={() => handleDislike(msg.id)}
                         className={cn(
-                          "p-1.5 rounded-lg transition-colors",
+                          "p-2 rounded-lg transition-colors",
                           dislikedIds.has(msg.id) ? "bg-red-50 text-red-500" : "hover:bg-[#F3F0FF] text-[#9CA3AF] hover:text-[#6B3FFF]"
                         )}
                         aria-label="Dislike response"
@@ -318,7 +318,7 @@ export default function AIAssistantPage() {
                       </button>
                       <button
                         onClick={() => handleCopy(msg.id, msg.content)}
-                        className="p-1.5 rounded-lg hover:bg-[#F3F0FF] text-[#9CA3AF] hover:text-[#6B3FFF] transition-colors"
+                        className="p-2 rounded-lg hover:bg-[#F3F0FF] text-[#9CA3AF] hover:text-[#6B3FFF] transition-colors"
                         aria-label="Copy message"
                       >
                         {copiedId === msg.id ? (
@@ -329,7 +329,7 @@ export default function AIAssistantPage() {
                       </button>
                       <button
                         onClick={() => handleReadAloud(msg.content)}
-                        className="p-1.5 rounded-lg hover:bg-[#F3F0FF] text-[#9CA3AF] hover:text-[#6B3FFF] transition-colors"
+                        className="p-2 rounded-lg hover:bg-[#F3F0FF] text-[#9CA3AF] hover:text-[#6B3FFF] transition-colors"
                         aria-label="Read aloud"
                       >
                         <Volume2 size={13} aria-hidden="true" />
@@ -338,7 +338,7 @@ export default function AIAssistantPage() {
                     {msg.isError && (
                       <button
                         onClick={retryLast}
-                        className="flex items-center gap-1 text-[11px] text-[#6B3FFF] hover:underline"
+                        className="flex items-center gap-2 text-[11px] text-[#6B3FFF] hover:underline"
                         aria-label="Retry message"
                       >
                         <RefreshCw size={11} aria-hidden="true" /> Retry
@@ -352,12 +352,12 @@ export default function AIAssistantPage() {
 
           {/* Typing indicator */}
           {isLoading && (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <div className="w-8 h-8 rounded-full bg-[#1A1340] flex items-center justify-center flex-shrink-0" aria-hidden="true">
                 <Sparkles size={14} className="text-[#8B5CF6]" />
               </div>
-              <div className="bg-white border border-[#E8E4F8] rounded-2xl px-5 py-3.5">
-                <div className="flex gap-1 items-center" aria-label="AI is typing" role="status">
+              <div className="bg-white border border-[#E8E4F8] rounded-2xl px-6 py-4">
+                <div className="flex gap-2 items-center" aria-label="AI is typing" role="status">
                   {[0, 1, 2].map((i) => (
                     <span
                       key={i}
@@ -386,12 +386,12 @@ export default function AIAssistantPage() {
         </div>
 
         {/* Follow-up chips */}
-        <div className="px-8 py-3 flex items-center gap-2 flex-wrap border-t border-[#F3F0FF]">
+        <div className="px-8 py-4 flex items-center gap-2 flex-wrap border-t border-[#F3F0FF]">
           {FOLLOW_UP_CHIPS.map((chip) => (
             <button
               key={chip}
               onClick={() => handleChipClick(chip)}
-              className="px-3 py-1.5 rounded-full text-xs text-[#6B3FFF] bg-[#F3F0FF] hover:bg-[#EDE9FE] border border-[#E8E4F8] transition-colors font-medium"
+              className="px-4 py-2 rounded-full text-xs text-[#6B3FFF] bg-[#F3F0FF] hover:bg-[#EDE9FE] border border-[#E8E4F8] transition-colors font-medium"
               aria-label={`Ask: ${chip}`}
             >
               {chip}
@@ -399,7 +399,7 @@ export default function AIAssistantPage() {
           ))}
           <button
             onClick={() => setInput("")}
-            className="p-1.5 rounded-full text-[#9CA3AF] hover:text-[#6B3FFF] hover:bg-[#F3F0FF] transition-colors"
+            className="p-2 rounded-full text-[#9CA3AF] hover:text-[#6B3FFF] hover:bg-[#F3F0FF] transition-colors"
             aria-label="Refresh suggestions"
           >
             <RefreshCw size={14} aria-hidden="true" />
@@ -407,8 +407,8 @@ export default function AIAssistantPage() {
         </div>
 
         {/* Input bar */}
-        <div className="px-8 py-5 border-t border-[#E8E4F8] flex-shrink-0">
-          <div className="flex items-end gap-3 bg-white rounded-[20px] border border-[#E8E4F8] shadow-sm px-5 py-3.5">
+        <div className="px-8 py-6 border-t border-[#E8E4F8] flex-shrink-0">
+          <div className="flex items-end gap-4 bg-white rounded-[20px] border border-[#E8E4F8] shadow-sm px-6 py-4">
             <button className="text-[#9CA3AF] hover:text-[#6B3FFF] transition-colors flex-shrink-0" aria-label="Attach file">
               <Paperclip size={18} aria-hidden="true" />
             </button>
@@ -458,7 +458,7 @@ export default function AIAssistantPage() {
               <Send size={15} aria-hidden="true" />
             </button>
           </div>
-          <p className="text-center text-[10px] text-[#9CA3AF] mt-2 flex items-center justify-center gap-1">
+          <p className="text-center text-[10px] text-[#9CA3AF] mt-2 flex items-center justify-center gap-2">
             <Shield size={10} aria-hidden="true" />
             JanMitra AI can make mistakes. Please verify important information on official government websites.
           </p>
@@ -470,16 +470,16 @@ export default function AIAssistantPage() {
         <div className="p-6 space-y-6">
           {/* Quick Actions */}
           <section aria-labelledby="qa-heading">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-4">
               <h2 id="qa-heading" className="text-sm font-semibold text-[#1A1340]">Quick Actions</h2>
               <Link href="/services" className="text-xs text-[#6B3FFF] hover:underline">View All</Link>
             </div>
-            <div className="space-y-1.5">
+            <div className="space-y-2">
               {QUICK_ACTIONS.map((qa) => (
                 <Link
                   key={qa.id}
                   href={qa.href}
-                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-[#F9F8FF] border border-transparent hover:border-[#E8E4F8] transition-all group"
+                  className="flex items-center gap-4 p-4 rounded-xl hover:bg-[#F9F8FF] border border-transparent hover:border-[#E8E4F8] transition-all group"
                   aria-label={qa.label}
                 >
                   <div className="w-9 h-9 rounded-lg flex items-center justify-center text-base flex-shrink-0" style={{ backgroundColor: qa.iconBg }} aria-hidden="true">
@@ -497,16 +497,16 @@ export default function AIAssistantPage() {
 
           {/* Related Services */}
           <section aria-labelledby="rs-heading">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-4">
               <h2 id="rs-heading" className="text-sm font-semibold text-[#1A1340]">Related Services</h2>
               <Link href="/services" className="text-xs text-[#6B3FFF] hover:underline">View All</Link>
             </div>
-            <div className="space-y-1">
+            <div className="space-y-2">
               {RELATED_SERVICES.map((s) => (
                 <Link
                   key={s}
                   href="/services"
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-[#F9F8FF] transition-colors group text-left"
+                  className="w-full flex items-center gap-2 px-4 py-2 rounded-xl hover:bg-[#F9F8FF] transition-colors group text-left"
                   aria-label={s}
                 >
                   <div className="w-5 h-5 rounded-md bg-[#EDE9FE] flex items-center justify-center flex-shrink-0" aria-hidden="true">
@@ -520,12 +520,12 @@ export default function AIAssistantPage() {
 
           {/* Personalized help */}
           <section
-            className="rounded-2xl p-5 relative overflow-hidden"
+            className="rounded-2xl p-6 relative overflow-hidden"
             style={{ background: "linear-gradient(135deg,#F3F0FF,#EDE9FE)" }}
             aria-label="Need personalized help"
           >
-            <p className="text-sm font-semibold text-[#1A1340] mb-1">Need personalized help?</p>
-            <p className="text-xs text-[#6B7280] mb-3">Share a few details and get custom guidance.</p>
+            <p className="text-sm font-semibold text-[#1A1340] mb-2">Need personalized help?</p>
+            <p className="text-xs text-[#6B7280] mb-4">Share a few details and get custom guidance.</p>
             <button
               onClick={() => {
                 setInput("I need personalized guidance. Can you help me find government services and schemes suitable for me?");
@@ -541,10 +541,10 @@ export default function AIAssistantPage() {
 
           {/* Recent Conversations */}
           <section aria-labelledby="rc-heading">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-4">
               <h2 id="rc-heading" className="text-sm font-semibold text-[#1A1340]">Recent Conversations</h2>
             </div>
-            <div className="space-y-1">
+            <div className="space-y-2">
               {recentConversations.length > 0 ? (
                 recentConversations.map((rc, i) => (
                   <button
@@ -553,15 +553,15 @@ export default function AIAssistantPage() {
                       setInput(rc.label.replace("…", ""));
                       inputRef.current?.focus();
                     }}
-                    className="w-full text-left px-3 py-2.5 rounded-xl hover:bg-[#F9F8FF] transition-colors"
+                    className="w-full text-left px-4 py-4 rounded-xl hover:bg-[#F9F8FF] transition-colors"
                     aria-label={rc.label}
                   >
                     <p className="text-xs font-medium text-[#1A1340] truncate">{rc.label}</p>
-                    <p className="text-[10px] text-[#9CA3AF] mt-0.5">{rc.time}</p>
+                    <p className="text-[10px] text-[#9CA3AF] mt-2">{rc.time}</p>
                   </button>
                 ))
               ) : (
-                <p className="text-xs text-[#9CA3AF] px-3 py-2">No recent conversations</p>
+                <p className="text-xs text-[#9CA3AF] px-4 py-2">No recent conversations</p>
               )}
             </div>
           </section>

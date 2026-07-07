@@ -20,7 +20,7 @@ export function AISuggestions() {
       aria-labelledby="ai-suggestions-heading"
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-5 border-b border-[#F5F3FF]">
+      <div className="flex items-center justify-between px-6 py-6 border-b border-[#F5F3FF]">
         <h2
           id="ai-suggestions-heading"
           className="font-semibold text-[13.5px] text-[#1A1340]"
@@ -44,7 +44,7 @@ export function AISuggestions() {
             <li key={suggestion.id}>
               <Link
                 href={suggestion.href}
-                className="flex items-center gap-3.5 px-6 py-4 hover:bg-[#FAFAFA] transition-colors duration-200 group"
+                className="flex items-center gap-4 px-6 py-4 hover:bg-[#FAFAFA] transition-colors duration-200 group"
                 aria-label={`${suggestion.title}: ${suggestion.description}`}
               >
                 {/* Icon */}
@@ -66,7 +66,7 @@ export function AISuggestions() {
                   <p className="text-[13px] font-semibold text-[#1A1340] leading-tight">
                     {suggestion.title}
                   </p>
-                  <p className="text-[11.5px] text-[#9CA3AF] mt-0.5">
+                  <p className="text-[11.5px] text-[#9CA3AF] mt-2">
                     {suggestion.description}
                   </p>
                 </div>
@@ -74,7 +74,7 @@ export function AISuggestions() {
                 {/* Arrow */}
                 <ChevronRight
                   size={15}
-                  className="text-[#D1D5DB] group-hover:text-[#6B3FFF] flex-shrink-0 transition-colors duration-200 ml-0.5"
+                  className="text-[#D1D5DB] group-hover:text-[#6B3FFF] flex-shrink-0 transition-colors duration-200 ml-2"
                   aria-hidden="true"
                 />
               </Link>

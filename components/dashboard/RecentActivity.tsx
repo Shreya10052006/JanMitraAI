@@ -26,7 +26,7 @@ export function RecentActivity() {
       aria-labelledby="recent-activity-heading"
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-5 border-b border-[#F5F3FF]">
+      <div className="flex items-center justify-between px-6 py-6 border-b border-[#F5F3FF]">
         <h2
           id="recent-activity-heading"
           className="font-semibold text-[13.5px] text-[#1A1340]"
@@ -53,7 +53,7 @@ export function RecentActivity() {
             <li key={item.id}>
               <Link
                 href={item.href}
-                className="flex items-center gap-3.5 px-6 py-4 hover:bg-[#FAFAFA] transition-colors duration-200 group"
+                className="flex items-center gap-4 px-6 py-4 hover:bg-[#FAFAFA] transition-colors duration-200 group"
                 aria-label={`${item.title} — ${item.subtitle} — Status: ${item.status} — Date: ${item.date}`}
               >
                 {/* Icon */}
@@ -81,13 +81,13 @@ export function RecentActivity() {
                   <p className="text-[13px] font-semibold text-[#1A1340] leading-tight truncate">
                     {item.title}
                   </p>
-                  <p className="text-[11.5px] text-[#9CA3AF] mt-0.5 truncate">
+                  <p className="text-[11.5px] text-[#9CA3AF] mt-2 truncate">
                     {item.subtitle}
                   </p>
                 </div>
 
                 {/* Status + Date */}
-                <div className="flex flex-col items-end flex-shrink-0 gap-0.5">
+                <div className="flex flex-col items-end flex-shrink-0 gap-2">
                   <span className={cn("text-[11.5px] font-semibold", statusColor)}>
                     {item.status}
                   </span>
@@ -97,7 +97,7 @@ export function RecentActivity() {
                 {/* Arrow */}
                 <ChevronRight
                   size={15}
-                  className="text-[#D1D5DB] group-hover:text-[#6B3FFF] flex-shrink-0 transition-colors duration-200 ml-0.5"
+                  className="text-[#D1D5DB] group-hover:text-[#6B3FFF] flex-shrink-0 transition-colors duration-200 ml-2"
                   aria-hidden="true"
                 />
               </Link>
