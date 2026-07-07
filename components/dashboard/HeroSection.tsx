@@ -1,0 +1,205 @@
+"use client";
+
+import { useState, useRef, type KeyboardEvent } from "react";
+import Image from "next/image";
+import { Send } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { cn } from "@/utils/cn";
+import { PROMPT_CHIPS } from "@/lib/mock-data";
+
+export function HeroSection() {
+  const [query, setQuery] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  function handleSearch() {
+    const trimmed = query.trim();
+    if (!trimmed) return;
+    router.push(`/ai-assistant?q=${encodeURIComponent(trimmed)}`);
+  }
+
+  function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") handleSearch();
+  }
+
+  function handleChipClick(label: string) {
+    setQuery(label);
+    inputRef.current?.focus();
+  }
+
+  return (
+    <section
+      className="relative w-full rounded-2xl overflow-hidden"
+      style={{ minHeight: "288px" }}
+      aria-label="JanMitra AI search and welcome section"
+    >
+      {/* Base gradient background */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(130deg, #F0ECFF 0%, #EDE9FE 18%, #EEE8FF 35%, #F3EEFF 50%, #FDF4E7 75%, #FFF8ED 100%)",
+        }}
+        aria-hidden="true"
+      />
+
+      {/* India Gate image — masked to blend from right */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        aria-hidden="true"
+        style={{
+          WebkitMaskImage:
+            "linear-gradient(to right, transparent 0%, transparent 28%, rgba(0,0,0,0.08) 37%, rgba(0,0,0,0.3) 46%, rgba(0,0,0,0.65) 56%, rgba(0,0,0,0.88) 68%, black 80%)",
+          maskImage:
+            "linear-gradient(to right, transparent 0%, transparent 28%, rgba(0,0,0,0.08) 37%, rgba(0,0,0,0.3) 46%, rgba(0,0,0,0.65) 56%, rgba(0,0,0,0.88) 68%, black 80%)",
+        }}
+      >
+        <Image
+          src="/images/india-gate.png"
+          alt=""
+          fill
+          className="object-cover object-center"
+          priority
+          quality={90}
+          sizes="(max-width: 1400px) 100vw, 1400px"
+        />
+      </div>
+
+      {/* Left content protection — ensures text is always readable */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "linear-gradient(to right, rgba(240,236,255,0.96) 0%, rgba(240,236,255,0.93) 25%, rgba(240,236,255,0.75) 40%, rgba(240,236,255,0.3) 55%, transparent 68%)",
+        }}
+        aria-hidden="true"
+      />
+
+      {/* Tagline — top right */}
+      <div
+        className="absolute right-7 top-7 text-right hidden lg:block"
+        aria-hidden="true"
+      >
+        <p className="text-[#1E1340] font-semibold text-base leading-snug drop-shadow-sm">
+          One Nation.
+        </p>
+        <p className="text-[#1E1340] font-semibold text-base leading-snug drop-shadow-sm">
+          One Service.
+        </p>
+        <p className="text-base leading-snug font-semibold drop-shadow-sm">
+          One{" "}
+          <span
+            className="font-bold"
+            style={{
+              background: "linear-gradient(135deg, #6B3FFF, #8B5CF6)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
+            JanMitra.
+          </span>
+        </p>
+      </div>
+
+      {/* Main content */}
+      <div className="relative z-10 px-8 py-8" style={{ maxWidth: "62%" }}>
+        {/* Greeting */}
+        <h1 className="text-[2rem] font-bold text-[#1A1340] mb-2 leading-tight tracking-tight">
+          Namaste, Shreya!{" "}
+          <span role="img" aria-label="Namaste hands">
+            🙏
+          </span>
+        </h1>
+
+        <p className="text-[15px] text-[#4B5563] mb-5 leading-relaxed">
+          I&apos;m JanMitra AI, here to{" "}
+          <span
+            className="font-semibold"
+            style={{
+              background: "linear-gradient(135deg, #6B3FFF, #7C3AED)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
+            simplify government services
+          </span>{" "}
+          for you.
+        </p>
+
+        {/* Search input */}
+        <div
+          className={cn(
+            "relative flex items-center bg-white rounded-[14px] transition-all duration-300",
+            isFocused
+              ? "shadow-xl shadow-purple-200/60 ring-2 ring-[#6B3FFF]/25"
+              : "shadow-lg shadow-purple-100/50"
+          )}
+          role="search"
+        >
+          <label htmlFor="hero-search" className="sr-only">
+            Ask JanMitra AI anything
+          </label>
+          <input
+            id="hero-search"
+            ref={inputRef}
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            placeholder="Ask JanMitra AI anything..."
+            className="flex-1 bg-transparent px-5 py-3.5 text-sm text-[#374151] placeholder-[#B0AABB] outline-none rounded-[14px]"
+            aria-label="Search query"
+            autoComplete="off"
+          />
+          <button
+            onClick={handleSearch}
+            disabled={!query.trim()}
+            className={cn(
+              "mr-2 w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200",
+              query.trim()
+                ? "text-white shadow-md shadow-purple-400/30 hover:shadow-lg hover:scale-105 active:scale-95"
+                : "bg-[#EDE9FE] text-[#C4B5FD] cursor-not-allowed"
+            )}
+            style={
+              query.trim()
+                ? {
+                    background:
+                      "linear-gradient(135deg, #6B3FFF, #8B5CF6)",
+                  }
+                : {}
+            }
+            aria-label="Submit search"
+          >
+            <Send size={15} aria-hidden="true" />
+          </button>
+        </div>
+
+        {/* Prompt chips */}
+        <div
+          className="flex flex-wrap items-center gap-2 mt-4"
+          role="group"
+          aria-label="Suggested queries"
+        >
+          <span className="text-xs text-[#9CA3AF] font-medium whitespace-nowrap">
+            Try asking about
+          </span>
+          {PROMPT_CHIPS.map((chip) => (
+            <button
+              key={chip.id}
+              onClick={() => handleChipClick(chip.label)}
+              className="px-3.5 py-1.5 bg-white/85 border border-[#E2DCF5] rounded-full text-xs text-[#4B5563] hover:bg-white hover:border-[#6B3FFF]/40 hover:text-[#6B3FFF] hover:shadow-sm transition-all duration-200 font-medium backdrop-blur-sm"
+              aria-label={`Search for ${chip.label}`}
+            >
+              {chip.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
