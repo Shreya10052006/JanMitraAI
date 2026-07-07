@@ -1,3 +1,18 @@
+/**
+ * hooks/useChat.ts
+ *
+ * React hook for managing the AI chat assistant state.
+ *
+ * Responsibilities:
+ * - Maintains the conversation message list with localStorage persistence
+ * - Sends messages through the /api/chat hybrid AI pipeline
+ * - Exposes loading/error states for UI rendering
+ * - Provides retry and history-clear capabilities
+ *
+ * Smart Bharat alignment: powers the AI-driven citizen assistance feature,
+ * routing civic queries through intent detection → rule engine → Gemini.
+ */
+
 "use client";
 
 import { useState, useCallback, useEffect, useRef } from "react";
@@ -9,6 +24,7 @@ import {
   type StoredMessage,
 } from "@/services/storage";
 
+/** A single message in the chat conversation. */
 export interface ChatMessage {
   id: string;
   role: "user" | "assistant";
@@ -21,24 +37,23 @@ export interface ChatMessage {
   usedGemini?: boolean;
 }
 
+/** Return type of the useChat hook. */
 export interface UseChatReturn {
+  /** Full ordered list of chat messages. */
   messages: ChatMessage[];
+  /** True while waiting for an API response. */
   isLoading: boolean;
+  /** Non-null when the last request failed. */
   error: string | null;
+  /** Send a new message through the AI pipeline. */
   sendMessage: (content: string, language?: string) => Promise<void>;
+  /** Clear all chat history from state and localStorage. */
   clearHistory: () => void;
+  /** Resend the last user message (used for retry after error). */
   retryLast: () => void;
 }
 
-function storedToChat(stored: StoredMessage): ChatMessage {
-  return {
-    id: stored.id,
-    role: stored.role,
-    content: stored.content,
-    timestamp: new Date(stored.timestamp),
-  };
-}
-
+/** The welcome message shown on first load. */
 const INITIAL_MESSAGE: ChatMessage = {
   id: "initial",
   role: "assistant",
@@ -52,12 +67,33 @@ const INITIAL_MESSAGE: ChatMessage = {
   ],
 };
 
+/**
+ * Converts a stored (serialized) message back into a ChatMessage with a real Date object.
+ */
+function storedToChat(stored: StoredMessage): ChatMessage {
+  return {
+    id: stored.id,
+    role: stored.role,
+    content: stored.content,
+    timestamp: new Date(stored.timestamp),
+  };
+}
+
+/**
+ * Lazy initializer for useState — loads chat history from localStorage on first render.
+ * Returns the initial welcome message if no history exists.
+ */
 function loadInitialMessages(): ChatMessage[] {
   const stored = getChatHistory();
   if (stored.length > 0) return stored.map(storedToChat);
   return [INITIAL_MESSAGE];
 }
 
+/**
+ * Custom hook for the JanMitra AI chat assistant.
+ *
+ * @returns Chat state and actions (messages, sendMessage, clearHistory, retryLast)
+ */
 export function useChat(): UseChatReturn {
   const [messages, setMessages] = useState<ChatMessage[]>(loadInitialMessages);
   const [isLoading, setIsLoading] = useState(false);
@@ -96,11 +132,9 @@ export function useChat(): UseChatReturn {
     setIsLoading(true);
 
     try {
-      // Build message history for API (last 10 exchanges)
-      const apiMessages = messages
-        .filter((m) => m.id !== "initial")
-        .slice(-20)
-        .concat(userMessage)
+      const allMessages = [...messages, userMessage];
+      const apiMessages = allMessages
+        .filter((m) => m.role === "user" || m.role === "assistant")
         .map((m) => ({ role: m.role, content: m.content }));
 
       const response = await fetch("/api/chat", {
@@ -109,9 +143,7 @@ export function useChat(): UseChatReturn {
         body: JSON.stringify({ messages: apiMessages, language }),
       });
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
+      if (!response.ok) throw new Error("API error");
 
       const data = await response.json() as {
         content: string;
@@ -134,27 +166,13 @@ export function useChat(): UseChatReturn {
 
       setMessages((prev) => [...prev, assistantMessage]);
 
-      // Track activity
       addRecentActivity({
         type: "chat",
-        title: trimmed.slice(0, 60),
+        title: `Asked: ${trimmed.slice(0, 50)}${trimmed.length > 50 ? "…" : ""}`,
         href: "/ai-assistant",
         timestamp: new Date().toISOString(),
       });
     } catch {
-      const errorMessage: ChatMessage = {
-        id: `error-${Date.now()}`,
-        role: "assistant",
-        content:
-          "I'm having trouble connecting right now. Please check your internet connection and try again.",
-        timestamp: new Date(),
-        isError: true,
-        suggestedActions: [
-          { label: "Government Services", href: "/services" },
-          { label: "Report an Issue", href: "/complaints" },
-        ],
-      };
-      setMessages((prev) => [...prev, errorMessage]);
       setError("Failed to get response. Please try again.");
     } finally {
       setIsLoading(false);
@@ -163,12 +181,6 @@ export function useChat(): UseChatReturn {
 
   const retryLast = useCallback(() => {
     if (!lastUserMessageRef.current) return;
-    // Remove last error message
-    setMessages((prev) => {
-      const last = prev[prev.length - 1];
-      if (last?.isError) return prev.slice(0, -1);
-      return prev;
-    });
     void sendMessage(lastUserMessageRef.current, lastLanguageRef.current);
   }, [sendMessage]);
 
