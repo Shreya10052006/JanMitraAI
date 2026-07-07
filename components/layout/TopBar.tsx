@@ -52,7 +52,7 @@ export function TopBar() {
 
   return (
     <header
-      className="fixed top-0 right-0 h-[80px] bg-white/85 backdrop-blur-xl border-b border-[#EAE8F5] z-30 flex items-center justify-end px-8 gap-4"
+      className="hidden lg:flex fixed top-0 right-0 h-[80px] bg-white/85 backdrop-blur-xl border-b border-[#EAE8F5] z-30 items-center justify-end px-8 gap-4"
       style={{ left: "256px" }}
       role="banner"
     >

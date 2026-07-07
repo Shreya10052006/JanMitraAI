@@ -10,6 +10,7 @@ import {
   Bookmark, CheckCircle2,
 } from "lucide-react";
 import { cn } from "@/utils/cn";
+import { VoiceSearchButton } from "@/components/ui/VoiceSearchButton";
 import { useBookmarks } from "@/hooks/useBookmarks";
 
 type FeaturedScheme = {
@@ -115,7 +116,7 @@ export default function SchemesPage() {
 
   return (
     <div className="overflow-y-auto h-full" id="main-content">
-      <div className="px-10 py-8 space-y-12 max-w-[1600px] mx-auto">
+      <div className="px-4 sm:px-6 md:px-8 lg:px-10 py-4 sm:py-6 lg:py-8 space-y-6 sm:space-y-8 lg:space-y-12 max-w-[1600px] mx-auto">
 
         {/* ── Hero ── */}
         <div className="relative rounded-[28px] overflow-hidden" style={{ minHeight: "150px" }}>
@@ -126,36 +127,39 @@ export default function SchemesPage() {
           </div>
           <div className="absolute inset-0" style={{ background: "linear-gradient(to right,rgba(245,243,255,0.97) 0%,rgba(245,243,255,0.88) 34%,transparent 60%)" }} aria-hidden="true" />
 
-          <div className="relative z-10 px-8 py-8">
-            <h1 className="text-2xl font-bold text-[#1A1340]">Schemes</h1>
+          <div className="relative z-10 px-5 py-6 sm:px-8 sm:py-8">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#1A1340]">Schemes</h1>
             <p className="text-sm text-[#6B7280] mt-2">Discover government schemes that can benefit you</p>
-            <div className="flex items-center gap-4 mt-4">
-              <div className="flex items-center gap-2 bg-white border border-[#E8E4F8] rounded-xl px-4 py-4 shadow-sm flex-1 max-w-xl focus-within:ring-2 focus-within:ring-[#6B3FFF]/20">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mt-4">
+              <div className="flex items-center gap-2 bg-white border border-[#E8E4F8] rounded-xl px-4 py-3.5 sm:py-4 shadow-sm flex-1 sm:max-w-xl focus-within:ring-2 focus-within:ring-[#6B3FFF]/20 min-w-0">
                 <Search size={15} className="text-[#9CA3AF] flex-shrink-0" aria-hidden="true" />
                 <input type="search" value={search} onChange={e => setSearch(e.target.value)} onKeyDown={handleSearchKey}
-                  placeholder="Search schemes by name, keyword or category..."
-                  className="flex-1 text-sm text-[#374151] placeholder-[#9CA3AF] bg-transparent outline-none" aria-label="Search schemes" />
+                  placeholder="Search schemes by name or category..."
+                  className="flex-1 min-w-0 text-sm text-[#374151] placeholder-[#9CA3AF] bg-transparent outline-none" aria-label="Search schemes" />
+                <VoiceSearchButton onResult={setSearch} className="w-6 h-6" />
               </div>
-              <button className="flex items-center gap-2 px-4 py-4 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all"
-                style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }} aria-label="Search">
-                <Search size={14} aria-hidden="true" /> Search
-              </button>
-              <button onClick={() => setFiltersOpen(v => !v)}
-                className="flex items-center gap-2 px-4 py-4 rounded-xl border border-[#E8E4F8] bg-white text-sm font-medium text-[#374151] hover:bg-[#F9F8FF] transition-colors shadow-sm"
-                aria-label="Open filters" aria-expanded={filtersOpen}>
-                <SlidersHorizontal size={15} className="text-[#6B3FFF]" aria-hidden="true" /> Filters
-              </button>
+              <div className="flex items-center gap-3">
+                <button className="flex items-center justify-center gap-2 px-4 py-3.5 sm:py-4 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all flex-1 sm:flex-initial"
+                  style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }} aria-label="Search">
+                  <Search size={14} aria-hidden="true" /> Search
+                </button>
+                <button onClick={() => setFiltersOpen(v => !v)}
+                  className="flex items-center justify-center gap-2 px-4 py-3.5 sm:py-4 rounded-xl border border-[#E8E4F8] bg-white text-sm font-medium text-[#374151] hover:bg-[#F9F8FF] transition-colors shadow-sm flex-1 sm:flex-initial"
+                  aria-label="Open filters" aria-expanded={filtersOpen}>
+                  <SlidersHorizontal size={15} className="text-[#6B3FFF]" aria-hidden="true" /> Filters
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
         {/* ── Category filter tabs ── */}
-        <div className="flex items-center gap-2 flex-wrap" role="tablist" aria-label="Scheme categories">
+        <div className="flex items-center gap-2 overflow-x-auto sm:flex-wrap sm:overflow-visible -mx-4 px-4 sm:mx-0 sm:px-0 pb-1 sm:pb-0" role="tablist" aria-label="Scheme categories">
           {visibleFilters.map(tab => (
             <button key={tab} role="tab" aria-selected={activeFilter === tab}
               onClick={() => setActiveFilter(tab)}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 border",
+                "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 border flex-shrink-0 whitespace-nowrap",
                 activeFilter === tab
                   ? "text-[#6B3FFF] bg-[#F3F0FF] border-[#6B3FFF]/30"
                   : "text-[#6B7280] bg-white border-[#E8E4F8] hover:bg-[#F9F8FF]"
@@ -170,9 +174,9 @@ export default function SchemesPage() {
               {tab}
             </button>
           ))}
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <button onClick={() => setMoreOpen(v => !v)}
-              className={cn("flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border transition-all", moreOpen ? "bg-[#F3F0FF] border-[#6B3FFF]/30 text-[#6B3FFF]" : "bg-white border-[#E8E4F8] text-[#6B7280] hover:bg-[#F9F8FF]")}
+              className={cn("flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium border transition-all whitespace-nowrap", moreOpen ? "bg-[#F3F0FF] border-[#6B3FFF]/30 text-[#6B3FFF]" : "bg-white border-[#E8E4F8] text-[#6B7280] hover:bg-[#F9F8FF]")}
               aria-haspopup="true" aria-expanded={moreOpen}>
               More <ChevronDown size={13} className={cn("transition-transform", moreOpen && "rotate-180")} aria-hidden="true" />
             </button>

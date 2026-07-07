@@ -9,7 +9,7 @@ interface PlaceholderPageProps {
 export function PlaceholderPage({ title, description }: PlaceholderPageProps) {
   return (
     <main className="flex-1 overflow-y-auto" id="main-content" aria-label={title}>
-      <div className="px-10 py-8 max-w-[900px] mx-auto">
+      <div className="px-4 sm:px-6 lg:px-10 py-4 sm:py-6 lg:py-8 max-w-[900px] mx-auto">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-sm text-[#6B7280] hover:text-[#6B3FFF] transition-colors duration-200 mb-8"
@@ -19,7 +19,7 @@ export function PlaceholderPage({ title, description }: PlaceholderPageProps) {
           Back to Home
         </Link>
 
-        <div className="bg-white rounded-[24px] border border-[#E8E4F8] p-12 flex flex-col items-center justify-center text-center">
+        <div className="bg-white rounded-[24px] border border-[#E8E4F8] p-6 sm:p-8 lg:p-12 flex flex-col items-center justify-center text-center">
           <div className="w-16 h-16 rounded-2xl bg-[#EDE9FE] flex items-center justify-center mb-6" aria-hidden="true">
             <Construction size={28} className="text-[#6B3FFF]" />
           </div>

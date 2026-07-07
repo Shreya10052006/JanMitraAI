@@ -3,13 +3,15 @@
 import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 import Link from "next/link";
 import {
-  Send, Paperclip, Mic, ThumbsUp, ThumbsDown, Copy, Volume2,
-  ChevronRight, RefreshCw, Shield, Sparkles, CheckCircle2,
-  Clock, FileText, ExternalLink, ArrowRight, AlertCircle, Trash2,
+  Send, Paperclip, Mic, ThumbsUp, ThumbsDown, Copy, Volume2, VolumeX,
+  ChevronRight, ChevronDown, RefreshCw, Shield, Sparkles, CheckCircle2,
+  Clock, FileText, ExternalLink, ArrowRight, AlertCircle, Trash2, MicOff,
 } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { useChat } from "@/hooks/useChat";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useAccessibility } from "@/hooks/useAccessibility";
+import { useVoiceAssistant } from "@/hooks/useVoiceAssistant";
 
 const QUICK_ACTIONS = [
   { id: "1", label: "Apply for Driving License", sub: "Start application", icon: "🪪", iconBg: "#EDE9FE", href: "/services" },
@@ -52,22 +54,42 @@ const FOLLOW_UP_CHIPS = [
 export default function AIAssistantPage() {
   const { messages, isLoading, error, sendMessage, clearHistory, retryLast } = useChat();
   const { currentLanguage } = useLanguage();
+  const { settings } = useAccessibility();
+  const voice = useVoiceAssistant(currentLanguage.code);
   const [input, setInput] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
   const [dislikedIds, setDislikedIds] = useState<Set<string>>(new Set());
+  const [speechMuted, setSpeechMuted] = useState(false);
+  const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const hasInteractedRef = useRef(false);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
 
-  function handleSend() {
-    const text = input.trim();
-    if (!text || isLoading) return;
+  // Speak newly-arrived assistant replies aloud, once voice assistance is on,
+  // spoken responses aren't muted, and the user has actually sent a message
+  // (never auto-speaks the restored welcome message on page load).
+  useEffect(() => {
+    if (isLoading) return;
+    if (!hasInteractedRef.current) return;
+    if (!settings.voiceAssistance || speechMuted) return;
+    const last = messages[messages.length - 1];
+    if (last && last.role === "assistant") {
+      voice.speak(last.content);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading]);
+
+  function handleSend(text = input) {
+    const trimmed = text.trim();
+    if (!trimmed || isLoading) return;
+    hasInteractedRef.current = true;
     setInput("");
-    void sendMessage(text, currentLanguage.code);
+    void sendMessage(trimmed, currentLanguage.code);
   }
 
   function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
@@ -111,12 +133,22 @@ export default function AIAssistantPage() {
   }
 
   function handleReadAloud(content: string) {
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(content);
-      utterance.lang = currentLanguage.code === "hi" ? "hi-IN" : "en-IN";
-      window.speechSynthesis.speak(utterance);
+    if (voice.isSpeaking) {
+      voice.stopSpeaking();
+      return;
     }
+    voice.speak(content);
+  }
+
+  function handleMicClick() {
+    if (voice.isListening) {
+      voice.stopListening();
+      return;
+    }
+    hasInteractedRef.current = true;
+    voice.startListening((text) => {
+      handleSend(text);
+    });
   }
 
   const recentConversations = messages
@@ -133,45 +165,151 @@ export default function AIAssistantPage() {
       {/* Chat area */}
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         {/* Header */}
-        <div className="px-8 pt-6 pb-6 border-b border-[#F3F0FF] flex-shrink-0">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-9 h-9 rounded-xl bg-[#EDE9FE] flex items-center justify-center" aria-hidden="true">
+        <div className="px-4 sm:px-8 pt-4 sm:pt-6 pb-4 sm:pb-6 border-b border-[#F3F0FF] flex-shrink-0">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+              <div className="w-9 h-9 rounded-xl bg-[#EDE9FE] flex items-center justify-center flex-shrink-0" aria-hidden="true">
                 <Sparkles size={18} className="text-[#6B3FFF]" />
               </div>
-              <div>
-                <h1 className="text-lg font-bold text-[#1A1340]">AI Assistant</h1>
-                <p className="text-xs text-[#9CA3AF]">Your smart companion for all civic needs</p>
+              <div className="min-w-0">
+                <h1 className="text-base sm:text-lg font-bold text-[#1A1340] truncate">AI Assistant</h1>
+                <p className="text-xs text-[#9CA3AF] truncate hidden sm:block">Your smart companion for all civic needs</p>
               </div>
             </div>
-            <button
-              onClick={clearHistory}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E8E4F8] text-xs font-medium text-[#6B7280] hover:bg-[#F9F8FF] hover:text-red-500 transition-all"
-              aria-label="Clear chat history"
-            >
-              <Trash2 size={13} aria-hidden="true" /> Clear
-            </button>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {settings.voiceAssistance && voice.isSupported && (
+                <button
+                  onClick={() => setSpeechMuted((v) => !v)}
+                  className="flex items-center justify-center w-9 h-9 rounded-lg border border-[#E8E4F8] text-[#6B7280] hover:bg-[#F9F8FF] transition-all"
+                  aria-label={speechMuted ? "Unmute spoken responses" : "Mute spoken responses"}
+                  aria-pressed={speechMuted}
+                >
+                  {speechMuted ? <VolumeX size={15} aria-hidden="true" /> : <Volume2 size={15} aria-hidden="true" />}
+                </button>
+              )}
+              <button
+                onClick={() => setMobileMoreOpen((v) => !v)}
+                className="xl:hidden flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[#E8E4F8] text-xs font-medium text-[#6B7280] hover:bg-[#F9F8FF] transition-all"
+                aria-label="Show quick actions and related info"
+                aria-expanded={mobileMoreOpen}
+              >
+                More
+                <ChevronDown size={13} className={cn("transition-transform", mobileMoreOpen && "rotate-180")} aria-hidden="true" />
+              </button>
+              <button
+                onClick={clearHistory}
+                className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg border border-[#E8E4F8] text-xs font-medium text-[#6B7280] hover:bg-[#F9F8FF] hover:text-red-500 transition-all"
+                aria-label="Clear chat history"
+              >
+                <Trash2 size={13} aria-hidden="true" /> <span className="hidden sm:inline">Clear</span>
+              </button>
+            </div>
           </div>
+
+          {/* Quick Actions — horizontally scrollable chips, mobile/tablet only */}
+          <div className="xl:hidden flex items-center gap-2 mt-4 overflow-x-auto pb-1 -mx-4 px-4 sm:-mx-8 sm:px-8" role="list" aria-label="Quick actions">
+            {QUICK_ACTIONS.map((qa) => (
+              <Link
+                key={qa.id}
+                href={qa.href}
+                className="flex items-center gap-2 px-3 py-2 rounded-xl border border-[#E8E4F8] bg-white whitespace-nowrap flex-shrink-0 hover:bg-[#F9F8FF] transition-colors"
+                aria-label={qa.label}
+              >
+                <span className="text-base" aria-hidden="true">{qa.icon}</span>
+                <span className="text-xs font-medium text-[#374151]">{qa.label}</span>
+              </Link>
+            ))}
+          </div>
+
+          {/* Collapsible "More" panel — mobile/tablet only */}
+          {mobileMoreOpen && (
+            <div className="xl:hidden mt-4 space-y-3">
+              <details className="rounded-xl border border-[#E8E4F8] px-4 py-3 group" open>
+                <summary className="flex items-center justify-between cursor-pointer list-none text-sm font-semibold text-[#1A1340]">
+                  Related Services
+                  <ChevronDown size={15} className="text-[#9CA3AF] transition-transform group-open:rotate-180" aria-hidden="true" />
+                </summary>
+                <div className="mt-3 space-y-1">
+                  {RELATED_SERVICES.map((s) => (
+                    <Link
+                      key={s}
+                      href="/services"
+                      className="w-full flex items-center gap-2 px-2 py-2.5 rounded-lg hover:bg-[#F9F8FF] transition-colors text-left"
+                    >
+                      <div className="w-5 h-5 rounded-md bg-[#EDE9FE] flex items-center justify-center flex-shrink-0" aria-hidden="true">
+                        <FileText size={11} className="text-[#6B3FFF]" />
+                      </div>
+                      <span className="text-xs text-[#374151]">{s}</span>
+                    </Link>
+                  ))}
+                </div>
+              </details>
+
+              {recentConversations.length > 0 && (
+                <details className="rounded-xl border border-[#E8E4F8] px-4 py-3 group">
+                  <summary className="flex items-center justify-between cursor-pointer list-none text-sm font-semibold text-[#1A1340]">
+                    Recent Conversations
+                    <ChevronDown size={15} className="text-[#9CA3AF] transition-transform group-open:rotate-180" aria-hidden="true" />
+                  </summary>
+                  <div className="mt-3 space-y-1">
+                    {recentConversations.map((rc, i) => (
+                      <button
+                        key={i}
+                        onClick={() => {
+                          setInput(rc.label.replace("…", ""));
+                          inputRef.current?.focus();
+                          setMobileMoreOpen(false);
+                        }}
+                        className="w-full text-left px-2 py-2.5 rounded-lg hover:bg-[#F9F8FF] transition-colors"
+                      >
+                        <p className="text-xs font-medium text-[#1A1340] truncate">{rc.label}</p>
+                        <p className="text-[10px] text-[#9CA3AF] mt-1">{rc.time}</p>
+                      </button>
+                    ))}
+                  </div>
+                </details>
+              )}
+
+              <div
+                className="rounded-xl p-4 relative overflow-hidden"
+                style={{ background: "linear-gradient(135deg,#F3F0FF,#EDE9FE)" }}
+              >
+                <p className="text-sm font-semibold text-[#1A1340] mb-1">Need personalized help?</p>
+                <p className="text-xs text-[#6B7280] mb-3">Share a few details and get custom guidance.</p>
+                <button
+                  onClick={() => {
+                    setInput("I need personalized guidance. Can you help me find government services and schemes suitable for me?");
+                    inputRef.current?.focus();
+                    setMobileMoreOpen(false);
+                  }}
+                  className="px-4 py-2 rounded-xl text-xs font-semibold text-white hover:opacity-90 transition-all"
+                  style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
+                >
+                  Tell me more
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Messages scroll area */}
-        <div className="flex-1 overflow-y-auto px-8 py-8 space-y-8" role="log" aria-label="Chat messages" aria-live="polite">
+        <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-5 sm:py-8 space-y-6 sm:space-y-8" role="log" aria-label="Chat messages" aria-live="polite">
           {messages.map((msg) =>
             msg.role === "user" ? (
               <div key={msg.id} className="flex flex-col items-end gap-2">
                 <div
-                  className="max-w-[70%] px-6 py-4 rounded-2xl rounded-tr-sm text-sm text-white leading-relaxed"
+                  className="max-w-[88%] sm:max-w-[70%] px-5 sm:px-6 py-3.5 sm:py-4 rounded-2xl rounded-tr-sm text-sm text-white leading-relaxed"
                   style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
                 >
                   {msg.content}
                 </div>
-                <span className="text-[11px] text-[#9CA3AF] pr-2 flex items-center gap-2">
+                <span className="text-[11px] text-[#9CA3AF] pr-2 flex items-center gap-2" suppressHydrationWarning>
                   {msg.timestamp.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
                   <CheckCircle2 size={11} className="text-[#6B3FFF]" aria-label="Delivered" />
                 </span>
               </div>
             ) : (
-              <div key={msg.id} className="flex items-start gap-4">
+              <div key={msg.id} className="flex items-start gap-3 sm:gap-4">
                 <div
                   className={cn(
                     "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-2",
@@ -186,14 +324,14 @@ export default function AIAssistantPage() {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="bg-white border border-[#E8E4F8] rounded-2xl rounded-tl-sm px-6 py-4 inline-block max-w-[90%]">
+                  <div className="bg-white border border-[#E8E4F8] rounded-2xl rounded-tl-sm px-5 sm:px-6 py-3.5 sm:py-4 inline-block max-w-full sm:max-w-[90%]">
                     <p className="text-sm text-[#1A1340] leading-relaxed whitespace-pre-line">{msg.content}</p>
                   </div>
 
                   {/* Driving license card */}
                   {msg.card === "driving-license" && (
-                    <div className="mt-4 space-y-4 max-w-[90%]">
-                      <div className="bg-white border border-[#E8E4F8] rounded-2xl p-6">
+                    <div className="mt-4 space-y-4 max-w-full sm:max-w-[90%]">
+                      <div className="bg-white border border-[#E8E4F8] rounded-2xl p-4 sm:p-6">
                         <div className="flex items-center gap-2 mb-4">
                           <div className="w-7 h-7 rounded-lg bg-[#EDE9FE] flex items-center justify-center" aria-hidden="true">
                             <FileText size={14} className="text-[#6B3FFF]" />
@@ -215,8 +353,8 @@ export default function AIAssistantPage() {
                           ))}
                         </div>
                       </div>
-                      <div className="bg-white border border-[#E8E4F8] rounded-2xl p-6">
-                        <div className="grid grid-cols-2 gap-4">
+                      <div className="bg-white border border-[#E8E4F8] rounded-2xl p-4 sm:p-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           <div>
                             <h4 className="font-semibold text-sm text-[#1A1340] mb-4 flex items-center gap-2">
                               <FileText size={14} className="text-[#6B3FFF]" aria-hidden="true" />
@@ -231,7 +369,7 @@ export default function AIAssistantPage() {
                               ))}
                             </ul>
                           </div>
-                          <div className="space-y-4 border-l border-[#F3F0FF] pl-4">
+                          <div className="space-y-4 sm:border-l border-[#F3F0FF] sm:pl-4">
                             <div>
                               <p className="text-xs text-[#9CA3AF] mb-2">💰 Fees</p>
                               <p className="text-sm font-semibold text-[#1A1340]">₹200 – ₹600</p>
@@ -261,7 +399,7 @@ export default function AIAssistantPage() {
 
                   {/* Suggested Actions */}
                   {msg.suggestedActions && msg.suggestedActions.length > 0 && (
-                    <div className="mt-4 flex flex-wrap gap-2 max-w-[90%]">
+                    <div className="mt-4 flex flex-wrap gap-2 max-w-full sm:max-w-[90%]">
                       {msg.suggestedActions.map((action) => (
                         <Link
                           key={action.label}
@@ -277,7 +415,7 @@ export default function AIAssistantPage() {
 
                   {/* Related services */}
                   {msg.relatedServices && msg.relatedServices.length > 0 && (
-                    <div className="mt-2 max-w-[90%]">
+                    <div className="mt-2 max-w-full sm:max-w-[90%]">
                       <p className="text-[10px] text-[#9CA3AF] mb-2 font-medium uppercase tracking-wide">Related Services</p>
                       <div className="flex flex-wrap gap-2">
                         {msg.relatedServices.map((s) => (
@@ -288,12 +426,12 @@ export default function AIAssistantPage() {
                   )}
 
                   {/* Message actions */}
-                  <div className="flex items-center gap-4 mt-2 pl-2">
-                    <span className="text-[11px] text-[#9CA3AF]">
+                  <div className="flex items-center gap-3 sm:gap-4 mt-2 pl-2 flex-wrap">
+                    <span className="text-[11px] text-[#9CA3AF]" suppressHydrationWarning>
                       {msg.timestamp.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}
                       {msg.usedGemini && <span className="ml-2 text-[#6B3FFF]">✦ Gemini</span>}
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 sm:gap-2">
                       <button
                         onClick={() => handleLike(msg.id)}
                         className={cn(
@@ -327,13 +465,19 @@ export default function AIAssistantPage() {
                           <Copy size={13} aria-hidden="true" />
                         )}
                       </button>
-                      <button
-                        onClick={() => handleReadAloud(msg.content)}
-                        className="p-2 rounded-lg hover:bg-[#F3F0FF] text-[#9CA3AF] hover:text-[#6B3FFF] transition-colors"
-                        aria-label="Read aloud"
-                      >
-                        <Volume2 size={13} aria-hidden="true" />
-                      </button>
+                      {voice.isSupported && (
+                        <button
+                          onClick={() => handleReadAloud(msg.content)}
+                          className={cn(
+                            "p-2 rounded-lg transition-colors",
+                            voice.isSpeaking ? "bg-[#F3F0FF] text-[#6B3FFF]" : "hover:bg-[#F3F0FF] text-[#9CA3AF] hover:text-[#6B3FFF]"
+                          )}
+                          aria-label={voice.isSpeaking ? "Stop reading aloud" : "Read aloud"}
+                          aria-pressed={voice.isSpeaking}
+                        >
+                          <Volume2 size={13} aria-hidden="true" />
+                        </button>
+                      )}
                     </div>
                     {msg.isError && (
                       <button
@@ -386,12 +530,12 @@ export default function AIAssistantPage() {
         </div>
 
         {/* Follow-up chips */}
-        <div className="px-8 py-4 flex items-center gap-2 flex-wrap border-t border-[#F3F0FF]">
+        <div className="px-4 sm:px-8 py-3 sm:py-4 flex items-center gap-2 overflow-x-auto sm:flex-wrap border-t border-[#F3F0FF]">
           {FOLLOW_UP_CHIPS.map((chip) => (
             <button
               key={chip}
               onClick={() => handleChipClick(chip)}
-              className="px-4 py-2 rounded-full text-xs text-[#6B3FFF] bg-[#F3F0FF] hover:bg-[#EDE9FE] border border-[#E8E4F8] transition-colors font-medium"
+              className="px-4 py-2 rounded-full text-xs text-[#6B3FFF] bg-[#F3F0FF] hover:bg-[#EDE9FE] border border-[#E8E4F8] transition-colors font-medium whitespace-nowrap flex-shrink-0"
               aria-label={`Ask: ${chip}`}
             >
               {chip}
@@ -399,17 +543,29 @@ export default function AIAssistantPage() {
           ))}
           <button
             onClick={() => setInput("")}
-            className="p-2 rounded-full text-[#9CA3AF] hover:text-[#6B3FFF] hover:bg-[#F3F0FF] transition-colors"
+            className="p-2 rounded-full text-[#9CA3AF] hover:text-[#6B3FFF] hover:bg-[#F3F0FF] transition-colors flex-shrink-0"
             aria-label="Refresh suggestions"
           >
             <RefreshCw size={14} aria-hidden="true" />
           </button>
         </div>
 
-        {/* Input bar */}
-        <div className="px-8 py-6 border-t border-[#E8E4F8] flex-shrink-0">
-          <div className="flex items-end gap-4 bg-white rounded-[20px] border border-[#E8E4F8] shadow-sm px-6 py-4">
-            <button className="text-[#9CA3AF] hover:text-[#6B3FFF] transition-colors flex-shrink-0" aria-label="Attach file">
+        {/* Input bar — sticky at the bottom, large touch targets */}
+        <div className="px-4 sm:px-8 py-4 sm:py-6 border-t border-[#E8E4F8] flex-shrink-0">
+          {voice.error && (
+            <p className="text-[11px] text-red-500 mb-2 flex items-center gap-1.5" role="alert">
+              <AlertCircle size={12} aria-hidden="true" />
+              {voice.error === "permission-denied"
+                ? "Microphone access was denied. Allow it in your browser settings to use voice input."
+                : voice.error === "not-supported"
+                ? "Voice input isn't supported in this browser."
+                : voice.error === "no-speech"
+                ? "Didn't catch that — try again."
+                : "Voice input ran into a problem. Please try again."}
+            </p>
+          )}
+          <div className="flex items-end gap-2 sm:gap-4 bg-white rounded-[20px] border border-[#E8E4F8] shadow-sm px-4 sm:px-6 py-3 sm:py-4">
+            <button className="text-[#9CA3AF] hover:text-[#6B3FFF] transition-colors flex-shrink-0 w-9 h-9 flex items-center justify-center" aria-label="Attach file">
               <Paperclip size={18} aria-hidden="true" />
             </button>
             <textarea
@@ -417,34 +573,32 @@ export default function AIAssistantPage() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask anything about government services..."
+              placeholder={voice.isListening ? "Listening…" : "Ask anything about government services..."}
               rows={1}
-              className="flex-1 bg-transparent text-sm text-[#374151] placeholder-[#9CA3AF] resize-none outline-none leading-relaxed max-h-28"
+              className="flex-1 bg-transparent text-sm text-[#374151] placeholder-[#9CA3AF] resize-none outline-none leading-relaxed max-h-28 min-w-0 py-1.5"
               aria-label="Type your message"
               disabled={isLoading}
             />
+            {settings.voiceAssistance && voice.isSupported && (
+              <button
+                onClick={handleMicClick}
+                className={cn(
+                  "flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200",
+                  voice.isListening ? "bg-red-500 text-white animate-pulse" : "text-[#9CA3AF] hover:text-[#6B3FFF] hover:bg-[#F3F0FF]"
+                )}
+                aria-label={voice.isListening ? "Stop voice input" : "Speak your question"}
+                aria-pressed={voice.isListening}
+              >
+                <Mic size={18} aria-hidden="true" />
+              </button>
+            )}
+            {settings.voiceAssistance && !voice.isSupported && (
+              <span className="flex-shrink-0 w-9 h-9 flex items-center justify-center text-[#D1D5DB]" title="Voice input not supported in this browser">
+                <MicOff size={18} aria-hidden="true" />
+              </span>
+            )}
             <button
-              onClick={() => {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                const SR = (window as any).webkitSpeechRecognition ?? (window as any).SpeechRecognition;
-                if (SR) {
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  const recognition = new SR() as any;
-                  recognition.lang = currentLanguage.code === "hi" ? "hi-IN" : "en-IN";
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  recognition.onresult = (e: any) => {
-                    setInput(e.results[0][0].transcript as string);
-                  };
-                  recognition.start();
-                }
-              }}
-              className="text-[#9CA3AF] hover:text-[#6B3FFF] transition-colors flex-shrink-0"
-              aria-label="Voice input"
-            >
-              <Mic size={18} aria-hidden="true" />
-            </button>
-            <button
-              onClick={handleSend}
+              onClick={() => handleSend()}
               disabled={!input.trim() || isLoading}
               className={cn(
                 "w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-200",
@@ -465,7 +619,7 @@ export default function AIAssistantPage() {
         </div>
       </div>
 
-      {/* Right Sidebar */}
+      {/* Right Sidebar — desktop only (xl+) */}
       <aside className="w-80 flex-shrink-0 border-l border-[#E8E4F8] overflow-y-auto hidden xl:block bg-white">
         <div className="p-6 space-y-6">
           {/* Quick Actions */}

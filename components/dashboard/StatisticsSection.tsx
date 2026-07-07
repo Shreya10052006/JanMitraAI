@@ -53,7 +53,7 @@ export function StatisticsSection() {
         </svg>
       </div>
 
-      <div className="relative z-10 px-10 py-10 flex flex-col sm:flex-row items-start sm:items-center gap-8">
+      <div className="relative z-10 px-6 py-8 sm:px-8 lg:px-10 lg:py-10 flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8">
         {/* Heading */}
         <div className="sm:w-44 flex-shrink-0">
           <h2
@@ -73,14 +73,14 @@ export function StatisticsSection() {
           aria-hidden="true"
         />
 
-        {/* Stats */}
-        <div className="flex flex-wrap gap-6 sm:gap-10 flex-1">
+        {/* Stats — vertical card list on mobile, inline row from sm+ */}
+        <div className="grid grid-cols-1 divide-y divide-white/10 sm:flex sm:flex-wrap sm:divide-y-0 gap-0 sm:gap-6 lg:gap-10 flex-1 w-full">
           {STATISTICS.map((stat) => {
             const IconComponent = ICON_MAP[stat.icon as IconName];
             return (
               <div
                 key={stat.id}
-                className="flex items-center gap-4"
+                className="flex items-center gap-4 py-3 sm:py-0 first:pt-0 last:pb-0"
                 role="figure"
                 aria-label={`${stat.value} ${stat.label}`}
               >

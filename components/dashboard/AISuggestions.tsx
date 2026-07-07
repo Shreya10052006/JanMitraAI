@@ -20,7 +20,7 @@ export function AISuggestions() {
       aria-labelledby="ai-suggestions-heading"
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-6 border-b border-[#F5F3FF]">
+      <div className="flex items-center justify-between px-4 sm:px-6 py-4 sm:py-6 border-b border-[#F5F3FF]">
         <h2
           id="ai-suggestions-heading"
           className="font-semibold text-[13.5px] text-[#1A1340]"
@@ -44,7 +44,7 @@ export function AISuggestions() {
             <li key={suggestion.id}>
               <Link
                 href={suggestion.href}
-                className="flex items-center gap-4 px-6 py-4 hover:bg-[#FAFAFA] transition-colors duration-200 group"
+                className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3.5 sm:py-4 hover:bg-[#FAFAFA] transition-colors duration-200 group"
                 aria-label={`${suggestion.title}: ${suggestion.description}`}
               >
                 {/* Icon */}

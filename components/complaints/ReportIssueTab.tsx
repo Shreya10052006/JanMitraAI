@@ -4,10 +4,12 @@ import { useState, useRef } from "react";
 import Image from "next/image";
 import {
   MapPin, ChevronDown, Sparkles, CheckCircle2, Upload, X,
-  ChevronRight, Building2, AlertTriangle, Copy,
+  ChevronRight, Building2, AlertTriangle, Copy, Mic,
 } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { useComplaints } from "@/hooks/useComplaints";
+import { useAccessibility } from "@/hooks/useAccessibility";
+import { useVoiceAssistant } from "@/hooks/useVoiceAssistant";
 import type { ComplaintStatus } from "@/types";
 import type { StoredComplaint } from "@/services/storage";
 
@@ -45,6 +47,8 @@ interface ReportIssueTabProps {
 
 export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
   const { complaints, isAnalyzing, analysisResult, analyzeComplaint, submitComplaint, resetAnalysis } = useComplaints();
+  const { settings } = useAccessibility();
+  const voice = useVoiceAssistant();
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [when, setWhen] = useState("Today");
@@ -95,6 +99,16 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
     );
   }
 
+  function handleMicDictation() {
+    if (voice.isListening) {
+      voice.stopListening();
+      return;
+    }
+    voice.startListening((text) => {
+      setDescription((prev) => (prev.trim() ? `${prev.trim()} ${text}` : text).slice(0, 500));
+    });
+  }
+
   function handleAnalyze() {
     if (!canAnalyze) return;
     void analyzeComplaint(description, location);
@@ -134,7 +148,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
   if (submittedTicket) {
     return (
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px_240px] gap-6">
-        <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-8 flex flex-col items-center text-center">
+        <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6 sm:p-8 flex flex-col items-center text-center">
           <div className="w-16 h-16 rounded-2xl bg-[#D1FAE5] flex items-center justify-center mb-4" aria-hidden="true">
             <CheckCircle2 size={32} className="text-[#10B981]" />
           </div>
@@ -169,17 +183,17 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
             ))}
           </div>
 
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-sm">
             <button
               onClick={onViewComplaints}
-              className="px-6 py-4 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90"
+              className="px-6 py-4 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 flex items-center justify-center w-full sm:w-auto"
               style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
             >
               Track Complaint
             </button>
             <button
               onClick={handleReset}
-              className="px-6 py-4 rounded-xl border border-[#E8E4F8] text-sm font-medium text-[#374151] hover:bg-[#F9F8FF] transition-all"
+              className="px-6 py-4 rounded-xl border border-[#E8E4F8] text-sm font-medium text-[#374151] hover:bg-[#F9F8FF] transition-all flex items-center justify-center w-full sm:w-auto"
             >
               Report Another
             </button>
@@ -301,7 +315,24 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
 
         {/* 3. Description */}
         <div>
-          <label htmlFor="issue-desc" className="block text-sm font-semibold text-[#1A1340] mb-2">3. Describe the Issue</label>
+          <div className="flex items-center justify-between mb-2">
+            <label htmlFor="issue-desc" className="block text-sm font-semibold text-[#1A1340]">3. Describe the Issue</label>
+            {settings.voiceAssistance && voice.isSupported && (
+              <button
+                type="button"
+                onClick={handleMicDictation}
+                className={cn(
+                  "flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium transition-colors",
+                  voice.isListening ? "bg-red-50 text-red-500 animate-pulse" : "text-[#6B3FFF] hover:bg-[#F3F0FF]"
+                )}
+                aria-label={voice.isListening ? "Stop dictation" : "Dictate description by voice"}
+                aria-pressed={voice.isListening}
+              >
+                <Mic size={12} aria-hidden="true" />
+                {voice.isListening ? "Listening…" : "Dictate"}
+              </button>
+            )}
+          </div>
           <div className="relative">
             <textarea
               id="issue-desc"

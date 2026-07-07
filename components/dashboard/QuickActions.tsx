@@ -28,24 +28,24 @@ type IconName = keyof typeof ICON_MAP;
 export function QuickActions() {
   return (
     <section aria-labelledby="quick-actions-heading">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4 lg:mb-6 gap-2">
         <h2
           id="quick-actions-heading"
-          className="text-[15px] font-semibold text-[#1A1340]"
+          className="text-sm sm:text-[15px] font-semibold text-[#1A1340]"
         >
           What would you like to do today?
         </h2>
         <button
-          className="flex items-center gap-2 text-sm text-[#9CA3AF] hover:text-[#6B3FFF] transition-colors duration-200"
+          className="flex items-center gap-2 text-sm text-[#9CA3AF] hover:text-[#6B3FFF] transition-colors duration-200 flex-shrink-0"
           aria-label="Customise quick actions layout"
         >
-          <span>Customise</span>
+          <span className="hidden sm:inline">Customise</span>
           <LayoutGrid size={15} aria-hidden="true" />
         </button>
       </div>
 
       <div
-        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 sm:gap-5 lg:gap-6"
         role="list"
         aria-label="Quick action cards"
       >

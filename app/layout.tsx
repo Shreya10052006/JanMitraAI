@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { Sidebar } from "@/components/layout/Sidebar";
-import { TopBar } from "@/components/layout/TopBar";
+import { AppShell } from "@/components/layout/AppShell";
 import { AccessibilityProvider } from "@/hooks/useAccessibility";
 import { LanguageProvider } from "@/hooks/useLanguage";
 
@@ -48,24 +47,7 @@ export default function RootLayout({
             >
               Skip to main content
             </a>
-            <div
-              className="flex h-screen overflow-hidden"
-              style={{ background: "#F8F7FF" }}
-            >
-              <Sidebar />
-              <div
-                className="flex flex-col flex-1 min-w-0"
-                style={{ marginLeft: "256px" }}
-              >
-                <TopBar />
-                <div
-                  className="flex-1 overflow-y-auto"
-                  style={{ marginTop: "80px" }}
-                >
-                  {children}
-                </div>
-              </div>
-            </div>
+            <AppShell>{children}</AppShell>
           </LanguageProvider>
         </AccessibilityProvider>
       </body>

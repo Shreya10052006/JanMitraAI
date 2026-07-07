@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/utils/cn";
+import { VoiceSearchButton } from "@/components/ui/VoiceSearchButton";
 
 type ServiceDetail = {
   id: string;
@@ -124,7 +125,7 @@ export default function ServicesPage() {
 
   return (
     <div className="overflow-y-auto h-full" id="main-content">
-      <div className="px-10 py-8 space-y-12 max-w-[1600px] mx-auto">
+      <div className="px-4 sm:px-6 md:px-8 lg:px-10 py-4 sm:py-6 lg:py-8 space-y-6 sm:space-y-8 lg:space-y-12 max-w-[1600px] mx-auto">
         {/* ── Hero header ── */}
         <div className="relative rounded-[28px] overflow-hidden" style={{ minHeight: "150px" }}>
           <div className="absolute inset-0" style={{ background: "linear-gradient(135deg,#F5F3FF,#EDE9FE 25%,#FFF7ED 70%,#FFFBEB)" }} aria-hidden="true" />
@@ -146,8 +147,8 @@ export default function ServicesPage() {
           {/* Indian flag emoji top-right */}
           <div className="absolute top-4 right-6 text-3xl" aria-hidden="true">🇮🇳</div>
 
-          <div className="relative z-10 px-8 py-8">
-            <h1 className="text-2xl font-bold text-[#1A1340]">Government Services</h1>
+          <div className="relative z-10 px-5 py-6 sm:px-8 sm:py-8">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#1A1340]">Government Services</h1>
             <p className="text-sm text-[#6B7280] mt-2">
               Find and access{" "}
               <span className="text-[#6B3FFF] font-medium">1000+ government services</span>{" "}
@@ -155,18 +156,19 @@ export default function ServicesPage() {
             </p>
 
             {/* Search */}
-            <div className="flex items-center gap-4 mt-4">
-              <div className="flex-1 flex items-center gap-2 bg-white rounded-xl border border-[#E8E4F8] shadow-sm px-4 py-4 max-w-xl">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mt-4">
+              <div className="flex-1 flex items-center gap-2 bg-white rounded-xl border border-[#E8E4F8] shadow-sm px-4 py-3.5 sm:py-4 sm:max-w-xl min-w-0">
                 <Search size={16} className="text-[#9CA3AF] flex-shrink-0" aria-hidden="true" />
                 <input
                   type="search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   onKeyDown={handleSearchKey}
-                  placeholder="Search for services like Driving License, Passport, Birth Certificate..."
-                  className="flex-1 text-sm text-[#374151] placeholder-[#9CA3AF] bg-transparent outline-none"
+                  placeholder="Search for services like Driving License, Passport..."
+                  className="flex-1 min-w-0 text-sm text-[#374151] placeholder-[#9CA3AF] bg-transparent outline-none"
                   aria-label="Search government services"
                 />
+                <VoiceSearchButton onResult={setSearch} className="w-8 h-8" />
                 <button
                   className="w-8 h-8 rounded-lg flex items-center justify-center text-white flex-shrink-0"
                   style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
@@ -175,7 +177,7 @@ export default function ServicesPage() {
                   <Search size={14} aria-hidden="true" />
                 </button>
               </div>
-              <button className="flex items-center gap-2 px-4 py-4 bg-white border border-[#E8E4F8] rounded-xl text-sm font-medium text-[#374151] hover:bg-[#F9F8FF] transition-colors shadow-sm">
+              <button className="flex items-center justify-center gap-2 px-4 py-3.5 sm:py-4 bg-white border border-[#E8E4F8] rounded-xl text-sm font-medium text-[#374151] hover:bg-[#F9F8FF] transition-colors shadow-sm flex-shrink-0">
                 <LayoutGrid size={15} className="text-[#6B3FFF]" aria-hidden="true" />
                 Browse Categories
               </button>
@@ -191,11 +193,11 @@ export default function ServicesPage() {
               View All Categories <ChevronRight size={14} aria-hidden="true" />
             </button>
           </div>
-          <div className="grid grid-cols-5 sm:grid-cols-7 lg:grid-cols-9 gap-4" role="list">
+          <div className="flex sm:grid sm:grid-cols-7 lg:grid-cols-9 gap-3 sm:gap-4 overflow-x-auto sm:overflow-visible -mx-4 px-4 sm:mx-0 sm:px-0 pb-1 sm:pb-0" role="list">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.id}
-                className="flex flex-col items-center gap-2 p-4 bg-white rounded-[20px] border border-[#E8E4F8] hover:border-[#6B3FFF]/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group"
+                className="flex flex-col items-center gap-2 p-4 bg-white rounded-[20px] border border-[#E8E4F8] hover:border-[#6B3FFF]/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group flex-shrink-0 w-20 sm:w-auto"
                 role="listitem"
                 aria-label={cat.label.replace("\n", " ")}
               >
@@ -260,7 +262,7 @@ export default function ServicesPage() {
           {/* Service Detail Panel */}
           <article className="bg-white rounded-[20px] border border-[#E8E4F8] overflow-hidden" aria-label={`${selectedService.title} details`}>
             {/* Back + title */}
-            <div className="px-6 pt-6 pb-0">
+            <div className="px-4 sm:px-6 pt-5 sm:pt-6 pb-0">
               <button className="flex items-center gap-2 text-xs text-[#6B7280] hover:text-[#6B3FFF] transition-colors mb-4" aria-label="Back to all services">
                 <ArrowLeft size={13} aria-hidden="true" /> Back to all services
               </button>
@@ -343,7 +345,7 @@ export default function ServicesPage() {
             </div>
 
             {/* Tab content */}
-            <div className="px-6 py-6" role="tabpanel">
+            <div className="px-4 sm:px-6 py-5 sm:py-6" role="tabpanel">
               {activeTab === "Overview" && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
@@ -407,18 +409,18 @@ export default function ServicesPage() {
             </div>
 
             {/* CTA buttons */}
-            <div className="px-6 pb-6 flex items-center gap-4">
+            <div className="px-4 sm:px-6 pb-5 sm:pb-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
               <a
                 href="https://parivahan.gov.in"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-6 py-4 rounded-xl text-sm font-semibold text-white hover:opacity-90 hover:shadow-lg transition-all"
+                className="flex items-center justify-center gap-2 px-6 py-3.5 sm:py-4 rounded-xl text-sm font-semibold text-white hover:opacity-90 hover:shadow-lg transition-all"
                 style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
                 aria-label="Apply now on official portal"
               >
                 Apply Now <ExternalLink size={14} aria-hidden="true" />
               </a>
-              <button className="flex items-center gap-2 px-6 py-4 rounded-xl border border-[#6B3FFF]/30 text-sm font-semibold text-[#6B3FFF] hover:bg-[#F3F0FF] transition-all" aria-label="Check eligibility with AI">
+              <button className="flex items-center justify-center gap-2 px-6 py-3.5 sm:py-4 rounded-xl border border-[#6B3FFF]/30 text-sm font-semibold text-[#6B3FFF] hover:bg-[#F3F0FF] transition-all" aria-label="Check eligibility with AI">
                 Check Eligibility <ChevronRight size={14} aria-hidden="true" />
               </button>
             </div>

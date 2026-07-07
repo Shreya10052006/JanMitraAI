@@ -8,6 +8,7 @@ import {
   Download, FileText, CreditCard, User, Building2, X, Check,
 } from "lucide-react";
 import { cn } from "@/utils/cn";
+import { VoiceSearchButton } from "@/components/ui/VoiceSearchButton";
 
 type DocStatus = "completed" | "in_progress" | "missing";
 
@@ -177,7 +178,7 @@ export default function DocumentsPage() {
 
   return (
     <div className="overflow-y-auto h-full" id="main-content">
-      <div className="px-10 py-8 space-y-12 max-w-[1600px] mx-auto">
+      <div className="px-4 sm:px-6 md:px-8 lg:px-10 py-4 sm:py-6 lg:py-8 space-y-6 sm:space-y-8 lg:space-y-12 max-w-[1600px] mx-auto">
 
         {/* ── Hero ── */}
         <div className="relative rounded-[28px] overflow-hidden" style={{ minHeight: "140px" }}>
@@ -187,15 +188,16 @@ export default function DocumentsPage() {
             <Image src="/images/india-gate.png" alt="" fill className="object-cover object-right-bottom" quality={75} sizes="1200px" />
           </div>
           <div className="absolute inset-0" style={{ background: "linear-gradient(to right,rgba(245,243,255,0.97) 0%,rgba(245,243,255,0.88) 36%,transparent 62%)" }} aria-hidden="true" />
-          <div className="relative z-10 px-8 py-8">
-            <h1 className="text-2xl font-bold text-[#1A1340]">Documents</h1>
+          <div className="relative z-10 px-5 py-6 sm:px-8 sm:py-8">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#1A1340]">Documents</h1>
             <p className="text-sm text-[#6B7280] mt-2">Get personalized document guidance and manage your documents easily.</p>
-            <div className="flex items-center gap-2 mt-4 max-w-lg">
-              <div className="flex-1 flex items-center gap-2 bg-white border border-[#E8E4F8] rounded-xl px-4 py-4 shadow-sm focus-within:ring-2 focus-within:ring-[#6B3FFF]/20">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-2 mt-4 sm:max-w-lg">
+              <div className="flex-1 flex items-center gap-2 bg-white border border-[#E8E4F8] rounded-xl px-4 py-3.5 sm:py-4 shadow-sm focus-within:ring-2 focus-within:ring-[#6B3FFF]/20 min-w-0">
                 <Search size={15} className="text-[#9CA3AF] flex-shrink-0" aria-hidden="true" />
                 <input type="search" value={search} onChange={(e) => setSearch(e.target.value)} onKeyDown={handleSearchKey}
-                  placeholder="Search for documents, certificates, or services..."
-                  className="flex-1 text-sm text-[#374151] placeholder-[#9CA3AF] bg-transparent outline-none" aria-label="Search documents" />
+                  placeholder="Search documents, certificates..."
+                  className="flex-1 min-w-0 text-sm text-[#374151] placeholder-[#9CA3AF] bg-transparent outline-none" aria-label="Search documents" />
+                <VoiceSearchButton onResult={setSearch} className="w-6 h-6" />
                 {search && (
                   <button onClick={() => setSearch("")} className="text-[#9CA3AF] hover:text-[#374151]" aria-label="Clear search">
                     <X size={13} />
@@ -203,7 +205,7 @@ export default function DocumentsPage() {
                 )}
               </div>
               <button
-                className="flex items-center gap-2 px-4 py-4 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all"
+                className="flex items-center justify-center gap-2 px-4 py-3.5 sm:py-4 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all flex-shrink-0"
                 style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }} aria-label="Search">
                 <Search size={14} aria-hidden="true" /> Search
               </button>
@@ -295,7 +297,7 @@ export default function DocumentsPage() {
               {/* Checklist from API */}
               {checklist ? (
                 <>
-                  <div className="grid grid-cols-[1fr_130px_120px] gap-4 px-6 py-4 bg-[#F9F8FF] border-b border-[#F3F0FF]">
+                  <div className="hidden sm:grid grid-cols-[1fr_130px_120px] gap-4 px-6 py-4 bg-[#F9F8FF] border-b border-[#F3F0FF]">
                     <span className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">Document Name</span>
                     <span className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">Required</span>
                     <span className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">Action</span>
@@ -303,22 +305,24 @@ export default function DocumentsPage() {
                   <ul className="divide-y divide-[#F9F8FF]" role="list">
                     {checklist.map((doc, i) => (
                       <li key={i}>
-                        <div className="grid grid-cols-[1fr_130px_120px] gap-4 items-start px-6 py-4 hover:bg-[#F9F8FF] transition-colors">
+                        <div className="flex flex-col gap-3 sm:grid sm:grid-cols-[1fr_130px_120px] sm:gap-4 sm:items-start px-4 sm:px-6 py-4 hover:bg-[#F9F8FF] transition-colors">
                           <div className="min-w-0">
                             <p className="text-sm font-semibold text-[#1A1340]">{doc.name}</p>
                             <p className="text-xs text-[#9CA3AF] mt-2 leading-relaxed">{doc.description}</p>
                           </div>
-                          <span className={cn("px-2 py-2 rounded-full text-[10px] font-semibold border w-fit mt-2", doc.required ? "bg-red-50 text-red-600 border-red-100" : "bg-gray-50 text-gray-600 border-gray-100")}>
-                            {doc.required ? "Required" : "Optional"}
-                          </span>
-                          <button
-                            onClick={() => fileRef.current?.click()}
-                            className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold text-white hover:opacity-90 transition-all mt-2 w-fit"
-                            style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
-                            aria-label={`Upload ${doc.name}`}
-                          >
-                            <Upload size={12} aria-hidden="true" /> Upload
-                          </button>
+                          <div className="flex items-center justify-between gap-2 sm:contents">
+                            <span className={cn("px-2 py-2 rounded-full text-[10px] font-semibold border w-fit sm:mt-2", doc.required ? "bg-red-50 text-red-600 border-red-100" : "bg-gray-50 text-gray-600 border-gray-100")}>
+                              {doc.required ? "Required" : "Optional"}
+                            </span>
+                            <button
+                              onClick={() => fileRef.current?.click()}
+                              className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold text-white hover:opacity-90 transition-all sm:mt-2 w-fit"
+                              style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
+                              aria-label={`Upload ${doc.name}`}
+                            >
+                              <Upload size={12} aria-hidden="true" /> Upload
+                            </button>
+                          </div>
                         </div>
                       </li>
                     ))}
@@ -331,7 +335,7 @@ export default function DocumentsPage() {
                 </div>
               ) : (
                 <>
-                  <div className="grid grid-cols-[1fr_130px_120px] gap-4 px-6 py-4 bg-[#F9F8FF] border-b border-[#F3F0FF]">
+                  <div className="hidden sm:grid grid-cols-[1fr_130px_120px] gap-4 px-6 py-4 bg-[#F9F8FF] border-b border-[#F3F0FF]">
                     <span className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">Document Name</span>
                     <span className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">Status</span>
                     <span className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">Action</span>
@@ -342,7 +346,7 @@ export default function DocumentsPage() {
                       const StatusIcon = s.icon;
                       return (
                         <li key={doc.id}>
-                          <div className="grid grid-cols-[1fr_130px_120px] gap-4 items-center px-6 py-4 hover:bg-[#F9F8FF] transition-colors">
+                          <div className="flex flex-col gap-3 sm:grid sm:grid-cols-[1fr_130px_120px] sm:gap-4 sm:items-center px-4 sm:px-6 py-4 hover:bg-[#F9F8FF] transition-colors">
                             <div className="flex items-center gap-4 min-w-0">
                               <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: doc.iconBg }} aria-hidden="true">
                                 <doc.icon size={17} style={{ color: doc.iconColor }} />
@@ -352,6 +356,7 @@ export default function DocumentsPage() {
                                 <p className="text-xs text-[#9CA3AF] truncate">{doc.description}</p>
                               </div>
                             </div>
+                            <div className="flex items-center justify-between gap-2 sm:contents">
                             <div className={cn("flex items-center gap-2 px-4 py-2 rounded-full w-fit", s.bg)}>
                               <StatusIcon size={12} style={{ color: s.dot }} aria-hidden="true" />
                               <span className={cn("text-xs font-semibold", s.color)}>{s.label}</span>
@@ -388,6 +393,7 @@ export default function DocumentsPage() {
                                   </div>
                                 )}
                               </div>
+                            </div>
                             </div>
                           </div>
                         </li>

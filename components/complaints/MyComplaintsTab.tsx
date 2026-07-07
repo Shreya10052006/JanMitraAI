@@ -156,7 +156,7 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
             { label: "Under Review", value: underReview.toString(), sub: total > 0 ? `${Math.round((underReview / total) * 100)}%` : "0%", icon: "🔍", iconBg: "#DBEAFE" },
             { label: "Avg. Resolution Time", value: "3.2 Days", sub: "This month", icon: "⏱️", iconBg: "#FCE7F3" },
           ].map((stat) => (
-            <div key={stat.label} className="bg-white rounded-[20px] border border-[#E8E4F8] px-6 py-4 flex items-center gap-4" role="listitem">
+            <div key={stat.label} className="bg-white rounded-[20px] border border-[#E8E4F8] px-4 sm:px-6 py-4 flex items-center gap-4" role="listitem">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ backgroundColor: stat.iconBg }} aria-hidden="true">
                 {stat.icon}
               </div>
@@ -171,13 +171,13 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
 
         {/* Complaints list card */}
         <div className="bg-white rounded-[20px] border border-[#E8E4F8] overflow-hidden">
-          <div className="px-6 py-4 border-b border-[#F3F0FF]">
+          <div className="px-4 sm:px-6 py-4 border-b border-[#F3F0FF]">
             <h2 className="text-sm font-bold text-[#1A1340]">Your Complaints</h2>
             <p className="text-xs text-[#9CA3AF] mt-2">Track and manage all the issues you&apos;ve reported</p>
           </div>
 
           {/* Filters */}
-          <div className="px-6 py-4 flex flex-wrap items-center gap-2 border-b border-[#F3F0FF]">
+          <div className="px-4 sm:px-6 py-4 flex flex-wrap items-center gap-2 border-b border-[#F3F0FF]">
             {[
               {
                 value: statusFilter,
@@ -223,7 +223,7 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
 
           {/* List */}
           {paginated.length === 0 ? (
-            <div className="px-6 py-10 text-center">
+            <div className="px-4 sm:px-6 py-10 text-center">
               <p className="text-sm font-medium text-[#1A1340]">No complaints found</p>
               <p className="text-xs text-[#9CA3AF] mt-2">Try adjusting your filters or report a new issue</p>
             </div>
@@ -233,7 +233,7 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
                 <li key={c.id}>
                   <button
                     onClick={() => onTrack(c)}
-                    className="w-full flex items-center gap-4 px-6 py-4 hover:bg-[#F9F8FF] transition-colors text-left group"
+                    className="w-full flex items-center gap-4 px-4 sm:px-6 py-4 hover:bg-[#F9F8FF] transition-colors text-left group"
                     aria-label={`${c.ticketId}: ${c.title}, Status: ${STATUS_LABELS[c.status]}, Date: ${c.createdAt}`}
                   >
                     <span className="text-xl flex-shrink-0" aria-hidden="true">
@@ -261,7 +261,7 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
           )}
 
           {/* Pagination */}
-          <div className="px-6 py-4 border-t border-[#F3F0FF] flex items-center justify-between">
+          <div className="px-4 sm:px-6 py-4 border-t border-[#F3F0FF] flex items-center justify-between">
             <div className="flex items-center gap-2" role="navigation" aria-label="Pagination">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}

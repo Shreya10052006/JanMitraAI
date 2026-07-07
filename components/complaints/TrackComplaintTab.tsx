@@ -81,7 +81,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
       {/* ── Main track panel ── */}
       <div className="space-y-6">
         {/* Search */}
-        <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-6">
+        <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-4 sm:p-6">
           <h2 className="text-base font-bold text-[#1A1340] mb-2">Track Your Complaint</h2>
           <p className="text-xs text-[#6B7280] mb-4">Enter your complaint ID to track real-time status and timeline</p>
           <div className="flex items-center gap-4">
@@ -126,7 +126,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
         {c && (
           <>
             {/* Complaint summary card */}
-            <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-6">
+            <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-4 sm:p-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <div className="flex items-center gap-2 mb-2">
@@ -176,7 +176,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
             </div>
 
             {/* Timeline */}
-            <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-6">
+            <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-4 sm:p-6">
               <h3 className="text-sm font-bold text-[#1A1340] mb-4">Complaint Timeline</h3>
               <ol className="relative space-y-4 ml-2" aria-label="Complaint timeline">
                 {c.timeline.map((event, idx) => {
@@ -240,7 +240,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
 
         {/* Empty state */}
         {!c && !notFound && (
-          <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-10 flex flex-col items-center text-center">
+          <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-6 sm:p-10 flex flex-col items-center text-center">
             <div className="w-14 h-14 rounded-2xl bg-[#EDE9FE] flex items-center justify-center mb-4" aria-hidden="true">
               <Search size={24} className="text-[#6B3FFF]" />
             </div>

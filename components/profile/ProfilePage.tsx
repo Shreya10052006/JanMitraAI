@@ -105,7 +105,7 @@ export default function ProfilePage() {
 
   return (
     <div className="overflow-y-auto h-full" id="main-content">
-      <div className="px-10 py-8 space-y-12 max-w-[1600px] mx-auto">
+      <div className="px-4 sm:px-6 md:px-8 lg:px-10 py-4 sm:py-6 lg:py-8 space-y-6 sm:space-y-8 lg:space-y-12 max-w-[1600px] mx-auto">
 
         {/* ── Page title ── */}
         <div>
@@ -173,9 +173,9 @@ export default function ProfilePage() {
           </div>
 
           {/* Impact section */}
-          <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6 min-w-[340px]" aria-labelledby="impact-heading">
+          <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6 min-w-0 sm:min-w-[340px]" aria-labelledby="impact-heading">
             <h2 id="impact-heading" className="text-sm font-bold text-[#1A1340] mb-4">Your Impact</h2>
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {[
                 { icon: CheckCircle2, iconBg: "#D1FAE5", iconColor: "#10B981", value: resolvedComplaints.toString(), label: "Complaints Resolved" },
                 { icon: FileText, iconBg: "#FEF3C7", iconColor: "#F59E0B", value: (profile.servicesUsed ?? 0).toString() || "12", label: "Services Used" },
@@ -205,7 +205,7 @@ export default function ProfilePage() {
           {/* Quick Actions */}
           <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6" aria-labelledby="quick-actions-heading">
             <h2 id="quick-actions-heading" className="text-sm font-bold text-[#1A1340] mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {QUICK_ACTIONS.map(action => {
                 const Icon = action.icon;
                 const isLogout = action.id === "logout";

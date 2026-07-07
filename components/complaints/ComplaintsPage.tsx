@@ -41,7 +41,7 @@ export default function ComplaintsPage() {
 
   return (
     <div className="overflow-y-auto h-full" id="main-content">
-      <div className="px-10 py-8 space-y-12 max-w-[1600px] mx-auto">
+      <div className="px-4 sm:px-6 md:px-8 lg:px-10 py-4 sm:py-6 lg:py-8 space-y-6 sm:space-y-8 lg:space-y-12 max-w-[1600px] mx-auto">
         {/* Hero */}
         <div className="relative rounded-[28px] overflow-hidden" style={{ minHeight: "140px" }}>
           <div className="absolute inset-0" style={{ background: "linear-gradient(135deg,#F5F3FF,#EDE9FE 25%,#FFF7ED 70%,#FFFBEB)" }} aria-hidden="true" />
@@ -57,12 +57,12 @@ export default function ComplaintsPage() {
           </div>
           <div className="absolute inset-0" style={{ background: "linear-gradient(to right,rgba(245,243,255,0.97) 0%,rgba(245,243,255,0.88) 38%,transparent 65%)" }} aria-hidden="true" />
 
-          <div className="relative z-10 px-8 py-8">
-            <h1 className="text-2xl font-bold text-[#1A1340]">Complaints</h1>
+          <div className="relative z-10 px-5 py-6 sm:px-8 sm:py-8">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#1A1340]">Complaints</h1>
             <p className="text-sm text-[#6B7280] mt-2">Report issues in your area and help build a better community</p>
 
             {/* Tab nav inside hero */}
-            <div className="flex items-center gap-0 mt-6" role="tablist" aria-label="Complaints sections">
+            <div className="flex items-center gap-0 mt-6 overflow-x-auto -mx-5 px-5 sm:mx-0 sm:px-0" role="tablist" aria-label="Complaints sections">
               {TABS.map((tab) => (
                 <button
                   key={tab.id}
@@ -70,7 +70,7 @@ export default function ComplaintsPage() {
                   aria-selected={activeTab === tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={cn(
-                    "px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 mr-2",
+                    "px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 mr-2 whitespace-nowrap flex-shrink-0",
                     activeTab === tab.id
                       ? "border-[#6B3FFF] text-[#6B3FFF]"
                       : "border-transparent text-[#6B7280] hover:text-[#1A1340]"

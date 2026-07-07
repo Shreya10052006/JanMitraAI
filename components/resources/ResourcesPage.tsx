@@ -8,6 +8,7 @@ import {
   Sparkles, BookOpen,
 } from "lucide-react";
 import { cn } from "@/utils/cn";
+import { VoiceSearchButton } from "@/components/ui/VoiceSearchButton";
 
 const RESOURCE_TABS = [
   { id: "all", label: "All Resources", icon: BookOpen },
@@ -104,7 +105,7 @@ export default function ResourcesPage() {
 
   return (
     <div className="overflow-y-auto h-full" id="main-content">
-      <div className="px-10 py-8 space-y-12 max-w-[1600px] mx-auto">
+      <div className="px-4 sm:px-6 md:px-8 lg:px-10 py-4 sm:py-6 lg:py-8 space-y-6 sm:space-y-8 lg:space-y-12 max-w-[1600px] mx-auto">
 
         {/* ── Hero ── */}
         <div className="relative rounded-[28px] overflow-hidden" style={{ minHeight: "165px" }}>
@@ -115,18 +116,19 @@ export default function ResourcesPage() {
           </div>
           <div className="absolute inset-0" style={{ background: "linear-gradient(to right,rgba(245,243,255,0.97) 0%,rgba(245,243,255,0.88) 33%,transparent 58%)" }} aria-hidden="true" />
 
-          <div className="relative z-10 px-8 py-8">
-            <h1 className="text-2xl font-bold text-[#1A1340]">Resources</h1>
+          <div className="relative z-10 px-5 py-6 sm:px-8 sm:py-8">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#1A1340]">Resources</h1>
             <p className="text-sm text-[#6B7280] mt-2">Curated information, guides and tools to help you stay informed</p>
 
-            <div className="flex items-center gap-2 mt-4 max-w-xl">
-              <div className="flex-1 flex items-center gap-2 bg-white border border-[#E8E4F8] rounded-xl px-4 py-4 shadow-sm focus-within:ring-2 focus-within:ring-[#6B3FFF]/20">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-2 mt-4 sm:max-w-xl">
+              <div className="flex-1 flex items-center gap-2 bg-white border border-[#E8E4F8] rounded-xl px-4 py-3.5 sm:py-4 shadow-sm focus-within:ring-2 focus-within:ring-[#6B3FFF]/20 min-w-0">
                 <Search size={15} className="text-[#9CA3AF] flex-shrink-0" aria-hidden="true" />
                 <input type="search" value={search} onChange={e => setSearch(e.target.value)} onKeyDown={handleSearchKey}
-                  placeholder="Search resources, guides, documents..."
-                  className="flex-1 text-sm text-[#374151] placeholder-[#9CA3AF] bg-transparent outline-none" aria-label="Search resources" />
+                  placeholder="Search resources, guides..."
+                  className="flex-1 min-w-0 text-sm text-[#374151] placeholder-[#9CA3AF] bg-transparent outline-none" aria-label="Search resources" />
+                <VoiceSearchButton onResult={setSearch} className="w-6 h-6" />
               </div>
-              <button className="flex items-center gap-2 px-4 py-4 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all"
+              <button className="flex items-center justify-center gap-2 px-4 py-3.5 sm:py-4 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all flex-shrink-0"
                 style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }} aria-label="Search">
                 <Search size={14} aria-hidden="true" /> Search
               </button>

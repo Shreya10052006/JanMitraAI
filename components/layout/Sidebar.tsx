@@ -35,7 +35,7 @@ export function Sidebar() {
 
   return (
     <aside
-      className="fixed left-0 top-0 bottom-0 flex flex-col z-40"
+      className="hidden lg:flex fixed left-0 top-0 bottom-0 flex-col z-40"
       style={{ width: "256px", background: "#0F1117" }}
       role="navigation"
       aria-label="Main navigation"
