@@ -41,9 +41,9 @@ export default function ComplaintsPage() {
 
   return (
     <div className="overflow-y-auto h-full" id="main-content">
-      <div className="px-6 py-5 space-y-5 max-w-[1280px]">
+      <div className="px-10 py-8 space-y-8 max-w-[1600px] mx-auto">
         {/* Hero */}
-        <div className="relative rounded-2xl overflow-hidden" style={{ minHeight: "130px" }}>
+        <div className="relative rounded-[28px] overflow-hidden" style={{ minHeight: "140px" }}>
           <div className="absolute inset-0" style={{ background: "linear-gradient(135deg,#F5F3FF,#EDE9FE 25%,#FFF7ED 70%,#FFFBEB)" }} aria-hidden="true" />
           <div
             className="absolute inset-0 pointer-events-none"
@@ -57,12 +57,12 @@ export default function ComplaintsPage() {
           </div>
           <div className="absolute inset-0" style={{ background: "linear-gradient(to right,rgba(245,243,255,0.97) 0%,rgba(245,243,255,0.88) 38%,transparent 65%)" }} aria-hidden="true" />
 
-          <div className="relative z-10 px-6 py-5">
+          <div className="relative z-10 px-8 py-7">
             <h1 className="text-2xl font-bold text-[#1A1340]">Complaints</h1>
-            <p className="text-sm text-[#6B7280] mt-1">Report issues in your area and help build a better community</p>
+            <p className="text-sm text-[#6B7280] mt-1.5">Report issues in your area and help build a better community</p>
 
             {/* Tab nav inside hero */}
-            <div className="flex items-center gap-0 mt-4" role="tablist" aria-label="Complaints sections">
+            <div className="flex items-center gap-0 mt-5" role="tablist" aria-label="Complaints sections">
               {TABS.map((tab) => (
                 <button
                   key={tab.id}
@@ -92,14 +92,14 @@ export default function ComplaintsPage() {
         </div>
 
         {/* Footer trust bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" role="list">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4" role="list">
           {[
             { icon: "🔄", label: "Track in Real-time", sub: "Get updates at every step" },
             { icon: "📋", label: "Transparent Process", sub: "Know where your issue stands" },
             { icon: "⚡", label: "Faster Resolution", sub: "AI ensures quick routing" },
             { icon: "🤝", label: "Better Communities", sub: "Together, we make change" },
           ].map((item) => (
-            <div key={item.label} className="bg-white rounded-xl border border-[#E8E4F8] px-4 py-3 flex items-center gap-3" role="listitem">
+            <div key={item.label} className="bg-white rounded-xl border border-[#E8E4F8] px-5 py-4 flex items-center gap-3" role="listitem">
               <span className="text-xl" aria-hidden="true">{item.icon}</span>
               <div>
                 <p className="text-xs font-semibold text-[#1A1340]">{item.label}</p>

@@ -105,7 +105,7 @@ export default function ProfilePage() {
 
   return (
     <div className="overflow-y-auto h-full" id="main-content">
-      <div className="px-6 py-5 space-y-5 max-w-[1280px]">
+      <div className="px-10 py-8 space-y-8 max-w-[1600px] mx-auto">
 
         {/* ── Page title ── */}
         <div>
@@ -114,9 +114,9 @@ export default function ProfilePage() {
         </div>
 
         {/* ── Profile card + Impact ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-5">
           {/* Profile card */}
-          <div className="bg-white rounded-2xl border border-[#E8E4F8] p-5 flex flex-col sm:flex-row items-start gap-5">
+          <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-6 flex flex-col sm:flex-row items-start gap-6">
             {/* Avatar */}
             <div className="relative flex-shrink-0">
               <div className="w-24 h-24 rounded-2xl overflow-hidden bg-gradient-to-br from-[#6B3FFF] to-[#EC4899] flex items-center justify-center">
@@ -173,9 +173,9 @@ export default function ProfilePage() {
           </div>
 
           {/* Impact section */}
-          <section className="bg-white rounded-2xl border border-[#E8E4F8] p-5 min-w-[340px]" aria-labelledby="impact-heading">
+          <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6 min-w-[340px]" aria-labelledby="impact-heading">
             <h2 id="impact-heading" className="text-sm font-bold text-[#1A1340] mb-4">Your Impact</h2>
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-4 gap-4">
               {[
                 { icon: CheckCircle2, iconBg: "#D1FAE5", iconColor: "#10B981", value: resolvedComplaints.toString(), label: "Complaints Resolved" },
                 { icon: FileText, iconBg: "#FEF3C7", iconColor: "#F59E0B", value: (profile.servicesUsed ?? 0).toString() || "12", label: "Services Used" },
@@ -201,11 +201,11 @@ export default function ProfilePage() {
         </div>
 
         {/* ── 3 columns: Quick Actions | Recent Activity | Preferences ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           {/* Quick Actions */}
-          <section className="bg-white rounded-2xl border border-[#E8E4F8] p-5" aria-labelledby="quick-actions-heading">
+          <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6" aria-labelledby="quick-actions-heading">
             <h2 id="quick-actions-heading" className="text-sm font-bold text-[#1A1340] mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-4 gap-4">
               {QUICK_ACTIONS.map(action => {
                 const Icon = action.icon;
                 const isLogout = action.id === "logout";
@@ -228,7 +228,7 @@ export default function ProfilePage() {
           </section>
 
           {/* Recent Activity */}
-          <section className="bg-white rounded-2xl border border-[#E8E4F8] p-5" aria-labelledby="recent-act-heading">
+          <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6" aria-labelledby="recent-act-heading">
             <div className="flex items-center justify-between mb-4">
               <h2 id="recent-act-heading" className="text-sm font-bold text-[#1A1340]">Recent Activity</h2>
               <button className="text-xs text-[#6B3FFF] hover:underline">View All</button>
@@ -267,7 +267,7 @@ export default function ProfilePage() {
           </section>
 
           {/* Preferences */}
-          <section className="bg-white rounded-2xl border border-[#E8E4F8] p-5" aria-labelledby="prefs-heading">
+          <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6" aria-labelledby="prefs-heading">
             <div className="flex items-center justify-between mb-4">
               <h2 id="prefs-heading" className="text-sm font-bold text-[#1A1340]">Preferences</h2>
               <button className="text-xs text-[#6B3FFF] hover:underline font-semibold">Edit</button>
@@ -290,9 +290,9 @@ export default function ProfilePage() {
         </div>
 
         {/* ── Badges + Account Overview ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-5">
           {/* Badges */}
-          <section className="bg-white rounded-2xl border border-[#E8E4F8] p-5 overflow-hidden" aria-labelledby="badges-heading">
+          <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6 overflow-hidden" aria-labelledby="badges-heading">
             <div className="flex items-center justify-between mb-5">
               <h2 id="badges-heading" className="text-sm font-bold text-[#1A1340]">Achievements &amp; Badges</h2>
               <button className="text-xs text-[#6B3FFF] hover:underline">View All</button>
@@ -319,7 +319,7 @@ export default function ProfilePage() {
           </section>
 
           {/* Account Overview */}
-          <section className="bg-white rounded-2xl border border-[#E8E4F8] p-5" aria-labelledby="account-heading">
+          <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6" aria-labelledby="account-heading">
             <h2 id="account-heading" className="text-sm font-bold text-[#1A1340] mb-4">Account Overview</h2>
             <div className="space-y-3">
               {[
@@ -352,7 +352,7 @@ export default function ProfilePage() {
         </div>
 
         {/* ── Thank you banner ── */}
-        <div className="bg-[#F3F0FF] rounded-2xl border border-[#E8E4F8] px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div className="bg-[#F3F0FF] rounded-[20px] border border-[#E8E4F8] px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className="flex items-center gap-3 flex-1">
             <div className="w-10 h-10 rounded-xl bg-[#6B3FFF] flex items-center justify-center flex-shrink-0" aria-hidden="true">
               <Medal size={18} className="text-white" />

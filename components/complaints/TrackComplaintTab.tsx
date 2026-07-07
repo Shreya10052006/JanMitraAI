@@ -77,11 +77,11 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
   const resolvedPercentage = c ? Math.round(((currentStepIndex + 1) / STEP_STATUSES.length) * 100) : 0;
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-5">
       {/* ── Main track panel ── */}
-      <div className="space-y-4">
+      <div className="space-y-5">
         {/* Search */}
-        <div className="bg-white rounded-2xl border border-[#E8E4F8] p-5">
+        <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-5">
           <h2 className="text-base font-bold text-[#1A1340] mb-1">Track Your Complaint</h2>
           <p className="text-xs text-[#6B7280] mb-4">Enter your complaint ID to track real-time status and timeline</p>
           <div className="flex items-center gap-3">
@@ -126,7 +126,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
         {c && (
           <>
             {/* Complaint summary card */}
-            <div className="bg-white rounded-2xl border border-[#E8E4F8] p-5">
+            <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-5">
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
@@ -176,7 +176,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
             </div>
 
             {/* Timeline */}
-            <div className="bg-white rounded-2xl border border-[#E8E4F8] p-5">
+            <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-5">
               <h3 className="text-sm font-bold text-[#1A1340] mb-4">Complaint Timeline</h3>
               <ol className="relative space-y-4 ml-2" aria-label="Complaint timeline">
                 {c.timeline.map((event, idx) => {
@@ -240,7 +240,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
 
         {/* Empty state */}
         {!c && !notFound && (
-          <div className="bg-white rounded-2xl border border-[#E8E4F8] p-10 flex flex-col items-center text-center">
+          <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-10 flex flex-col items-center text-center">
             <div className="w-14 h-14 rounded-2xl bg-[#EDE9FE] flex items-center justify-center mb-3" aria-hidden="true">
               <Search size={24} className="text-[#6B3FFF]" />
             </div>
@@ -252,9 +252,9 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
       </div>
 
       {/* ── Right sidebar ── */}
-      <aside className="space-y-4" aria-label="Track complaint sidebar">
+      <aside className="space-y-5" aria-label="Track complaint sidebar">
         {/* Status guide */}
-        <section className="bg-white rounded-2xl border border-[#E8E4F8] p-4" aria-labelledby="status-guide-heading">
+        <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="status-guide-heading">
           <h2 id="status-guide-heading" className="text-sm font-semibold text-[#1A1340] mb-3">Status Guide</h2>
           <div className="space-y-3">
             {STEP_STATUSES.map((status) => (
@@ -276,7 +276,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
         </section>
 
         {/* Tips */}
-        <section className="bg-[#F9F8FF] rounded-2xl border border-[#E8E4F8] p-4" aria-labelledby="tips-heading">
+        <section className="bg-[#F9F8FF] rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="tips-heading">
           <h2 id="tips-heading" className="text-sm font-semibold text-[#1A1340] mb-3">💡 Tips for Faster Resolution</h2>
           <ul className="space-y-2">
             {[
@@ -294,7 +294,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
         </section>
 
         {/* Need more help */}
-        <section className="bg-white rounded-2xl border border-[#E8E4F8] p-4" aria-labelledby="needhelp-heading">
+        <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="needhelp-heading">
           <h2 id="needhelp-heading" className="text-sm font-semibold text-[#1A1340] mb-1">Need More Help?</h2>
           <p className="text-xs text-[#6B7280] mb-3">Chat with JanMitra AI for real-time guidance on your complaint.</p>
           <a

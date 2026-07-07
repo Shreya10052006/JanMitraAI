@@ -28,7 +28,7 @@ type IconName = keyof typeof ICON_MAP;
 export function QuickActions() {
   return (
     <section aria-labelledby="quick-actions-heading">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-5">
         <h2
           id="quick-actions-heading"
           className="text-[15px] font-semibold text-[#1A1340]"
@@ -45,7 +45,7 @@ export function QuickActions() {
       </div>
 
       <div
-        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"
+        className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4"
         role="list"
         aria-label="Quick action cards"
       >
@@ -57,7 +57,7 @@ export function QuickActions() {
               href={action.href}
               role="listitem"
               className={cn(
-                "group flex flex-col p-4 rounded-2xl bg-white border border-transparent cursor-pointer",
+                "group flex flex-col p-5 rounded-[20px] bg-white border border-transparent cursor-pointer",
                 "hover:border-[#E8E4F8] hover:shadow-lg hover:shadow-purple-100/60 hover:-translate-y-[3px]",
                 "transition-all duration-200 focus-visible:ring-2 focus-visible:ring-[#6B3FFF] focus-visible:ring-offset-2"
               )}
@@ -65,7 +65,7 @@ export function QuickActions() {
             >
               {/* Icon */}
               <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 transition-transform duration-200 group-hover:scale-110"
+                className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 transition-transform duration-200 group-hover:scale-110"
                 style={{ backgroundColor: action.bgColor }}
                 aria-hidden="true"
               >

@@ -55,12 +55,12 @@ export default function RootLayout({
               <Sidebar />
               <div
                 className="flex flex-col flex-1 min-w-0"
-                style={{ marginLeft: "210px" }}
+                style={{ marginLeft: "240px" }}
               >
                 <TopBar />
                 <div
                   className="flex-1 overflow-y-auto"
-                  style={{ marginTop: "64px" }}
+                  style={{ marginTop: "76px" }}
                 >
                   {children}
                 </div>

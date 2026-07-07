@@ -144,11 +144,11 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
   const uniqueCategories = [...new Set(complaints.map((c) => c.category))];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-4">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-5">
       {/* ── Left: stats + list ── */}
-      <div className="space-y-4">
+      <div className="space-y-5">
         {/* Stats row */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3" role="list">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4" role="list">
           {[
             { label: "Total Complaints", value: total.toString(), sub: "All time", icon: "📋", iconBg: "#EDE9FE" },
             { label: "Resolved", value: resolved.toString(), sub: total > 0 ? `${Math.round((resolved / total) * 100)}%` : "0%", icon: "✅", iconBg: "#D1FAE5" },
@@ -156,7 +156,7 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
             { label: "Under Review", value: underReview.toString(), sub: total > 0 ? `${Math.round((underReview / total) * 100)}%` : "0%", icon: "🔍", iconBg: "#DBEAFE" },
             { label: "Avg. Resolution Time", value: "3.2 Days", sub: "This month", icon: "⏱️", iconBg: "#FCE7F3" },
           ].map((stat) => (
-            <div key={stat.label} className="bg-white rounded-2xl border border-[#E8E4F8] px-4 py-3 flex items-center gap-3" role="listitem">
+            <div key={stat.label} className="bg-white rounded-[20px] border border-[#E8E4F8] px-5 py-4 flex items-center gap-3" role="listitem">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ backgroundColor: stat.iconBg }} aria-hidden="true">
                 {stat.icon}
               </div>
@@ -170,7 +170,7 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
         </div>
 
         {/* Complaints list card */}
-        <div className="bg-white rounded-2xl border border-[#E8E4F8] overflow-hidden">
+        <div className="bg-white rounded-[20px] border border-[#E8E4F8] overflow-hidden">
           <div className="px-5 py-4 border-b border-[#F3F0FF]">
             <h2 className="text-sm font-bold text-[#1A1340]">Your Complaints</h2>
             <p className="text-xs text-[#9CA3AF] mt-0.5">Track and manage all the issues you&apos;ve reported</p>
@@ -301,9 +301,9 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
       </div>
 
       {/* ── Right sidebar ── */}
-      <div className="space-y-4">
+      <div className="space-y-5">
         {/* Donut chart */}
-        <section className="bg-white rounded-2xl border border-[#E8E4F8] p-4" aria-labelledby="chart-heading">
+        <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="chart-heading">
           <div className="flex items-center justify-between mb-3">
             <h2 id="chart-heading" className="text-sm font-semibold text-[#1A1340]">Complaints by Category</h2>
           </div>
@@ -333,7 +333,7 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
         </section>
 
         {/* Recent Activity */}
-        <section className="bg-white rounded-2xl border border-[#E8E4F8] p-4" aria-labelledby="activity-heading">
+        <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="activity-heading">
           <div className="flex items-center justify-between mb-3">
             <h2 id="activity-heading" className="text-sm font-semibold text-[#1A1340]">Recent Activity</h2>
           </div>
@@ -355,7 +355,7 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
         </section>
 
         {/* Make bigger impact */}
-        <section className="bg-white rounded-2xl border border-[#E8E4F8] p-4" aria-labelledby="impact2-heading">
+        <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="impact2-heading">
           <div className="flex items-start gap-3">
             <div className="flex-1">
               <h2 id="impact2-heading" className="text-sm font-semibold text-[#1A1340] mb-1">Make a Bigger Impact!</h2>

@@ -36,12 +36,12 @@ export function Sidebar() {
   return (
     <aside
       className="fixed left-0 top-0 bottom-0 flex flex-col z-40"
-      style={{ width: "210px", background: "#0F1117" }}
+      style={{ width: "240px", background: "#0F1117" }}
       role="navigation"
       aria-label="Main navigation"
     >
       {/* Logo */}
-      <div className="flex items-center gap-3 px-5 py-[18px] border-b border-white/[0.08]">
+      <div className="flex items-center gap-3 px-6 py-6 border-b border-white/[0.08]">
         <div
           className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg"
           style={{
@@ -86,10 +86,10 @@ export function Sidebar() {
 
       {/* Navigation */}
       <nav
-        className="flex-1 py-3 overflow-y-auto"
+        className="flex-1 py-4 overflow-y-auto"
         aria-label="Navigation links"
       >
-        <ul className="space-y-0.5 px-3" role="list">
+        <ul className="space-y-1.5 px-4" role="list">
           {NAV_ITEMS.map((item) => {
             const IconComponent = ICON_MAP[item.icon as IconName];
             const isActive = pathname === item.href;
@@ -98,7 +98,7 @@ export function Sidebar() {
                 <Link
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium transition-all duration-200 group",
+                    "flex items-center gap-3 px-3.5 py-3 rounded-xl text-[13px] font-medium transition-all duration-200 group",
                     isActive
                       ? "text-white"
                       : "text-[#94A3B8] hover:text-white hover:bg-white/[0.07]"
@@ -135,11 +135,11 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom: Accessibility + Help */}
-      <div className="px-3 pb-3 border-t border-white/[0.08] pt-3">
+      <div className="px-4 pb-4 border-t border-white/[0.08] pt-4">
         <AccessibilityPanel />
         <Link
           href="/help"
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] font-medium text-[#94A3B8] hover:text-white hover:bg-white/[0.07] transition-all duration-200 mt-1"
+          className="flex items-center gap-3 px-3.5 py-3 rounded-xl text-[13px] font-medium text-[#94A3B8] hover:text-white hover:bg-white/[0.07] transition-all duration-200 mt-1.5"
           aria-label="Get help and support"
         >
           <Headphones

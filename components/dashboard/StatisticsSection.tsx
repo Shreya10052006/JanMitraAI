@@ -13,7 +13,7 @@ type IconName = keyof typeof ICON_MAP;
 export function StatisticsSection() {
   return (
     <section
-      className="relative rounded-2xl overflow-hidden"
+      className="relative rounded-[20px] overflow-hidden"
       style={{
         background:
           "linear-gradient(135deg, #1A1340 0%, #2A1B6E 35%, #3D2498 65%, #1E1B4B 100%)",
@@ -53,7 +53,7 @@ export function StatisticsSection() {
         </svg>
       </div>
 
-      <div className="relative z-10 px-6 py-6 flex flex-col sm:flex-row items-start sm:items-center gap-6">
+      <div className="relative z-10 px-8 py-8 flex flex-col sm:flex-row items-start sm:items-center gap-8">
         {/* Heading */}
         <div className="sm:w-44 flex-shrink-0">
           <h2
@@ -74,7 +74,7 @@ export function StatisticsSection() {
         />
 
         {/* Stats */}
-        <div className="flex flex-wrap gap-5 sm:gap-8 flex-1">
+        <div className="flex flex-wrap gap-6 sm:gap-10 flex-1">
           {STATISTICS.map((stat) => {
             const IconComponent = ICON_MAP[stat.icon as IconName];
             return (

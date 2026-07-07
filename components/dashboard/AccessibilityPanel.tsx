@@ -10,12 +10,12 @@ export function AccessibilityPanel() {
 
   return (
     <section
-      className="rounded-xl px-3 py-3 mb-1"
+      className="rounded-xl px-3.5 py-4 mb-2"
       style={{ background: "rgba(255,255,255,0.05)" }}
       aria-label="Accessibility controls"
     >
       {/* Label */}
-      <div className="flex items-center gap-2 mb-3">
+      <div className="flex items-center gap-2 mb-4">
         <Accessibility
           size={13}
           className="text-[#64748B]"
@@ -27,8 +27,8 @@ export function AccessibilityPanel() {
       </div>
 
       {/* Text size */}
-      <div className="mb-3">
-        <p className="text-[11px] text-[#64748B] mb-1.5 font-medium">
+      <div className="mb-4">
+        <p className="text-[11px] text-[#64748B] mb-2 font-medium">
           Text Size
         </p>
         <div
@@ -66,7 +66,7 @@ export function AccessibilityPanel() {
       </div>
 
       {/* High contrast */}
-      <div className="flex items-center justify-between mb-2.5">
+      <div className="flex items-center justify-between mb-3.5">
         <span className="text-[11px] text-[#64748B] font-medium">
           High Contrast
         </span>

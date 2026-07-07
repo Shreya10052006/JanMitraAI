@@ -115,10 +115,10 @@ export default function SchemesPage() {
 
   return (
     <div className="overflow-y-auto h-full" id="main-content">
-      <div className="px-6 py-5 space-y-5 max-w-[1280px]">
+      <div className="px-10 py-8 space-y-8 max-w-[1600px] mx-auto">
 
         {/* ── Hero ── */}
-        <div className="relative rounded-2xl overflow-hidden" style={{ minHeight: "140px" }}>
+        <div className="relative rounded-[28px] overflow-hidden" style={{ minHeight: "150px" }}>
           <div className="absolute inset-0" style={{ background: "linear-gradient(135deg,#F5F3FF,#EDE9FE 25%,#FFF7ED 70%,#FFFBEB)" }} aria-hidden="true" />
           <div className="absolute inset-0 pointer-events-none" aria-hidden="true"
             style={{ WebkitMaskImage: "linear-gradient(to right,transparent 36%,rgba(0,0,0,0.4) 52%,black 75%)", maskImage: "linear-gradient(to right,transparent 36%,rgba(0,0,0,0.4) 52%,black 75%)" }}>
@@ -126,7 +126,7 @@ export default function SchemesPage() {
           </div>
           <div className="absolute inset-0" style={{ background: "linear-gradient(to right,rgba(245,243,255,0.97) 0%,rgba(245,243,255,0.88) 34%,transparent 60%)" }} aria-hidden="true" />
 
-          <div className="relative z-10 px-6 py-6">
+          <div className="relative z-10 px-8 py-7">
             <h1 className="text-2xl font-bold text-[#1A1340]">Schemes</h1>
             <p className="text-sm text-[#6B7280] mt-1">Discover government schemes that can benefit you</p>
             <div className="flex items-center gap-3 mt-4">
@@ -188,13 +188,13 @@ export default function SchemesPage() {
         </div>
 
         {/* ── Two-column: main + right sidebar ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_264px] gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_264px] gap-6">
           {/* Main */}
-          <div className="space-y-5">
+          <div className="space-y-6">
             {/* Stats row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" role="list">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4" role="list">
               {STATS.map(s => (
-                <div key={s.label} className="bg-white rounded-2xl border border-[#E8E4F8] px-4 py-3 flex items-center gap-3" role="listitem">
+                <div key={s.label} className="bg-white rounded-[20px] border border-[#E8E4F8] px-5 py-4 flex items-center gap-3" role="listitem">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ backgroundColor: s.iconBg }} aria-hidden="true">{s.icon}</div>
                   <div>
                     <p className="text-[10px] text-[#9CA3AF]">{s.label}</p>
@@ -218,10 +218,10 @@ export default function SchemesPage() {
               {filteredFeatured.length === 0 && (
                 <p className="text-sm text-[#9CA3AF] py-4">No schemes match &ldquo;{search}&rdquo;</p>
               )}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 {filteredFeatured.map((scheme) => (
                   <article key={scheme.id}
-                    className="bg-white rounded-2xl border border-[#E8E4F8] p-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col"
+                    className="bg-white rounded-[20px] border border-[#E8E4F8] p-4 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col"
                     aria-label={scheme.name}>
                     <div className="flex items-start justify-between mb-3">
                       <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl" style={{ backgroundColor: scheme.iconBg }} aria-hidden="true">
@@ -268,10 +268,10 @@ export default function SchemesPage() {
                 <h2 id="by-cat-heading" className="text-base font-bold text-[#1A1340]">Schemes by Category</h2>
                 <button className="text-sm text-[#6B3FFF] hover:underline">View All Categories</button>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
                 {CATEGORY_BUCKETS.map(cat => (
                   <button key={cat.id}
-                    className="bg-white rounded-2xl border border-[#E8E4F8] px-4 py-3 flex items-center gap-3 hover:bg-[#F9F8FF] hover:border-[#6B3FFF]/20 hover:-translate-y-0.5 transition-all duration-200 text-left"
+                    className="bg-white rounded-[20px] border border-[#E8E4F8] px-5 py-4 flex items-center gap-3 hover:bg-[#F9F8FF] hover:border-[#6B3FFF]/20 hover:-translate-y-0.5 transition-all duration-200 text-left"
                     aria-label={`${cat.label}: ${cat.count} schemes`}>
                     <div className="w-9 h-9 rounded-xl bg-[#F3F0FF] flex items-center justify-center flex-shrink-0" aria-hidden="true">
                       <cat.icon size={17} style={{ color: cat.iconColor }} />
@@ -286,7 +286,7 @@ export default function SchemesPage() {
             </section>
 
             {/* Bottom CTA bar */}
-            <div className="bg-[#F3F0FF] rounded-2xl border border-[#E8E4F8] px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="bg-[#F3F0FF] rounded-[20px] border border-[#E8E4F8] px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-[#6B3FFF] flex items-center justify-center flex-shrink-0" aria-hidden="true">
                   <Bot size={18} className="text-white" />
@@ -304,9 +304,9 @@ export default function SchemesPage() {
           </div>
 
           {/* Right sidebar */}
-          <div className="space-y-4">
+          <div className="space-y-5">
             {/* Find Schemes for You */}
-            <section className="bg-white rounded-2xl border border-[#E8E4F8] p-5 relative overflow-hidden" aria-labelledby="find-heading">
+            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6 relative overflow-hidden" aria-labelledby="find-heading">
               <div className="absolute -right-4 -bottom-4 opacity-10 pointer-events-none" aria-hidden="true">
                 <div className="text-8xl">📋</div>
               </div>
@@ -319,7 +319,7 @@ export default function SchemesPage() {
             </section>
 
             {/* Trending Schemes */}
-            <section className="bg-white rounded-2xl border border-[#E8E4F8] p-4" aria-labelledby="trending-heading">
+            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-5" aria-labelledby="trending-heading">
               <div className="flex items-center justify-between mb-3">
                 <h2 id="trending-heading" className="text-sm font-bold text-[#1A1340]">Trending Schemes</h2>
                 <button className="text-xs text-[#6B3FFF] hover:underline">View All</button>
@@ -341,7 +341,7 @@ export default function SchemesPage() {
             </section>
 
             {/* Need Help */}
-            <section className="bg-white rounded-2xl border border-[#E8E4F8] p-4 relative overflow-hidden" aria-labelledby="help-heading">
+            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4 relative overflow-hidden" aria-labelledby="help-heading">
               <div className="absolute -right-2 -bottom-2 text-6xl opacity-10 pointer-events-none" aria-hidden="true">🤖</div>
               <h2 id="help-heading" className="text-sm font-bold text-[#1A1340] mb-1">Need Help?</h2>
               <p className="text-xs text-[#6B7280] mb-3">Our AI Assistant can help you find and understand the right schemes.</p>

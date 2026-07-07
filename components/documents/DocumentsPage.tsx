@@ -177,17 +177,17 @@ export default function DocumentsPage() {
 
   return (
     <div className="overflow-y-auto h-full" id="main-content">
-      <div className="px-6 py-5 space-y-5 max-w-[1280px]">
+      <div className="px-10 py-8 space-y-8 max-w-[1600px] mx-auto">
 
         {/* ── Hero ── */}
-        <div className="relative rounded-2xl overflow-hidden" style={{ minHeight: "130px" }}>
+        <div className="relative rounded-[28px] overflow-hidden" style={{ minHeight: "140px" }}>
           <div className="absolute inset-0" style={{ background: "linear-gradient(135deg,#F5F3FF,#EDE9FE 25%,#FFF7ED 70%,#FFFBEB)" }} aria-hidden="true" />
           <div className="absolute inset-0 pointer-events-none" aria-hidden="true"
             style={{ WebkitMaskImage: "linear-gradient(to right,transparent 38%,rgba(0,0,0,0.45) 55%,black 78%)", maskImage: "linear-gradient(to right,transparent 38%,rgba(0,0,0,0.45) 55%,black 78%)" }}>
             <Image src="/images/india-gate.png" alt="" fill className="object-cover object-right-bottom" quality={75} sizes="1200px" />
           </div>
           <div className="absolute inset-0" style={{ background: "linear-gradient(to right,rgba(245,243,255,0.97) 0%,rgba(245,243,255,0.88) 36%,transparent 62%)" }} aria-hidden="true" />
-          <div className="relative z-10 px-6 py-6">
+          <div className="relative z-10 px-8 py-7">
             <h1 className="text-2xl font-bold text-[#1A1340]">Documents</h1>
             <p className="text-sm text-[#6B7280] mt-1">Get personalized document guidance and manage your documents easily.</p>
             <div className="flex items-center gap-2 mt-4 max-w-lg">
@@ -220,7 +220,7 @@ export default function DocumentsPage() {
         )}
 
         {/* ── 3 feature cards ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           {[
             { icon: Bot, iconBg: "#EDE9FE", iconColor: "#6B3FFF", title: "AI Document Advisor", sub: "Get personalized document list based on your needs.", color: "#6B3FFF", onClick: () => loadChecklist(selectedService.id) },
             { icon: Shield, iconBg: "#D1FAE5", iconColor: "#10B981", title: "Check Eligibility", sub: "Check documents required for your eligibility.", color: "#10B981", onClick: () => { window.location.href = "/schemes"; } },
@@ -228,7 +228,7 @@ export default function DocumentsPage() {
           ].map(({ icon: Icon, iconBg, iconColor, title, sub, color, onClick }) => (
             <button key={title}
               onClick={onClick}
-              className="flex items-start gap-4 p-5 bg-white rounded-2xl border border-[#E8E4F8] hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 text-left group"
+              className="flex items-start gap-4 p-5 bg-white rounded-[20px] border border-[#E8E4F8] hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 text-left group"
               aria-label={title}>
               <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: iconBg }} aria-hidden="true">
                 <Icon size={22} style={{ color: iconColor }} />
@@ -245,11 +245,11 @@ export default function DocumentsPage() {
         </div>
 
         {/* ── Main grid ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
           {/* LEFT */}
-          <div className="space-y-5">
+          <div className="space-y-6">
             {/* AI Recommended */}
-            <section className="bg-white rounded-2xl border border-[#E8E4F8] overflow-hidden" aria-labelledby="ai-rec-heading">
+            <section className="bg-white rounded-[20px] border border-[#E8E4F8] overflow-hidden" aria-labelledby="ai-rec-heading">
               <div className="px-5 py-4 border-b border-[#F3F0FF]">
                 <div className="flex items-center gap-2 mb-0.5">
                   <Sparkles size={15} className="text-[#6B3FFF]" aria-hidden="true" />
@@ -410,11 +410,11 @@ export default function DocumentsPage() {
                 <h2 id="recent-docs-heading" className="text-sm font-bold text-[#1A1340]">Recently Uploaded Documents</h2>
                 <button onClick={() => setSearch("")} className="text-xs text-[#6B3FFF] hover:underline">View All</button>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {filteredDocs.slice(0, 8).map((doc) => (
                   <div
                     key={doc.id}
-                    className="bg-white rounded-2xl border border-[#E8E4F8] p-3 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group cursor-pointer relative"
+                    className="bg-white rounded-[20px] border border-[#E8E4F8] p-3 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group cursor-pointer relative"
                     role="listitem"
                   >
                     {"isLocal" in doc && (
@@ -442,9 +442,9 @@ export default function DocumentsPage() {
           </div>
 
           {/* RIGHT SIDEBAR */}
-          <div className="space-y-4">
+          <div className="space-y-5">
             {/* Document Checklist Progress */}
-            <section className="bg-white rounded-2xl border border-[#E8E4F8] p-5" aria-labelledby="checklist-heading">
+            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-5" aria-labelledby="checklist-heading">
               <div className="flex items-center justify-between mb-4">
                 <h2 id="checklist-heading" className="text-sm font-bold text-[#1A1340]">Document Checklist</h2>
                 <button className="text-xs text-[#6B3FFF] hover:underline" onClick={() => loadChecklist(selectedService.id)}>Refresh</button>
@@ -483,7 +483,7 @@ export default function DocumentsPage() {
             </section>
 
             {/* Upload & AI Verify */}
-            <section className="bg-white rounded-2xl border border-[#E8E4F8] p-5" aria-labelledby="upload-heading">
+            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-5" aria-labelledby="upload-heading">
               <h2 id="upload-heading" className="text-sm font-bold text-[#1A1340] mb-3">Upload &amp; AI Verify</h2>
               <input ref={fileRef} type="file" accept=".pdf,.jpg,.jpeg,.png" className="sr-only" aria-label="Upload document" onChange={handleFileChange} />
               <div
@@ -516,7 +516,7 @@ export default function DocumentsPage() {
             </section>
 
             {/* Quick Links */}
-            <section className="bg-white rounded-2xl border border-[#E8E4F8] p-4" aria-labelledby="qlinks-heading">
+            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="qlinks-heading">
               <div className="flex items-center justify-between mb-3">
                 <h2 id="qlinks-heading" className="text-sm font-bold text-[#1A1340]">Quick Links</h2>
               </div>

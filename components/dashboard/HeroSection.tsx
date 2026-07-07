@@ -30,8 +30,8 @@ export function HeroSection() {
 
   return (
     <section
-      className="relative w-full rounded-2xl overflow-hidden"
-      style={{ minHeight: "288px" }}
+      className="relative w-full rounded-[28px] overflow-hidden"
+      style={{ minHeight: "300px" }}
       aria-label="JanMitra AI search and welcome section"
     >
       {/* Base gradient background */}
@@ -104,16 +104,16 @@ export function HeroSection() {
       </div>
 
       {/* Main content */}
-      <div className="relative z-10 px-8 py-8" style={{ maxWidth: "62%" }}>
+      <div className="relative z-10 px-10 py-10" style={{ maxWidth: "62%" }}>
         {/* Greeting */}
-        <h1 className="text-[2rem] font-bold text-[#1A1340] mb-2 leading-tight tracking-tight">
+        <h1 className="text-[2rem] font-bold text-[#1A1340] mb-3 leading-tight tracking-tight">
           Namaste, Shreya!{" "}
           <span role="img" aria-label="Namaste hands">
             🙏
           </span>
         </h1>
 
-        <p className="text-[15px] text-[#4B5563] mb-5 leading-relaxed">
+        <p className="text-[15px] text-[#4B5563] mb-6 leading-relaxed">
           I&apos;m JanMitra AI, here to{" "}
           <span
             className="font-semibold"
@@ -181,7 +181,7 @@ export function HeroSection() {
 
         {/* Prompt chips */}
         <div
-          className="flex flex-wrap items-center gap-2 mt-4"
+          className="flex flex-wrap items-center gap-2 mt-5"
           role="group"
           aria-label="Suggested queries"
         >

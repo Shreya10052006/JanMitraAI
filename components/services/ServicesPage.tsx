@@ -124,9 +124,9 @@ export default function ServicesPage() {
 
   return (
     <div className="overflow-y-auto h-full" id="main-content">
-      <div className="px-6 py-5 space-y-5 max-w-[1280px]">
+      <div className="px-10 py-8 space-y-8 max-w-[1600px] mx-auto">
         {/* ── Hero header ── */}
-        <div className="relative rounded-2xl overflow-hidden" style={{ minHeight: "140px" }}>
+        <div className="relative rounded-[28px] overflow-hidden" style={{ minHeight: "150px" }}>
           <div className="absolute inset-0" style={{ background: "linear-gradient(135deg,#F5F3FF,#EDE9FE 25%,#FFF7ED 70%,#FFFBEB)" }} aria-hidden="true" />
           <div
             className="absolute inset-0 pointer-events-none"
@@ -146,7 +146,7 @@ export default function ServicesPage() {
           {/* Indian flag emoji top-right */}
           <div className="absolute top-4 right-6 text-3xl" aria-hidden="true">🇮🇳</div>
 
-          <div className="relative z-10 px-6 py-6">
+          <div className="relative z-10 px-8 py-7">
             <h1 className="text-2xl font-bold text-[#1A1340]">Government Services</h1>
             <p className="text-sm text-[#6B7280] mt-1">
               Find and access{" "}
@@ -191,11 +191,11 @@ export default function ServicesPage() {
               View All Categories <ChevronRight size={14} aria-hidden="true" />
             </button>
           </div>
-          <div className="grid grid-cols-5 sm:grid-cols-7 lg:grid-cols-9 gap-3" role="list">
+          <div className="grid grid-cols-5 sm:grid-cols-7 lg:grid-cols-9 gap-4" role="list">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.id}
-                className="flex flex-col items-center gap-2 p-3 bg-white rounded-2xl border border-[#E8E4F8] hover:border-[#6B3FFF]/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group"
+                className="flex flex-col items-center gap-2 p-3 bg-white rounded-[20px] border border-[#E8E4F8] hover:border-[#6B3FFF]/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group"
                 role="listitem"
                 aria-label={cat.label.replace("\n", " ")}
               >
@@ -211,7 +211,7 @@ export default function ServicesPage() {
         </section>
 
         {/* ── Three-column: Top Services | Service Detail | Right Sidebar ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr_240px] gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr_240px] gap-5">
           {/* Top Services list */}
           <aside aria-labelledby="top-services-heading">
             <div className="flex items-center justify-between mb-3">
@@ -258,9 +258,9 @@ export default function ServicesPage() {
           </aside>
 
           {/* Service Detail Panel */}
-          <article className="bg-white rounded-2xl border border-[#E8E4F8] overflow-hidden" aria-label={`${selectedService.title} details`}>
+          <article className="bg-white rounded-[20px] border border-[#E8E4F8] overflow-hidden" aria-label={`${selectedService.title} details`}>
             {/* Back + title */}
-            <div className="px-5 pt-5 pb-0">
+            <div className="px-6 pt-6 pb-0">
               <button className="flex items-center gap-1.5 text-xs text-[#6B7280] hover:text-[#6B3FFF] transition-colors mb-3" aria-label="Back to all services">
                 <ArrowLeft size={13} aria-hidden="true" /> Back to all services
               </button>
@@ -297,7 +297,7 @@ export default function ServicesPage() {
               </div>
 
               {/* Quick info row */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-5">
                 {[
                   { icon: Users, label: "Who can apply", value: selectedService.whoCanApply },
                   { icon: Star, label: "Validity", value: selectedService.validity },
@@ -343,7 +343,7 @@ export default function ServicesPage() {
             </div>
 
             {/* Tab content */}
-            <div className="px-5 py-4" role="tabpanel">
+            <div className="px-6 py-5" role="tabpanel">
               {activeTab === "Overview" && (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
@@ -407,7 +407,7 @@ export default function ServicesPage() {
             </div>
 
             {/* CTA buttons */}
-            <div className="px-5 pb-5 flex items-center gap-3">
+            <div className="px-6 pb-6 flex items-center gap-3">
               <a
                 href="https://parivahan.gov.in"
                 target="_blank"
@@ -425,9 +425,9 @@ export default function ServicesPage() {
           </article>
 
           {/* Right sidebar */}
-          <aside className="space-y-4" aria-label="Service sidebar">
+          <aside className="space-y-5" aria-label="Service sidebar">
             {/* AI Eligibility Check */}
-            <section className="bg-white rounded-2xl border border-[#E8E4F8] p-4" aria-labelledby="elig-heading">
+            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-5" aria-labelledby="elig-heading">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles size={15} className="text-[#6B3FFF]" aria-hidden="true" />
                 <h2 id="elig-heading" className="text-sm font-semibold text-[#1A1340]">AI Eligibility Check</h2>
@@ -443,7 +443,7 @@ export default function ServicesPage() {
             </section>
 
             {/* You may also need */}
-            <section className="bg-white rounded-2xl border border-[#E8E4F8] p-4" aria-labelledby="also-heading">
+            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-5" aria-labelledby="also-heading">
               <h2 id="also-heading" className="text-sm font-semibold text-[#1A1340] mb-3">You may also need</h2>
               <div className="space-y-1">
                 {YOU_MAY_NEED.map((s) => (
@@ -459,7 +459,7 @@ export default function ServicesPage() {
             </section>
 
             {/* Need help */}
-            <section className="bg-white rounded-2xl border border-[#E8E4F8] p-4" aria-labelledby="help-heading">
+            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-5" aria-labelledby="help-heading">
               <h2 id="help-heading" className="text-sm font-semibold text-[#1A1340] mb-1">Need help?</h2>
               <p className="text-xs text-[#6B7280] mb-3">Chat with JanMitra AI for step-by-step guidance.</p>
               <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-[#6B3FFF]/30 text-xs font-semibold text-[#6B3FFF] hover:bg-[#F3F0FF] transition-all" aria-label="Chat with AI">
@@ -470,7 +470,7 @@ export default function ServicesPage() {
         </div>
 
         {/* Trust footer */}
-        <section className="bg-white rounded-2xl border border-[#E8E4F8] px-6 py-5" aria-label="Security and trust">
+        <section className="bg-white rounded-[20px] border border-[#E8E4F8] px-6 py-5" aria-label="Security and trust">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 rounded-xl bg-[#EDE9FE] flex items-center justify-center flex-shrink-0" aria-hidden="true">

@@ -133,7 +133,7 @@ export default function AIAssistantPage() {
       {/* Chat area */}
       <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
         {/* Header */}
-        <div className="px-6 pt-5 pb-4 border-b border-[#F3F0FF] flex-shrink-0">
+        <div className="px-8 pt-6 pb-5 border-b border-[#F3F0FF] flex-shrink-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-[#EDE9FE] flex items-center justify-center" aria-hidden="true">
@@ -155,12 +155,12 @@ export default function AIAssistantPage() {
         </div>
 
         {/* Messages scroll area */}
-        <div className="flex-1 overflow-y-auto px-6 py-5 space-y-5" role="log" aria-label="Chat messages" aria-live="polite">
+        <div className="flex-1 overflow-y-auto px-8 py-8 space-y-7" role="log" aria-label="Chat messages" aria-live="polite">
           {messages.map((msg) =>
             msg.role === "user" ? (
               <div key={msg.id} className="flex flex-col items-end gap-1">
                 <div
-                  className="max-w-[72%] px-4 py-3 rounded-2xl rounded-tr-sm text-sm text-white leading-relaxed"
+                  className="max-w-[70%] px-5 py-3.5 rounded-2xl rounded-tr-sm text-sm text-white leading-relaxed"
                   style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
                 >
                   {msg.content}
@@ -186,14 +186,14 @@ export default function AIAssistantPage() {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="bg-white border border-[#E8E4F8] rounded-2xl rounded-tl-sm px-4 py-3 inline-block max-w-[90%]">
+                  <div className="bg-white border border-[#E8E4F8] rounded-2xl rounded-tl-sm px-5 py-3.5 inline-block max-w-[90%]">
                     <p className="text-sm text-[#1A1340] leading-relaxed whitespace-pre-line">{msg.content}</p>
                   </div>
 
                   {/* Driving license card */}
                   {msg.card === "driving-license" && (
                     <div className="mt-3 space-y-3 max-w-[90%]">
-                      <div className="bg-white border border-[#E8E4F8] rounded-2xl p-4">
+                      <div className="bg-white border border-[#E8E4F8] rounded-2xl p-5">
                         <div className="flex items-center gap-2 mb-4">
                           <div className="w-7 h-7 rounded-lg bg-[#EDE9FE] flex items-center justify-center" aria-hidden="true">
                             <FileText size={14} className="text-[#6B3FFF]" />
@@ -215,7 +215,7 @@ export default function AIAssistantPage() {
                           ))}
                         </div>
                       </div>
-                      <div className="bg-white border border-[#E8E4F8] rounded-2xl p-4">
+                      <div className="bg-white border border-[#E8E4F8] rounded-2xl p-5">
                         <div className="grid grid-cols-2 gap-4">
                           <div>
                             <h4 className="font-semibold text-sm text-[#1A1340] mb-3 flex items-center gap-2">
@@ -356,7 +356,7 @@ export default function AIAssistantPage() {
               <div className="w-8 h-8 rounded-full bg-[#1A1340] flex items-center justify-center flex-shrink-0" aria-hidden="true">
                 <Sparkles size={14} className="text-[#8B5CF6]" />
               </div>
-              <div className="bg-white border border-[#E8E4F8] rounded-2xl px-4 py-3">
+              <div className="bg-white border border-[#E8E4F8] rounded-2xl px-5 py-3.5">
                 <div className="flex gap-1 items-center" aria-label="AI is typing" role="status">
                   {[0, 1, 2].map((i) => (
                     <span
@@ -386,7 +386,7 @@ export default function AIAssistantPage() {
         </div>
 
         {/* Follow-up chips */}
-        <div className="px-6 py-2 flex items-center gap-2 flex-wrap border-t border-[#F3F0FF]">
+        <div className="px-8 py-3 flex items-center gap-2 flex-wrap border-t border-[#F3F0FF]">
           {FOLLOW_UP_CHIPS.map((chip) => (
             <button
               key={chip}
@@ -407,8 +407,8 @@ export default function AIAssistantPage() {
         </div>
 
         {/* Input bar */}
-        <div className="px-6 py-3 border-t border-[#E8E4F8] flex-shrink-0">
-          <div className="flex items-end gap-3 bg-white rounded-2xl border border-[#E8E4F8] shadow-sm px-4 py-3">
+        <div className="px-8 py-5 border-t border-[#E8E4F8] flex-shrink-0">
+          <div className="flex items-end gap-3 bg-white rounded-[20px] border border-[#E8E4F8] shadow-sm px-5 py-3.5">
             <button className="text-[#9CA3AF] hover:text-[#6B3FFF] transition-colors flex-shrink-0" aria-label="Attach file">
               <Paperclip size={18} aria-hidden="true" />
             </button>
@@ -466,8 +466,8 @@ export default function AIAssistantPage() {
       </div>
 
       {/* Right Sidebar */}
-      <aside className="w-72 flex-shrink-0 border-l border-[#E8E4F8] overflow-y-auto hidden xl:block bg-white">
-        <div className="p-5 space-y-5">
+      <aside className="w-80 flex-shrink-0 border-l border-[#E8E4F8] overflow-y-auto hidden xl:block bg-white">
+        <div className="p-6 space-y-6">
           {/* Quick Actions */}
           <section aria-labelledby="qa-heading">
             <div className="flex items-center justify-between mb-3">
@@ -520,7 +520,7 @@ export default function AIAssistantPage() {
 
           {/* Personalized help */}
           <section
-            className="rounded-2xl p-4 relative overflow-hidden"
+            className="rounded-2xl p-5 relative overflow-hidden"
             style={{ background: "linear-gradient(135deg,#F3F0FF,#EDE9FE)" }}
             aria-label="Need personalized help"
           >

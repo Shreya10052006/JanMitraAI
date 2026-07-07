@@ -133,8 +133,8 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
   // Success screen
   if (submittedTicket) {
     return (
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px_240px] gap-4">
-        <section className="bg-white rounded-2xl border border-[#E8E4F8] p-8 flex flex-col items-center text-center">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px_240px] gap-5">
+        <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-8 flex flex-col items-center text-center">
           <div className="w-16 h-16 rounded-2xl bg-[#D1FAE5] flex items-center justify-center mb-4" aria-hidden="true">
             <CheckCircle2 size={32} className="text-[#10B981]" />
           </div>
@@ -186,7 +186,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
           </div>
         </section>
 
-        <section className="bg-white rounded-2xl border border-[#E8E4F8] p-4" aria-labelledby="my-cmp-heading-success">
+        <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="my-cmp-heading-success">
           <div className="flex items-center justify-between mb-3">
             <h2 id="my-cmp-heading-success" className="text-sm font-semibold text-[#1A1340]">My Complaints</h2>
             <button onClick={onViewComplaints} className="text-xs text-[#6B3FFF] hover:underline">View All</button>
@@ -214,9 +214,9 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px_240px] gap-4">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px_240px] gap-5">
       {/* ── Form ── */}
-      <section className="bg-white rounded-2xl border border-[#E8E4F8] p-5 space-y-5" aria-labelledby="report-heading">
+      <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6 space-y-6" aria-labelledby="report-heading">
         <div>
           <h2 id="report-heading" className="text-base font-bold text-[#1A1340]">Report a New Issue</h2>
           <p className="text-xs text-[#6B7280] mt-0.5">Provide details about the issue. Our AI will help route it to the right department.</p>
@@ -383,7 +383,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
       </section>
 
       {/* ── AI Analysis Preview ── */}
-      <section className="bg-white rounded-2xl border border-[#E8E4F8] p-5 space-y-4" aria-labelledby="ai-preview-heading">
+      <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6 space-y-5" aria-labelledby="ai-preview-heading">
         <div>
           <h2 id="ai-preview-heading" className="text-base font-bold text-[#1A1340]">AI Analysis &amp; Preview</h2>
           <p className="text-xs text-[#6B7280] mt-0.5">Review the details before submission</p>
@@ -501,9 +501,9 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
       </section>
 
       {/* ── Right sidebar ── */}
-      <aside className="space-y-4" aria-label="Complaints sidebar">
+      <aside className="space-y-5" aria-label="Complaints sidebar">
         {/* My Complaints mini list */}
-        <section className="bg-white rounded-2xl border border-[#E8E4F8] p-4" aria-labelledby="my-cmp-heading">
+        <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="my-cmp-heading">
           <div className="flex items-center justify-between mb-3">
             <h2 id="my-cmp-heading" className="text-sm font-semibold text-[#1A1340]">My Complaints</h2>
             <button onClick={onViewComplaints} className="text-xs text-[#6B3FFF] hover:underline">View All</button>
@@ -527,7 +527,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
         </section>
 
         {/* Heatmap mock */}
-        <section className="bg-white rounded-2xl border border-[#E8E4F8] overflow-hidden" aria-labelledby="heatmap-heading">
+        <section className="bg-white rounded-[20px] border border-[#E8E4F8] overflow-hidden" aria-labelledby="heatmap-heading">
           <div className="flex items-center justify-between px-4 py-3 border-b border-[#F3F0FF]">
             <h2 id="heatmap-heading" className="text-sm font-semibold text-[#1A1340]">Live Issue Heatmap</h2>
             <button className="text-xs text-[#6B3FFF] hover:underline">View Full Map</button>
@@ -558,7 +558,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
         </section>
 
         {/* Make bigger impact */}
-        <section className="bg-white rounded-2xl border border-[#E8E4F8] p-4" aria-labelledby="impact-heading">
+        <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="impact-heading">
           <h2 id="impact-heading" className="text-sm font-semibold text-[#1A1340] mb-1">Make a Bigger Impact!</h2>
           <p className="text-xs text-[#6B7280] mb-3">Invite your friends and neighbors to report issues and create a better community together.</p>
           <button

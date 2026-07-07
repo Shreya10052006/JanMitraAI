@@ -7,7 +7,7 @@ interface PageHeroProps {
 
 export function PageHero({ title, subtitle }: PageHeroProps) {
   return (
-    <div className="relative rounded-2xl overflow-hidden mb-6" style={{ minHeight: "130px" }}>
+    <div className="relative rounded-[28px] overflow-hidden mb-8" style={{ minHeight: "140px" }}>
       {/* Gradient base */}
       <div
         className="absolute inset-0"
@@ -46,9 +46,9 @@ export function PageHero({ title, subtitle }: PageHeroProps) {
         }}
         aria-hidden="true"
       />
-      <div className="relative z-10 px-6 py-6">
+      <div className="relative z-10 px-8 py-8">
         <h1 className="text-2xl font-bold text-[#1A1340]">{title}</h1>
-        <p className="text-sm text-[#6B7280] mt-1">{subtitle}</p>
+        <p className="text-sm text-[#6B7280] mt-1.5">{subtitle}</p>
       </div>
     </div>
   );

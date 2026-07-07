@@ -11,16 +11,16 @@ export default function HomePage() {
       id="main-content"
       aria-label="Home Dashboard"
     >
-      <div className="px-6 py-5 space-y-5 max-w-[1280px]">
+      <div className="px-10 py-8 space-y-8 max-w-[1600px] mx-auto">
         <HeroSection />
         <QuickActions />
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <RecentActivity />
           <AISuggestions />
         </div>
         <StatisticsSection />
         {/* Bottom spacing */}
-        <div className="h-2" aria-hidden="true" />
+        <div className="h-4" aria-hidden="true" />
       </div>
     </main>
   );

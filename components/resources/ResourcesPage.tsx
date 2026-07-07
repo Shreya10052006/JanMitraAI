@@ -104,10 +104,10 @@ export default function ResourcesPage() {
 
   return (
     <div className="overflow-y-auto h-full" id="main-content">
-      <div className="px-6 py-5 space-y-5 max-w-[1280px]">
+      <div className="px-10 py-8 space-y-8 max-w-[1600px] mx-auto">
 
         {/* ── Hero ── */}
-        <div className="relative rounded-2xl overflow-hidden" style={{ minHeight: "155px" }}>
+        <div className="relative rounded-[28px] overflow-hidden" style={{ minHeight: "165px" }}>
           <div className="absolute inset-0" style={{ background: "linear-gradient(135deg,#F5F3FF,#EDE9FE 25%,#FFF7ED 70%,#FFFBEB)" }} aria-hidden="true" />
           <div className="absolute inset-0 pointer-events-none" aria-hidden="true"
             style={{ WebkitMaskImage: "linear-gradient(to right,transparent 35%,rgba(0,0,0,0.4) 50%,black 72%)", maskImage: "linear-gradient(to right,transparent 35%,rgba(0,0,0,0.4) 50%,black 72%)" }}>
@@ -115,7 +115,7 @@ export default function ResourcesPage() {
           </div>
           <div className="absolute inset-0" style={{ background: "linear-gradient(to right,rgba(245,243,255,0.97) 0%,rgba(245,243,255,0.88) 33%,transparent 58%)" }} aria-hidden="true" />
 
-          <div className="relative z-10 px-6 py-6">
+          <div className="relative z-10 px-8 py-7">
             <h1 className="text-2xl font-bold text-[#1A1340]">Resources</h1>
             <p className="text-sm text-[#6B7280] mt-1">Curated information, guides and tools to help you stay informed</p>
 
@@ -155,19 +155,19 @@ export default function ResourcesPage() {
         </div>
 
         {/* ── Two-column layout ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_256px] gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_256px] gap-6">
           {/* Main */}
-          <div className="space-y-5">
+          <div className="space-y-6">
             {/* Featured Resources */}
             <section aria-labelledby="featured-res-heading">
               <div className="flex items-center justify-between mb-4">
                 <h2 id="featured-res-heading" className="text-base font-bold text-[#1A1340]">Featured Resources</h2>
                 <button className="text-sm text-[#6B3FFF] hover:underline">View All</button>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 {FEATURED_RESOURCES.map(res => (
                   <article key={res.id}
-                    className="bg-white rounded-2xl border border-[#E8E4F8] p-4 flex flex-col hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+                    className="bg-white rounded-[20px] border border-[#E8E4F8] p-4 flex flex-col hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
                     aria-label={res.title}>
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: res.iconBg }} aria-hidden="true">
@@ -189,10 +189,10 @@ export default function ResourcesPage() {
             {/* Quick Links */}
             <section aria-labelledby="quick-links-heading">
               <h2 id="quick-links-heading" className="text-base font-bold text-[#1A1340] mb-4">Quick Links</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {QUICK_LINKS.map(link => (
                   <button key={link.id}
-                    className="flex items-center gap-3 p-4 bg-white rounded-2xl border border-[#E8E4F8] hover:bg-[#F9F8FF] hover:border-[#6B3FFF]/20 hover:-translate-y-0.5 transition-all duration-200 text-left group"
+                    className="flex items-center gap-4 p-5 bg-white rounded-[20px] border border-[#E8E4F8] hover:bg-[#F9F8FF] hover:border-[#6B3FFF]/20 hover:-translate-y-0.5 transition-all duration-200 text-left group"
                     aria-label={link.label}>
                     <div className="w-10 h-10 rounded-xl text-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: link.iconBg }} aria-hidden="true">
                       {link.icon}
@@ -208,7 +208,7 @@ export default function ResourcesPage() {
             </section>
 
             {/* Footer contact bar */}
-            <div className="bg-white rounded-2xl border border-[#E8E4F8] px-5 py-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+            <div className="bg-white rounded-[20px] border border-[#E8E4F8] px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <div className="flex items-center gap-3 flex-1">
                 <div className="w-10 h-10 rounded-xl bg-[#EDE9FE] flex items-center justify-center flex-shrink-0" aria-hidden="true">
                   <HelpCircle size={18} className="text-[#6B3FFF]" />
@@ -242,9 +242,9 @@ export default function ResourcesPage() {
           </div>
 
           {/* Right sidebar */}
-          <div className="space-y-4">
+          <div className="space-y-5">
             {/* Help & Support */}
-            <section className="bg-white rounded-2xl border border-[#E8E4F8] p-4" aria-labelledby="help-support-heading">
+            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-5" aria-labelledby="help-support-heading">
               <h2 id="help-support-heading" className="text-sm font-bold text-[#1A1340] mb-0.5">Help &amp; Support</h2>
               <p className="text-xs text-[#9CA3AF] mb-3">Need help finding something? We&apos;re here for you.</p>
               <div className="space-y-2">
@@ -266,7 +266,7 @@ export default function ResourcesPage() {
             </section>
 
             {/* Popular Downloads */}
-            <section className="bg-white rounded-2xl border border-[#E8E4F8] p-4" aria-labelledby="downloads-heading">
+            <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-5" aria-labelledby="downloads-heading">
               <div className="flex items-center justify-between mb-3">
                 <h2 id="downloads-heading" className="text-sm font-bold text-[#1A1340]">Popular Downloads</h2>
                 <button className="text-xs text-[#6B3FFF] hover:underline">View All</button>
