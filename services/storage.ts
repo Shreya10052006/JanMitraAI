@@ -1,9 +1,11 @@
 /**
- * Client-side persistence using localStorage with optional IndexedDB upgrade path.
+ * Client-side persistence using localStorage.
  * All functions are safe to call server-side (they check for window availability).
+ * SSR-safe: every function guards with typeof window !== "undefined".
  */
 
 import type { Complaint, ComplaintStatus, ComplaintTimelineEvent } from "@/types";
+import { STORAGE_LIMITS, AI_CONFIG } from "@/lib/constants";
 
 // ─── Storage Keys ────────────────────────────────────────────────────────────
 const KEYS = {
@@ -55,8 +57,8 @@ export function getChatHistory(): StoredMessage[] {
 }
 
 export function saveChatHistory(messages: StoredMessage[]): void {
-  // Keep last 100 messages to avoid storage bloat
-  const trimmed = messages.slice(-100);
+  // Keep last MAX_STORED_MESSAGES messages to avoid storage bloat
+  const trimmed = messages.slice(-AI_CONFIG.MAX_STORED_MESSAGES);
   safeWrite(KEYS.CHAT_HISTORY, trimmed);
 }
 
@@ -68,7 +70,7 @@ export function clearChatHistory(): void {
 // ─── Complaints ───────────────────────────────────────────────────────────────
 
 function getComplaintCounter(): number {
-  return safeRead<number>(KEYS.COMPLAINT_COUNTER, 1452);
+  return safeRead<number>(KEYS.COMPLAINT_COUNTER, STORAGE_LIMITS.COMPLAINT_COUNTER_SEED);
 }
 
 function incrementComplaintCounter(): number {
@@ -191,10 +193,10 @@ export interface UserProfile {
 }
 
 const DEFAULT_PROFILE: UserProfile = {
-  name: "Shreya",
-  fullName: "Shreya Sharma",
-  email: "shreya.sharma@example.com",
-  location: "New Delhi, India",
+  name: "Citizen",
+  fullName: "Citizen User",
+  email: "",
+  location: "India",
   occupation: "",
   income: "",
   age: "",
@@ -299,8 +301,7 @@ export function getRecentActivity(): ActivityItem[] {
 export function addRecentActivity(item: ActivityItem): void {
   const activity = getRecentActivity();
   activity.unshift(item);
-  // Keep last 20 activities
-  safeWrite(KEYS.RECENT_ACTIVITY, activity.slice(0, 20));
+  safeWrite(KEYS.RECENT_ACTIVITY, activity.slice(0, STORAGE_LIMITS.MAX_ACTIVITY_ITEMS));
 }
 
 // ─── Statistics ───────────────────────────────────────────────────────────────

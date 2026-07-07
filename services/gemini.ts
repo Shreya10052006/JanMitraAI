@@ -1,7 +1,18 @@
 /**
- * Gemini AI client — server-side only.
- * Never import this in client components.
+ * services/gemini.ts
+ *
+ * Google Gemini API client — server-side only.
+ *
+ * SECURITY: Never import this module in client components.
+ * The GEMINI_API_KEY is accessed only via process.env and
+ * is never exposed to the browser.
+ *
+ * Smart Bharat alignment: powers AI-driven civic assistance,
+ * complaint categorization, document explanation, and scheme
+ * recommendation using Gemini 1.5 Flash.
  */
+
+import { AI_CONFIG } from "@/lib/constants";
 
 export interface GeminiMessage {
   role: "user" | "model";
@@ -64,7 +75,7 @@ async function callGemini(
   maxTokens = 1024
 ): Promise<string | null> {
   try {
-    const url = buildGeminiUrl("gemini-1.5-flash");
+    const url = buildGeminiUrl(AI_CONFIG.MODEL);
     const body = {
       contents,
       systemInstruction: { parts: [{ text: systemInstruction }] },
@@ -84,7 +95,7 @@ async function callGemini(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
-      signal: AbortSignal.timeout(15000),
+      signal: AbortSignal.timeout(AI_CONFIG.REQUEST_TIMEOUT_MS),
     });
 
     if (!response.ok) {

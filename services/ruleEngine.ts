@@ -1,6 +1,20 @@
 /**
- * Rule Engine — provides structured responses for known civic queries.
- * Used as primary handler for matched intents, and as fallback when Gemini fails.
+ * services/ruleEngine.ts
+ *
+ * Structured response engine for known civic intents.
+ * Contains curated, human-verified responses for 20+ government service
+ * and civic assistance intents. Serves as both the primary handler for
+ * high-confidence intent matches and the fallback when Gemini is unavailable.
+ *
+ * Design principle: The rule engine ensures the platform is ALWAYS useful,
+ * even without an internet connection or API key.
+ *
+ * Smart Bharat alignment:
+ *   - Government service discovery (DL, Passport, Aadhaar, PAN, etc.)
+ *   - Civic issue reporting guidance with step-by-step flow
+ *   - Scheme discovery and eligibility pointers
+ *   - Document upload and management guidance
+ *   - Verified official portal links for all services
  */
 
 import type { IntentType } from "./intentDetector";

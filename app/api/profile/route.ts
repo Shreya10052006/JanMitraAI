@@ -1,45 +1,55 @@
+/**
+ * app/api/profile/route.ts
+ *
+ * Profile validation endpoint.
+ *
+ * GET  — returns the list of supported profile fields
+ * POST — validates profile data before client-side persistence
+ *
+ * Architecture note: profile data is persisted in localStorage
+ * (see services/storage.ts). This route validates data server-side
+ * before the client stores it, ensuring data integrity.
+ *
+ * Smart Bharat alignment:
+ *   - Personalized scheme recommendations based on profile
+ *   - Occupation and income enable targeted benefit matching
+ */
+
 import { NextRequest, NextResponse } from "next/server";
+import { validateProfileRequest } from "@/lib/validation";
 
-export interface ProfileRequestBody {
-  name?: string;
-  fullName?: string;
-  email?: string;
-  location?: string;
-  occupation?: string;
-  income?: string;
-  age?: string;
-  category?: string;
-  notificationsEnabled?: boolean;
-}
+const PROFILE_FIELDS = [
+  "name",
+  "fullName",
+  "email",
+  "location",
+  "occupation",
+  "income",
+  "age",
+  "category",
+  "notificationsEnabled",
+] as const;
 
-// Profile is stored client-side in localStorage.
-// This route validates profile updates for future server-side use.
 export async function GET(): Promise<NextResponse> {
   return NextResponse.json({
     message: "Profile is managed client-side via localStorage",
-    fields: [
-      "name", "fullName", "email", "location",
-      "occupation", "income", "age", "category",
-      "notificationsEnabled",
-    ],
+    fields: PROFILE_FIELDS,
   });
 }
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   try {
-    const body = await request.json() as ProfileRequestBody;
+    const body = await request.json();
+    const { errors, data } = validateProfileRequest(body);
 
-    // Validate fields
-    if (body.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
-      return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
+    if (errors.length > 0) {
+      return NextResponse.json(
+        { error: errors[0].message, field: errors[0].field },
+        { status: 400 }
+      );
     }
 
-    if (body.name && (body.name.trim().length < 1 || body.name.trim().length > 50)) {
-      return NextResponse.json({ error: "Name must be 1–50 characters" }, { status: 400 });
-    }
-
-    // Return validated data back to client for localStorage persistence
-    return NextResponse.json({ success: true, profile: body });
+    return NextResponse.json({ success: true, profile: data });
   } catch {
     return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
   }
