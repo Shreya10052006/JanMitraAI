@@ -6,6 +6,8 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)](https://www.typescriptlang.org)
 [![Gemini AI](https://img.shields.io/badge/Google%20Gemini-API-orange?logo=google)](https://ai.google.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-4.x-38bdf8?logo=tailwindcss)](https://tailwindcss.com)
+[![Tests](https://img.shields.io/badge/Tests-121%20passed-brightgreen?logo=jest)](./TESTING.md)
+[![License](https://img.shields.io/badge/License-Hackathon-purple)](./LICENSE)
 
 ---
 
@@ -238,10 +240,10 @@ JanMitra AI integrates with the **Google Gemini API** for four specific high-val
 ```
 janmitra-ai/
 ├── app/                          # Next.js App Router
-│   ├── api/                      # Server-side API routes (secure)
-│   │   ├── chat/route.ts         # AI chat — hybrid Gemini + rule engine
-│   │   ├── complaints/route.ts   # Complaint categorization
-│   │   ├── documents/route.ts    # Document checklist generation
+│   ├── api/                      # Server-side API routes (secure, Gemini calls here)
+│   │   ├── chat/route.ts         # AI chat — hybrid Gemini + rule engine pipeline
+│   │   ├── complaints/route.ts   # AI-powered complaint categorization
+│   │   ├── documents/route.ts    # AI document checklist generation
 │   │   ├── schemes/route.ts      # Scheme recommendations
 │   │   ├── services/route.ts     # Service search and filtering
 │   │   └── profile/route.ts      # Profile validation
@@ -250,43 +252,53 @@ janmitra-ai/
 │   └── globals.css               # Global styles and CSS variables
 │
 ├── components/                   # React UI components
-│   ├── ai-assistant/             # AI chat interface
+│   ├── ai-assistant/             # AI chat interface with voice input
 │   ├── complaints/               # Report, My Complaints, Track tabs
-│   ├── dashboard/                # Home dashboard
-│   ├── documents/                # Document management
+│   ├── dashboard/                # Home dashboard with stats and AI suggestions
+│   ├── documents/                # Document management with drag-and-drop upload
 │   ├── layout/                   # Sidebar, header, navigation
-│   ├── profile/                  # User profile
+│   ├── profile/                  # User profile with XP and badges
 │   ├── resources/                # Resources directory
-│   ├── schemes/                  # Scheme browser
-│   ├── services/                 # Service directory
+│   ├── schemes/                  # Scheme browser with filters
+│   ├── services/                 # Service directory with 50+ services
 │   └── ui/                       # Shared UI primitives
 │
 ├── hooks/                        # Custom React hooks
 │   ├── useChat.ts                # Chat state + localStorage persistence
 │   ├── useComplaints.ts          # Complaint state + API integration
 │   ├── useBookmarks.ts           # Service/scheme bookmark management
-│   ├── useProfile.ts             # Profile state + stats
+│   ├── useProfile.ts             # Profile state + XP/badge calculations
 │   ├── useLanguage.tsx           # Language selection + persistence
 │   └── useAccessibility.tsx      # Accessibility preferences
 │
 ├── services/                     # Business logic (server + client)
-│   ├── gemini.ts                 # Gemini API client (server-side only)
-│   ├── intentDetector.ts         # Keyword-based intent classification
-│   ├── ruleEngine.ts             # Structured civic responses (25+ intents)
-│   └── storage.ts                # localStorage abstraction layer
+│   ├── gemini.ts                 # Gemini API client (server-side only, SECURE)
+│   ├── intentDetector.ts         # Keyword-based intent classification (25+ intents)
+│   ├── ruleEngine.ts             # Structured civic responses — zero latency
+│   └── storage.ts                # localStorage abstraction (SSR-safe)
 │
 ├── lib/
-│   └── mock-data.ts              # Structured government data (services, schemes, complaints)
+│   ├── constants.ts              # Single source of truth: limits, AI config, languages
+│   ├── validation.ts             # Centralized input validation and sanitization
+│   └── mock-data.ts              # Structured government data (services, schemes)
 │
 ├── types/
 │   └── index.ts                  # TypeScript type definitions
 │
 ├── utils/
-│   └── cn.ts                     # Tailwind class utility + helpers
+│   └── cn.ts                     # Tailwind class utility
 │
-├── public/
-│   └── images/                   # Static assets
+├── tests/                        # Jest test suite (121 tests)
+│   ├── unit/
+│   │   ├── intentDetector.test.ts  # Intent classification tests
+│   │   ├── ruleEngine.test.ts      # Rule engine response tests
+│   │   └── validation.test.ts      # Input validation tests
+│   └── api/
+│       └── chat.test.ts            # Chat API route tests (mocked)
 │
+├── public/images/                # Static assets
+├── jest.config.ts                # Jest configuration
+├── TESTING.md                    # Testing documentation
 ├── .env.local.example            # Required environment variables template
 └── next.config.ts                # Next.js configuration
 ```
@@ -445,6 +457,29 @@ Each component was validated for:
 - ARIA accessibility compliance
 - Graceful error handling and fallback behavior
 - Responsive layout across screen sizes
+
+---
+
+## Testing
+
+JanMitra AI has a comprehensive test suite using **Jest + ts-jest** with **121 tests** across 4 test files.
+
+```bash
+# Run all tests
+npm test
+
+# Run with coverage report
+npm run test:coverage
+```
+
+| Test Suite | Tests | Coverage |
+|-----------|-------|----------|
+| `intentDetector.test.ts` | 30 | Intent classification for all 20+ civic intents |
+| `ruleEngine.test.ts` | 42 | All 22 intent responses + fallback behavior |
+| `validation.test.ts` | 34 | All sanitization and validation functions |
+| `chat.test.ts` (API) | 15 | Full hybrid pipeline with mocked Gemini |
+
+See [TESTING.md](./TESTING.md) for full documentation.
 
 ---
 
