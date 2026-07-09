@@ -5,8 +5,10 @@ import {
   useContext,
   useState,
   useCallback,
+  useEffect,
   type ReactNode,
 } from "react";
+import { getAccessibilityPrefs, saveAccessibilityPrefs } from "@/services/storage";
 import type { AccessibilitySettings } from "@/types";
 
 type AccessibilityContextType = {
@@ -16,17 +18,37 @@ type AccessibilityContextType = {
   toggleVoiceAssistance: () => void;
 };
 
+const DEFAULT_SETTINGS: AccessibilitySettings = {
+  textSize: "md",
+  highContrast: false,
+  voiceAssistance: false,
+};
+
 const AccessibilityContext = createContext<AccessibilityContextType | null>(null);
 
 export function AccessibilityProvider({ children }: { children: ReactNode }) {
-  const [settings, setSettings] = useState<AccessibilitySettings>({
-    textSize: "md",
-    highContrast: false,
-    voiceAssistance: false,
-  });
+  // Starts at defaults on both server and first client render, then loads
+  // the saved preferences after mount to avoid a hydration mismatch (these
+  // values drive rendered classNames/aria-pressed state).
+  const [settings, setSettings] = useState<AccessibilitySettings>(DEFAULT_SETTINGS);
+
+  useEffect(() => {
+    const saved = getAccessibilityPrefs();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSettings(saved);
+    if (saved.highContrast) {
+      document.body.classList.add("high-contrast");
+    }
+    const sizeMap = { sm: "14px", md: "16px", lg: "18px" };
+    document.documentElement.style.fontSize = sizeMap[saved.textSize];
+  }, []);
 
   const setTextSize = useCallback((size: AccessibilitySettings["textSize"]) => {
-    setSettings((prev) => ({ ...prev, textSize: size }));
+    setSettings((prev) => {
+      const next = { ...prev, textSize: size };
+      saveAccessibilityPrefs({ textSize: size });
+      return next;
+    });
     const root = document.documentElement;
     const sizeMap = { sm: "14px", md: "16px", lg: "18px" };
     root.style.fontSize = sizeMap[size];
@@ -40,12 +62,17 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
       } else {
         document.body.classList.remove("high-contrast");
       }
+      saveAccessibilityPrefs({ highContrast: next.highContrast });
       return next;
     });
   }, []);
 
   const toggleVoiceAssistance = useCallback(() => {
-    setSettings((prev) => ({ ...prev, voiceAssistance: !prev.voiceAssistance }));
+    setSettings((prev) => {
+      const next = { ...prev, voiceAssistance: !prev.voiceAssistance };
+      saveAccessibilityPrefs({ voiceAssistance: next.voiceAssistance });
+      return next;
+    });
   }, []);
 
   return (

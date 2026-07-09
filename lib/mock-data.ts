@@ -71,7 +71,7 @@ export const QUICK_ACTIONS: QuickAction[] = [
     label: "Track Complaint",
     description: "Track real-time status of your complaints.",
     icon: "ClipboardList",
-    href: "/complaints",
+    href: "/complaints?tab=track",
     color: "#3B82F6",
     bgColor: "#DBEAFE",
   },
@@ -89,7 +89,7 @@ export const QUICK_ACTIONS: QuickAction[] = [
     label: "Language",
     description: "Change language & preferences.",
     icon: "Globe",
-    href: "/settings",
+    href: "/settings/language",
     color: "#8B5CF6",
     bgColor: "#EDE9FE",
   },
@@ -104,7 +104,7 @@ export const RECENT_ITEMS: RecentItem[] = [
     statusColor: "orange",
     date: "20 May 2026",
     icon: "FileText",
-    href: "/services",
+    href: "/services?service=dl-renewal",
   },
   {
     id: "2",
@@ -114,7 +114,7 @@ export const RECENT_ITEMS: RecentItem[] = [
     statusColor: "green",
     date: "19 May 2026",
     icon: "AlertTriangle",
-    href: "/complaints",
+    href: "/complaints?tab=track&id=CMP-2026-1452",
   },
   {
     id: "3",
@@ -124,7 +124,7 @@ export const RECENT_ITEMS: RecentItem[] = [
     statusColor: "green",
     date: "18 May 2026",
     icon: "Gift",
-    href: "/schemes",
+    href: "/schemes?scheme=pm-kisan",
   },
 ];
 
@@ -135,7 +135,7 @@ export const AI_SUGGESTIONS: AISuggestion[] = [
     description: "Check your eligibility and apply",
     icon: "Leaf",
     iconBg: "#D1FAE5",
-    href: "/schemes",
+    href: "/schemes?scheme=pm-kisan",
   },
   {
     id: "2",
@@ -143,7 +143,7 @@ export const AI_SUGGESTIONS: AISuggestion[] = [
     description: "Your policy expires in 15 days",
     icon: "Shield",
     iconBg: "#DBEAFE",
-    href: "/services",
+    href: "/ai-assistant?q=How do I renew my vehicle insurance%3F",
   },
   {
     id: "3",
@@ -151,7 +151,7 @@ export const AI_SUGGESTIONS: AISuggestion[] = [
     description: "Get your birth certificate online",
     icon: "FileText",
     iconBg: "#D1FAE5",
-    href: "/services",
+    href: "/ai-assistant?q=How do I apply for a birth certificate%3F",
   },
   {
     id: "4",
@@ -159,7 +159,7 @@ export const AI_SUGGESTIONS: AISuggestion[] = [
     description: "Register your business in a few simple steps",
     icon: "Building2",
     iconBg: "#FEF3C7",
-    href: "/services",
+    href: "/ai-assistant?q=How do I register for Udyam (MSME)%3F",
   },
 ];
 

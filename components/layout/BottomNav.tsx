@@ -4,17 +4,26 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Bot, Building2, AlertTriangle, User } from "lucide-react";
 import { cn } from "@/utils/cn";
+import { useLanguage } from "@/hooks/useLanguage";
+import type { TranslationKey } from "@/lib/i18n/translations";
 
-const BOTTOM_NAV_ITEMS = [
-  { id: "home", label: "Home", href: "/", icon: Home },
-  { id: "ai-assistant", label: "AI", href: "/ai-assistant", icon: Bot },
-  { id: "services", label: "Services", href: "/services", icon: Building2 },
-  { id: "complaints", label: "Complaints", href: "/complaints", icon: AlertTriangle },
-  { id: "profile", label: "Profile", href: "/profile", icon: User },
-] as const;
+const BOTTOM_NAV_ITEMS: {
+  id: string;
+  label: string;
+  labelKey: TranslationKey | null;
+  href: string;
+  icon: typeof Home;
+}[] = [
+  { id: "home", label: "Home", labelKey: "nav.home", href: "/", icon: Home },
+  { id: "ai-assistant", label: "AI", labelKey: null, href: "/ai-assistant", icon: Bot },
+  { id: "services", label: "Services", labelKey: "nav.services", href: "/services", icon: Building2 },
+  { id: "complaints", label: "Complaints", labelKey: "nav.complaints", href: "/complaints", icon: AlertTriangle },
+  { id: "profile", label: "Profile", labelKey: "nav.profile", href: "/profile", icon: User },
+];
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   return (
     <nav
@@ -35,11 +44,11 @@ export function BottomNav() {
                   isActive ? "text-[#6B3FFF]" : "text-[#9CA3AF] active:text-[#6B3FFF]"
                 )}
                 aria-current={isActive ? "page" : undefined}
-                aria-label={item.label}
+                aria-label={item.labelKey ? t(item.labelKey) : item.label}
               >
                 <Icon size={22} strokeWidth={isActive ? 2.25 : 2} aria-hidden="true" />
                 <span className={cn("text-[10px] leading-none", isActive ? "font-semibold" : "font-medium")}>
-                  {item.label}
+                  {item.labelKey ? t(item.labelKey) : item.label}
                 </span>
               </Link>
             </li>

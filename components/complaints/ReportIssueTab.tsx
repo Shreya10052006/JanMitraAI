@@ -10,17 +10,22 @@ import { cn } from "@/utils/cn";
 import { useComplaints } from "@/hooks/useComplaints";
 import { useAccessibility } from "@/hooks/useAccessibility";
 import { useVoiceAssistant } from "@/hooks/useVoiceAssistant";
+import { useLanguage } from "@/hooks/useLanguage";
+import { getComplaintsContent } from "@/lib/i18n/content/complaints";
+import { DynamicLocationMap } from "@/components/ui/DynamicLocationMap";
 import type { ComplaintStatus } from "@/types";
 import type { StoredComplaint } from "@/services/storage";
 
-const STATUS_LABELS: Record<ComplaintStatus, string> = {
-  submitted: "Submitted",
-  under_review: "Under Review",
-  assigned: "Assigned",
-  in_progress: "In Progress",
-  resolved: "Resolved",
-  closed: "Closed",
-};
+/** Default map center: New Delhi, used until the citizen picks or locates a spot. */
+const DEFAULT_MAP_CENTER: [number, number] = [28.6139, 77.209];
+
+/** Representative pins for other recently reported issues around the city (category kept in English; label built from translated category at render time). */
+const NEARBY_ISSUE_META = [
+  { lat: 28.6519, lng: 77.1909, place: "Karol Bagh", category: "Street Lighting" },
+  { lat: 28.6129, lng: 77.2295, place: "India Gate", category: "Sanitation & Drainage" },
+  { lat: 28.6315, lng: 77.2167, place: "Connaught Place", category: "Roads & Infrastructure" },
+  { lat: 28.5677, lng: 77.2431, place: "Lajpat Nagar", category: "Water Supply" },
+];
 
 const STATUS_COLORS: Record<ComplaintStatus, string> = {
   submitted: "bg-blue-100 text-blue-700",
@@ -39,7 +44,16 @@ const COMPLAINT_ICONS: Record<string, string> = {
   default: "📋",
 };
 
-const WHEN_OPTIONS = ["Today", "Yesterday", "2 days ago", "3 days ago", "This week", "Last week"];
+const WHEN_OPTION_KEYS = ["Today", "Yesterday", "2 days ago", "3 days ago", "This week", "Last week"];
+
+const STATUS_TRANSLATION_KEY: Record<ComplaintStatus, "status.submitted" | "status.under_review" | "status.assigned" | "status.in_progress" | "status.resolved" | "status.closed"> = {
+  submitted: "status.submitted",
+  under_review: "status.under_review",
+  assigned: "status.assigned",
+  in_progress: "status.in_progress",
+  resolved: "status.resolved",
+  closed: "status.closed",
+};
 
 interface ReportIssueTabProps {
   onViewComplaints: () => void;
@@ -49,6 +63,9 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
   const { complaints, isAnalyzing, analysisResult, analyzeComplaint, submitComplaint, resetAnalysis } = useComplaints();
   const { settings } = useAccessibility();
   const voice = useVoiceAssistant();
+  const { t, currentLanguage } = useLanguage();
+  const content = getComplaintsContent(currentLanguage.code);
+  const r = content.report;
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
   const [when, setWhen] = useState("Today");
@@ -58,6 +75,9 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
   const [submittedTicket, setSubmittedTicket] = useState<StoredComplaint | null>(null);
   const [copiedTicket, setCopiedTicket] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
+  const [mapCenter, setMapCenter] = useState<[number, number]>(DEFAULT_MAP_CENTER);
+  const [pinCoords, setPinCoords] = useState<[number, number] | null>(null);
+  const [mapExpanded, setMapExpanded] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const charCount = description.length;
@@ -80,6 +100,12 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
     resetAnalysis();
   }
 
+  function handleMapLocationSelect(lat: number, lng: number) {
+    setPinCoords([lat, lng]);
+    setMapCenter([lat, lng]);
+    setLocation(`Lat: ${lat.toFixed(4)}, Lng: ${lng.toFixed(4)}, India`);
+  }
+
   function handleUseLocation() {
     if (!navigator.geolocation) {
       setLocation("New Delhi, India");
@@ -88,7 +114,10 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
     setLocationLoading(true);
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        setLocation(`Lat: ${pos.coords.latitude.toFixed(4)}, Lng: ${pos.coords.longitude.toFixed(4)}, India`);
+        const { latitude, longitude } = pos.coords;
+        setLocation(`Lat: ${latitude.toFixed(4)}, Lng: ${longitude.toFixed(4)}, India`);
+        setPinCoords([latitude, longitude]);
+        setMapCenter([latitude, longitude]);
         setLocationLoading(false);
       },
       () => {
@@ -152,11 +181,11 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
           <div className="w-16 h-16 rounded-2xl bg-[#D1FAE5] flex items-center justify-center mb-4" aria-hidden="true">
             <CheckCircle2 size={32} className="text-[#10B981]" />
           </div>
-          <h2 className="text-xl font-bold text-[#1A1340] mb-2">Complaint Submitted!</h2>
-          <p className="text-sm text-[#6B7280] mb-6">Your complaint has been successfully registered and routed to the appropriate department.</p>
+          <h2 className="text-xl font-bold text-[#1A1340] mb-2">{r.successTitle}</h2>
+          <p className="text-sm text-[#6B7280] mb-6">{r.successDesc}</p>
 
           <div className="bg-[#F3F0FF] rounded-xl px-6 py-4 mb-6 w-full max-w-sm">
-            <p className="text-xs text-[#9CA3AF] mb-2">Your Complaint ID</p>
+            <p className="text-xs text-[#9CA3AF] mb-2">{r.yourComplaintId}</p>
             <div className="flex items-center justify-center gap-2">
               <p className="text-2xl font-bold text-[#6B3FFF]">{submittedTicket.ticketId}</p>
               <button
@@ -171,10 +200,10 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
 
           <div className="grid grid-cols-2 gap-4 w-full max-w-sm mb-6">
             {[
-              { label: "Category", value: submittedTicket.category },
-              { label: "Priority", value: submittedTicket.priority.charAt(0).toUpperCase() + submittedTicket.priority.slice(1) },
-              { label: "Department", value: submittedTicket.department ?? "Municipal Corporation" },
-              { label: "Status", value: "Submitted" },
+              { label: r.category, value: content.categoryLabels[submittedTicket.category] ?? submittedTicket.category },
+              { label: r.priority, value: submittedTicket.priority.charAt(0).toUpperCase() + submittedTicket.priority.slice(1) },
+              { label: r.department, value: submittedTicket.department ?? "Municipal Corporation" },
+              { label: r.status, value: t("status.submitted") },
             ].map(({ label, value }) => (
               <div key={label} className="bg-[#F9F8FF] rounded-xl p-4 text-left">
                 <p className="text-[10px] text-[#9CA3AF]">{label}</p>
@@ -189,21 +218,21 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
               className="px-6 py-4 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 flex items-center justify-center w-full sm:w-auto"
               style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
             >
-              Track Complaint
+              {r.trackComplaintBtn}
             </button>
             <button
               onClick={handleReset}
               className="px-6 py-4 rounded-xl border border-[#E8E4F8] text-sm font-medium text-[#374151] hover:bg-[#F9F8FF] transition-all flex items-center justify-center w-full sm:w-auto"
             >
-              Report Another
+              {r.reportAnother}
             </button>
           </div>
         </section>
 
         <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="my-cmp-heading-success">
           <div className="flex items-center justify-between mb-4">
-            <h2 id="my-cmp-heading-success" className="text-sm font-semibold text-[#1A1340]">My Complaints</h2>
-            <button onClick={onViewComplaints} className="text-xs text-[#6B3FFF] hover:underline">View All</button>
+            <h2 id="my-cmp-heading-success" className="text-sm font-semibold text-[#1A1340]">{r.myComplaintsHeading}</h2>
+            <button onClick={onViewComplaints} className="text-xs text-[#6B3FFF] hover:underline">{t("common.viewAll")}</button>
           </div>
           <div className="space-y-2">
             {complaints.slice(0, 3).map((c) => (
@@ -212,7 +241,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
                 <div className="flex-1 min-w-0">
                   <p className="text-[11px] font-semibold text-[#6B3FFF] truncate">#{c.ticketId}</p>
                   <p className="text-[11px] text-[#1A1340] truncate">{c.title}</p>
-                  <span className={cn("px-2 py-2 rounded-full text-[9px] font-semibold", STATUS_COLORS[c.status])}>{STATUS_LABELS[c.status]}</span>
+                  <span className={cn("px-2 py-2 rounded-full text-[9px] font-semibold", STATUS_COLORS[c.status])}>{t(STATUS_TRANSLATION_KEY[c.status])}</span>
                 </div>
               </button>
             ))}
@@ -221,7 +250,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
 
         <div className="col-span-full bg-[#F3F0FF] rounded-xl px-6 py-4 flex items-center gap-4">
           <span className="text-base" aria-hidden="true">📢</span>
-          <p className="text-xs text-[#6B3FFF] font-medium">Your voice matters. Every complaint you raise makes your city a better place to live.</p>
+          <p className="text-xs text-[#6B3FFF] font-medium">{r.voiceMatters}</p>
         </div>
       </div>
     );
@@ -232,13 +261,13 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
       {/* ── Form ── */}
       <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6 space-y-6" aria-labelledby="report-heading">
         <div>
-          <h2 id="report-heading" className="text-base font-bold text-[#1A1340]">Report a New Issue</h2>
-          <p className="text-xs text-[#6B7280] mt-2">Provide details about the issue. Our AI will help route it to the right department.</p>
+          <h2 id="report-heading" className="text-base font-bold text-[#1A1340]">{r.heading}</h2>
+          <p className="text-xs text-[#6B7280] mt-2">{r.subheading}</p>
         </div>
 
         {/* 1. Upload */}
         <div>
-          <label className="block text-sm font-semibold text-[#1A1340] mb-2">1. Upload Photo / Video</label>
+          <label className="block text-sm font-semibold text-[#1A1340] mb-2">{r.uploadLabel}</label>
           <div className="border-2 border-dashed border-[#E8E4F8] rounded-xl p-4 relative" aria-label="Upload photo or video">
             <input
               ref={fileRef}
@@ -260,7 +289,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
                     aria-label="Add more photos"
                   >
                     <Upload size={16} className="text-[#6B3FFF]" aria-hidden="true" />
-                    Add more
+                    {r.addMore}
                   </button>
                   <button
                     onClick={handleRemoveImage}
@@ -281,16 +310,16 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
                 aria-label="Click to upload photo or video"
               >
                 <Upload size={20} className="text-[#6B3FFF]" aria-hidden="true" />
-                Click to upload or drag &amp; drop
+                {r.uploadClickText}
               </button>
             )}
-            <p className="text-[10px] text-[#9CA3AF] mt-2">JPG, PNG or MP4 (Max 20MB)</p>
+            <p className="text-[10px] text-[#9CA3AF] mt-2">{r.uploadHint}</p>
           </div>
         </div>
 
         {/* 2. Location */}
         <div>
-          <label htmlFor="issue-location" className="block text-sm font-semibold text-[#1A1340] mb-2">2. Location</label>
+          <label htmlFor="issue-location" className="block text-sm font-semibold text-[#1A1340] mb-2">{r.locationLabel}</label>
           <div className="relative">
             <input
               id="issue-location"
@@ -298,7 +327,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               className="w-full border border-[#E8E4F8] rounded-xl px-4 py-4 text-sm text-[#374151] outline-none focus:ring-2 focus:ring-[#6B3FFF]/20 focus:border-[#6B3FFF]/40 pr-44"
-              placeholder="Enter location..."
+              placeholder={r.locationPlaceholder}
               aria-label="Issue location"
             />
             <button
@@ -308,15 +337,25 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
               aria-label="Use current location"
             >
               <MapPin size={13} aria-hidden="true" />
-              {locationLoading ? "Locating..." : "Use current location"}
+              {locationLoading ? r.locating : r.useCurrentLocation}
             </button>
+          </div>
+          <p className="text-[10px] text-[#9CA3AF] mt-2">{r.mapHint}</p>
+          <div className="mt-2">
+            <DynamicLocationMap
+              center={mapCenter}
+              markers={pinCoords ? [{ lat: pinCoords[0], lng: pinCoords[1], label: location || "Selected location" }] : []}
+              onLocationSelect={handleMapLocationSelect}
+              showLocateButton
+              heightClassName="h-44"
+            />
           </div>
         </div>
 
         {/* 3. Description */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <label htmlFor="issue-desc" className="block text-sm font-semibold text-[#1A1340]">3. Describe the Issue</label>
+            <label htmlFor="issue-desc" className="block text-sm font-semibold text-[#1A1340]">{r.descriptionLabel}</label>
             {settings.voiceAssistance && voice.isSupported && (
               <button
                 type="button"
@@ -329,7 +368,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
                 aria-pressed={voice.isListening}
               >
                 <Mic size={12} aria-hidden="true" />
-                {voice.isListening ? "Listening…" : "Dictate"}
+                {voice.isListening ? r.listening : r.dictate}
               </button>
             )}
           </div>
@@ -340,7 +379,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
               onChange={(e) => setDescription(e.target.value.slice(0, 500))}
               rows={4}
               className="w-full border border-[#E8E4F8] rounded-xl px-4 py-4 text-sm text-[#374151] outline-none focus:ring-2 focus:ring-[#6B3FFF]/20 focus:border-[#6B3FFF]/40 resize-none"
-              placeholder="Describe the issue in detail..."
+              placeholder={r.descriptionPlaceholder}
               aria-label="Issue description"
             />
             <span className="absolute bottom-2 right-3 text-[10px] text-[#9CA3AF]">{charCount}/500</span>
@@ -349,7 +388,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
 
         {/* 4. When */}
         <div>
-          <label className="block text-sm font-semibold text-[#1A1340] mb-2">4. When did you notice it?</label>
+          <label className="block text-sm font-semibold text-[#1A1340] mb-2">{r.whenLabel}</label>
           <div className="relative">
             <button
               onClick={() => setWhenOpen((v) => !v)}
@@ -358,12 +397,12 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
               aria-expanded={whenOpen}
               aria-label="When did you notice the issue"
             >
-              <span>{when}</span>
+              <span>{content.whenOptions[when] ?? when}</span>
               <ChevronDown size={15} className={cn("text-[#9CA3AF] transition-transform", whenOpen && "rotate-180")} aria-hidden="true" />
             </button>
             {whenOpen && (
               <ul className="absolute top-full left-0 right-0 mt-2 bg-white border border-[#E8E4F8] rounded-xl shadow-lg z-20 overflow-hidden" role="listbox" aria-label="When options">
-                {WHEN_OPTIONS.map((opt) => (
+                {WHEN_OPTION_KEYS.map((opt) => (
                   <li key={opt}>
                     <button
                       role="option"
@@ -371,7 +410,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
                       onClick={() => { setWhen(opt); setWhenOpen(false); }}
                       className={cn("w-full text-left px-4 py-4 text-sm hover:bg-[#F9F8FF] transition-colors", when === opt && "text-[#6B3FFF] font-medium bg-[#F3F0FF]")}
                     >
-                      {opt}
+                      {content.whenOptions[opt] ?? opt}
                     </button>
                   </li>
                 ))}
@@ -391,53 +430,53 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
           {isAnalyzing ? (
             <>
               <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" aria-hidden="true" />
-              Analyzing...
+              {r.analyzing}
             </>
           ) : (
             <>
               <Sparkles size={15} aria-hidden="true" />
-              Analyze Issue with AI ✨
+              {r.analyzeButton}
             </>
           )}
         </button>
 
         {!canAnalyze && (
           <p className="text-[11px] text-[#9CA3AF] text-center -mt-4">
-            Please add a location and description (min. 10 characters) to analyze.
+            {r.analyzeHint}
           </p>
         )}
 
         <div className="flex items-center gap-2 text-xs text-[#6B7280] bg-[#F9F8FF] rounded-xl px-4 py-4">
           <CheckCircle2 size={14} className="text-[#10B981] flex-shrink-0" aria-hidden="true" />
-          AI will suggest the right category and department to resolve your issue faster.
+          {r.aiHelperNote}
         </div>
       </section>
 
       {/* ── AI Analysis Preview ── */}
       <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6 space-y-6" aria-labelledby="ai-preview-heading">
         <div>
-          <h2 id="ai-preview-heading" className="text-base font-bold text-[#1A1340]">AI Analysis &amp; Preview</h2>
-          <p className="text-xs text-[#6B7280] mt-2">Review the details before submission</p>
+          <h2 id="ai-preview-heading" className="text-base font-bold text-[#1A1340]">{r.aiPreviewHeading}</h2>
+          <p className="text-xs text-[#6B7280] mt-2">{r.aiPreviewSub}</p>
         </div>
 
         {analysisResult ? (
           <>
             {/* Detected category */}
             <div className="bg-[#F9F8FF] rounded-xl p-4">
-              <p className="text-[10px] text-[#9CA3AF] mb-2 font-medium uppercase tracking-wide">AI Detected Category</p>
+              <p className="text-[10px] text-[#9CA3AF] mb-2 font-medium uppercase tracking-wide">{r.aiDetectedCategory}</p>
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-xl bg-[#EDE9FE] flex items-center justify-center flex-shrink-0" aria-hidden="true">
                   <AlertTriangle size={18} className="text-[#6B3FFF]" />
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-[#1A1340]">{analysisResult.category}</p>
+                  <p className="text-sm font-bold text-[#1A1340]">{content.categoryLabels[analysisResult.category] ?? analysisResult.category}</p>
                   <span className={cn(
                     "px-2 py-2 rounded-full text-[10px] font-semibold",
                     analysisResult.priority === "high" ? "bg-red-100 text-red-600" :
                     analysisResult.priority === "medium" ? "bg-orange-100 text-orange-600" :
                     "bg-green-100 text-green-600"
                   )}>
-                    {analysisResult.priority.charAt(0).toUpperCase() + analysisResult.priority.slice(1)} Priority
+                    {analysisResult.priority.charAt(0).toUpperCase() + analysisResult.priority.slice(1)} {r.priority}
                   </span>
                 </div>
               </div>
@@ -446,7 +485,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
             {/* Confidence */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-[#1A1340]">Confidence Score</span>
+                <span className="text-xs font-medium text-[#1A1340]">{r.confidenceScore}</span>
                 <span className="text-xs font-bold text-[#6B3FFF]">{Math.round(analysisResult.confidence * 100)}%</span>
               </div>
               <div className="h-2 bg-[#F3F0FF] rounded-full overflow-hidden" role="progressbar" aria-valuenow={Math.round(analysisResult.confidence * 100)} aria-valuemin={0} aria-valuemax={100} aria-label={`AI confidence score ${Math.round(analysisResult.confidence * 100)}%`}>
@@ -460,25 +499,25 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
                 <Building2 size={14} className="text-[#6B3FFF]" />
               </div>
               <div>
-                <p className="text-[10px] text-[#9CA3AF]">Suggested Department</p>
+                <p className="text-[10px] text-[#9CA3AF]">{r.suggestedDepartment}</p>
                 <p className="text-sm font-semibold text-[#1A1340]">{analysisResult.department}</p>
               </div>
             </div>
 
             <div className="flex items-center gap-2 text-xs text-[#10B981] bg-green-50 rounded-xl px-4 py-4 border border-green-100">
               <CheckCircle2 size={13} aria-hidden="true" />
-              This issue will be routed to {analysisResult.department} for faster resolution.
+              {r.routedNote.replace("{department}", analysisResult.department)}
             </div>
 
             {/* Issue Summary */}
             <div>
-              <h3 className="text-xs font-semibold text-[#1A1340] mb-2">Issue Summary</h3>
+              <h3 className="text-xs font-semibold text-[#1A1340] mb-2">{r.issueSummary}</h3>
               <div className="space-y-2">
                 {[
-                  { label: "Category", value: analysisResult.category },
-                  { label: "Location", value: location },
-                  { label: "Description", value: description.slice(0, 120) + (description.length > 120 ? "…" : "") },
-                  { label: "Reported", value: when },
+                  { label: r.category, value: content.categoryLabels[analysisResult.category] ?? analysisResult.category },
+                  { label: r.location, value: location },
+                  { label: r.description, value: description.slice(0, 120) + (description.length > 120 ? "…" : "") },
+                  { label: r.reported, value: content.whenOptions[when] ?? when },
                 ].map(({ label, value }) => (
                   <div key={label} className="grid grid-cols-[80px_1fr] gap-2">
                     <span className="text-[10px] text-[#9CA3AF] pt-2">{label}</span>
@@ -495,8 +534,8 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
                   <Sparkles size={13} className="text-white" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-[#6B3FFF] mb-2">AI Suggestion</p>
-                  <p className="text-xs text-[#374151]">Adding more photos from different angles helps the department understand the issue better and speeds up resolution.</p>
+                  <p className="text-xs font-semibold text-[#6B3FFF] mb-2">{r.aiSuggestionHeading}</p>
+                  <p className="text-xs text-[#374151]">{r.aiSuggestionText}</p>
                 </div>
               </div>
             </div>
@@ -508,7 +547,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
                 className="flex-1 flex items-center justify-center gap-2 py-4 rounded-xl border border-[#E8E4F8] text-sm font-medium text-[#374151] hover:bg-[#F9F8FF] transition-all"
                 aria-label="Edit complaint details"
               >
-                ✏️ Edit Details
+                {r.editDetails}
               </button>
               <button
                 onClick={handleSubmit}
@@ -516,7 +555,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
                 style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
                 aria-label="Submit complaint"
               >
-                <span>Submit Complaint</span> <CheckCircle2 size={14} aria-hidden="true" />
+                <span>{r.submitComplaint}</span> <CheckCircle2 size={14} aria-hidden="true" />
               </button>
             </div>
           </>
@@ -525,8 +564,8 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
             <div className="w-14 h-14 rounded-2xl bg-[#EDE9FE] flex items-center justify-center mb-4" aria-hidden="true">
               <Sparkles size={24} className="text-[#6B3FFF]" />
             </div>
-            <p className="text-sm font-semibold text-[#1A1340]">Fill in the form</p>
-            <p className="text-xs text-[#9CA3AF] mt-2 max-w-[200px]">Complete the form and click &ldquo;Analyze Issue with AI&rdquo; to see the preview.</p>
+            <p className="text-sm font-semibold text-[#1A1340]">{r.fillFormTitle}</p>
+            <p className="text-xs text-[#9CA3AF] mt-2 max-w-[200px]">{r.fillFormHint}</p>
           </div>
         )}
       </section>
@@ -536,8 +575,8 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
         {/* My Complaints mini list */}
         <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="my-cmp-heading">
           <div className="flex items-center justify-between mb-4">
-            <h2 id="my-cmp-heading" className="text-sm font-semibold text-[#1A1340]">My Complaints</h2>
-            <button onClick={onViewComplaints} className="text-xs text-[#6B3FFF] hover:underline">View All</button>
+            <h2 id="my-cmp-heading" className="text-sm font-semibold text-[#1A1340]">{r.myComplaintsHeading}</h2>
+            <button onClick={onViewComplaints} className="text-xs text-[#6B3FFF] hover:underline">{t("common.viewAll")}</button>
           </div>
           <div className="space-y-2">
             {complaints.slice(0, 4).map((c) => (
@@ -546,7 +585,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
                     <p className="text-[11px] font-semibold text-[#6B3FFF] truncate">#{c.ticketId}</p>
-                    <span className={cn("px-2 py-2 rounded-full text-[9px] font-semibold flex-shrink-0", STATUS_COLORS[c.status])}>{STATUS_LABELS[c.status]}</span>
+                    <span className={cn("px-2 py-2 rounded-full text-[9px] font-semibold flex-shrink-0", STATUS_COLORS[c.status])}>{t(STATUS_TRANSLATION_KEY[c.status])}</span>
                   </div>
                   <p className="text-[11px] text-[#1A1340] truncate">{c.title}</p>
                   <p className="text-[10px] text-[#9CA3AF] flex items-center gap-2 mt-2"><MapPin size={9} aria-hidden="true" />{c.location.split(",")[0]}</p>
@@ -557,41 +596,28 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
           </div>
         </section>
 
-        {/* Heatmap mock */}
+        {/* Nearby issues map */}
         <section className="bg-white rounded-[20px] border border-[#E8E4F8] overflow-hidden" aria-labelledby="heatmap-heading">
           <div className="flex items-center justify-between px-4 py-4 border-b border-[#F3F0FF]">
-            <h2 id="heatmap-heading" className="text-sm font-semibold text-[#1A1340]">Live Issue Heatmap</h2>
-            <button className="text-xs text-[#6B3FFF] hover:underline">View Full Map</button>
+            <h2 id="heatmap-heading" className="text-sm font-semibold text-[#1A1340]">{r.nearbyIssuesHeading}</h2>
+            <button onClick={() => setMapExpanded((v) => !v)} className="text-xs text-[#6B3FFF] hover:underline">
+              {mapExpanded ? r.collapseMap : r.viewFullMap}
+            </button>
           </div>
-          <div className="relative h-36 bg-green-50" aria-label="Issue heatmap showing your city">
-            <div className="absolute inset-0 bg-gradient-to-br from-green-50 to-blue-50" aria-hidden="true" />
-            <svg className="absolute inset-0 w-full h-full opacity-20" aria-hidden="true">
-              {[20, 40, 60, 80].map((p) => (
-                <g key={p}>
-                  <line x1={`${p}%`} y1="0" x2={`${p}%`} y2="100%" stroke="#9CA3AF" strokeWidth="0.5" />
-                  <line x1="0" y1={`${p}%`} x2="100%" y2={`${p}%`} stroke="#9CA3AF" strokeWidth="0.5" />
-                </g>
-              ))}
-            </svg>
-            <div className="absolute top-3 left-6 w-14 h-12 rounded-full bg-red-400 opacity-40 blur-md" aria-hidden="true" />
-            <div className="absolute top-8 right-8 w-10 h-10 rounded-full bg-orange-400 opacity-35 blur-md" aria-hidden="true" />
-            <div className="absolute bottom-4 left-1/2 w-12 h-10 rounded-full bg-red-300 opacity-30 blur-md" aria-hidden="true" />
-            <span className="absolute top-2 left-2 text-[9px] text-gray-500 font-medium">Karol Bagh</span>
-            <span className="absolute top-12 right-4 text-[9px] text-gray-500 font-medium">India Gate</span>
-            <span className="absolute bottom-6 left-1/2 -translate-x-1/2 text-[9px] text-gray-500 font-medium">Connaught Place</span>
-            <span className="absolute bottom-2 right-2 text-[9px] text-gray-500 font-medium">Lajpat Nagar</span>
-          </div>
-          <div className="px-4 py-2 flex items-center gap-2">
-            <span className="text-[10px] text-[#9CA3AF]">Low</span>
-            <div className="flex-1 h-1.5 rounded-full" style={{ background: "linear-gradient(to right,#3B82F6,#10B981,#F59E0B,#EF4444)" }} aria-hidden="true" />
-            <span className="text-[10px] text-[#9CA3AF]">High</span>
+          <div className="p-3">
+            <DynamicLocationMap
+              center={DEFAULT_MAP_CENTER}
+              zoom={12}
+              markers={NEARBY_ISSUE_META.map((m) => ({ lat: m.lat, lng: m.lng, label: `${m.place} — ${content.categoryLabels[m.category] ?? m.category}` }))}
+              heightClassName={mapExpanded ? "h-72" : "h-36"}
+            />
           </div>
         </section>
 
         {/* Make bigger impact */}
         <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="impact-heading">
-          <h2 id="impact-heading" className="text-sm font-semibold text-[#1A1340] mb-2">Make a Bigger Impact!</h2>
-          <p className="text-xs text-[#6B7280] mb-4">Invite your friends and neighbors to report issues and create a better community together.</p>
+          <h2 id="impact-heading" className="text-sm font-semibold text-[#1A1340] mb-2">{r.biggerImpactHeading}</h2>
+          <p className="text-xs text-[#6B7280] mb-4">{r.biggerImpactDesc}</p>
           <button
             onClick={() => {
               if (navigator.share) {
@@ -604,7 +630,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
             style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
             aria-label="Invite friends"
           >
-            Invite Now
+            {r.inviteNow}
           </button>
         </section>
       </aside>
@@ -612,7 +638,7 @@ export function ReportIssueTab({ onViewComplaints }: ReportIssueTabProps) {
       {/* Voice matters banner */}
       <div className="col-span-full bg-[#F3F0FF] rounded-xl px-6 py-4 flex items-center gap-4">
         <span className="text-base" aria-hidden="true">📢</span>
-        <p className="text-xs text-[#6B3FFF] font-medium">Your voice matters. Every complaint you raise makes your city a better place to live.</p>
+        <p className="text-xs text-[#6B3FFF] font-medium">{r.voiceMatters}</p>
       </div>
     </div>
   );

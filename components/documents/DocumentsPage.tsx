@@ -2,6 +2,7 @@
 
 import { useState, useRef, type KeyboardEvent, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   Search, Upload, ChevronRight, CheckCircle2, Clock,
   XCircle, MoreVertical, Eye, Shield, Bot, Sparkles,
@@ -9,13 +10,13 @@ import {
 } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { VoiceSearchButton } from "@/components/ui/VoiceSearchButton";
+import { useLanguage } from "@/hooks/useLanguage";
+import { getDocumentsContent } from "@/lib/i18n/content/documents";
 
 type DocStatus = "completed" | "in_progress" | "missing";
 
-type RecommendedDoc = {
+type RecommendedDocMeta = {
   id: string;
-  name: string;
-  description: string;
   status: DocStatus;
   icon: React.ElementType;
   iconBg: string;
@@ -33,28 +34,20 @@ type RecentDoc = {
   iconBg: string;
 };
 
-type QuickLink = {
-  id: string;
-  label: string;
-  sub: string;
-  icon: string;
-  href: string;
-};
-
-const SERVICES_LIST = [
-  { id: "driving-license", label: "🚗 Driving License Renewal" },
-  { id: "passport", label: "📘 Passport Application" },
-  { id: "birth-certificate", label: "📋 Birth Certificate" },
-  { id: "ration-card", label: "🏠 Ration Card" },
-  { id: "udyam-registration", label: "💼 Udyam Registration (MSME)" },
+const SERVICES_LIST_META = [
+  { id: "driving-license", emoji: "🚗" },
+  { id: "passport", emoji: "📘" },
+  { id: "birth-certificate", emoji: "📋" },
+  { id: "ration-card", emoji: "🏠" },
+  { id: "udyam-registration", emoji: "💼" },
 ];
 
-const RECOMMENDED_DOCS: RecommendedDoc[] = [
-  { id: "1", name: "Aadhaar Card", description: "Proof of identity and address", status: "completed", icon: CreditCard, iconBg: "#EDE9FE", iconColor: "#6B3FFF" },
-  { id: "2", name: "Bank Passbook", description: "Bank account details", status: "completed", icon: Building2, iconBg: "#D1FAE5", iconColor: "#10B981" },
-  { id: "3", name: "Land Ownership Proof", description: "Land records or ownership document", status: "in_progress", icon: FileText, iconBg: "#DBEAFE", iconColor: "#3B82F6" },
-  { id: "4", name: "Passport Size Photo", description: "Recent passport size photograph", status: "missing", icon: User, iconBg: "#FEE2E2", iconColor: "#EF4444" },
-  { id: "5", name: "Income Certificate", description: "Income proof certificate", status: "missing", icon: FileText, iconBg: "#FEE2E2", iconColor: "#EF4444" },
+const RECOMMENDED_DOCS_SEED: RecommendedDocMeta[] = [
+  { id: "1", status: "completed", icon: CreditCard, iconBg: "#EDE9FE", iconColor: "#6B3FFF" },
+  { id: "2", status: "completed", icon: Building2, iconBg: "#D1FAE5", iconColor: "#10B981" },
+  { id: "3", status: "in_progress", icon: FileText, iconBg: "#DBEAFE", iconColor: "#3B82F6" },
+  { id: "4", status: "missing", icon: User, iconBg: "#FEE2E2", iconColor: "#EF4444" },
+  { id: "5", status: "missing", icon: FileText, iconBg: "#FEE2E2", iconColor: "#EF4444" },
 ];
 
 const STATIC_RECENT_DOCS: RecentDoc[] = [
@@ -64,17 +57,17 @@ const STATIC_RECENT_DOCS: RecentDoc[] = [
   { id: "4", name: "Photo.jpg", type: "JPG", size: "0.5 MB", date: "17 May 2026", status: "Verified", icon: "🖼️", iconBg: "#D1FAE5" },
 ];
 
-const QUICK_LINKS: QuickLink[] = [
-  { id: "1", label: "DigiLocker", sub: "Access your documents from DigiLocker", icon: "🔐", href: "https://digilocker.gov.in" },
-  { id: "2", label: "UMANG", sub: "Access government services on UMANG app", icon: "📱", href: "https://umang.gov.in" },
-  { id: "3", label: "Common Service Centers", sub: "Find nearest CSC centers", icon: "🏢", href: "https://locator.csc.gov.in" },
-  { id: "4", label: "National Scholarship Portal", sub: "Apply for scholarships online", icon: "🎓", href: "https://scholarships.gov.in" },
+const QUICK_LINKS_META = [
+  { id: "1", icon: "🔐", href: "https://digilocker.gov.in" },
+  { id: "2", icon: "📱", href: "https://umang.gov.in" },
+  { id: "3", icon: "🏢", href: "https://locator.csc.gov.in" },
+  { id: "4", icon: "🎓", href: "https://scholarships.gov.in" },
 ];
 
-const STATUS_MAP = {
-  completed: { label: "Completed", color: "text-[#10B981]", bg: "bg-green-50", icon: CheckCircle2, dot: "#10B981" },
-  in_progress: { label: "In Progress", color: "text-[#3B82F6]", bg: "bg-blue-50", icon: Clock, dot: "#3B82F6" },
-  missing: { label: "Missing", color: "text-[#EF4444]", bg: "bg-red-50", icon: XCircle, dot: "#EF4444" },
+const STATUS_ICON: Record<DocStatus, { icon: React.ElementType; color: string; bg: string; dot: string }> = {
+  completed: { color: "text-[#10B981]", bg: "bg-green-50", icon: CheckCircle2, dot: "#10B981" },
+  in_progress: { color: "text-[#3B82F6]", bg: "bg-blue-50", icon: Clock, dot: "#3B82F6" },
+  missing: { color: "text-[#EF4444]", bg: "bg-red-50", icon: XCircle, dot: "#EF4444" },
 };
 
 const DOC_STATUS_BADGE: Record<string, string> = {
@@ -88,30 +81,32 @@ interface UploadedDoc extends RecentDoc {
 }
 
 export default function DocumentsPage() {
+  const { t, currentLanguage } = useLanguage();
+  const content = getDocumentsContent(currentLanguage.code);
   const [search, setSearch] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
-  const [selectedService, setSelectedService] = useState(SERVICES_LIST[0]);
+  const [selectedServiceId, setSelectedServiceId] = useState(SERVICES_LIST_META[0].id);
   const [serviceMenuOpen, setServiceMenuOpen] = useState(false);
   const [checklist, setChecklist] = useState<{ name: string; description: string; required: boolean }[] | null>(null);
   const [checklistLoading, setChecklistLoading] = useState(false);
   const [uploadedDocs, setUploadedDocs] = useState<UploadedDoc[]>([]);
   const [uploadSuccess, setUploadSuccess] = useState<string | null>(null);
+  const [recommendedDocs, setRecommendedDocs] = useState<RecommendedDocMeta[]>(RECOMMENDED_DOCS_SEED);
+  const [uploadTargetId, setUploadTargetId] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const allRecentDocs = [...uploadedDocs, ...STATIC_RECENT_DOCS];
 
-  const completed = RECOMMENDED_DOCS.filter((d) => d.status === "completed").length + uploadedDocs.length;
-  const total = RECOMMENDED_DOCS.length + 5;
+  const completed = recommendedDocs.filter((d) => d.status === "completed").length + uploadedDocs.length;
+  const total = recommendedDocs.length + 5;
   const pct = Math.min(100, Math.round((completed / total) * 100));
   const circumference = 2 * Math.PI * 38;
   const dashOffset = circumference * (1 - pct / 100);
 
   useEffect(() => {
-    if (selectedService) {
-      void loadChecklist(selectedService.id);
-    }
-  }, [selectedService?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+    void loadChecklist(selectedServiceId);
+  }, [selectedServiceId]);
 
   async function loadChecklist(serviceId: string) {
     setChecklistLoading(true);
@@ -149,8 +144,9 @@ export default function DocumentsPage() {
     const sizeKB = file.size / 1024;
     const sizeStr = sizeKB > 1024 ? `${(sizeKB / 1024).toFixed(1)} MB` : `${Math.round(sizeKB)} KB`;
     const ext = file.name.split(".").pop()?.toUpperCase() ?? "FILE";
+    const newDocId = `local-${Date.now()}`;
     const newDoc: UploadedDoc = {
-      id: `local-${Date.now()}`,
+      id: newDocId,
       name: file.name,
       type: ext,
       size: sizeStr,
@@ -163,12 +159,53 @@ export default function DocumentsPage() {
     setUploadedDocs((prev) => [newDoc, ...prev]);
     setUploadSuccess(file.name);
     setTimeout(() => setUploadSuccess(null), 3000);
+
+    // Pending → In Review shortly after upload.
+    setTimeout(() => {
+      setUploadedDocs((prev) => prev.map((d) => (d.id === newDocId ? { ...d, status: "In Review" } : d)));
+    }, 2500);
+
+    // If this upload was triggered from a specific checklist row, progress
+    // that document's status: missing/in_progress → in_progress → completed.
+    if (uploadTargetId) {
+      const targetId = uploadTargetId;
+      setRecommendedDocs((prev) => prev.map((d) => (d.id === targetId ? { ...d, status: "in_progress" } : d)));
+      setTimeout(() => {
+        setRecommendedDocs((prev) => prev.map((d) => (d.id === targetId ? { ...d, status: "completed" } : d)));
+      }, 2000);
+      setUploadTargetId(null);
+    }
   }
 
   function handleSearchKey(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter") {
       // filter handled inline
     }
+  }
+
+  function downloadDocSummary(doc: RecommendedDocMeta) {
+    const info = content.recommendedDocs[doc.id];
+    const statusLabel = content.statusLabels[doc.status];
+    const fileContent = `${info.name}\n\n${info.description}\n\nStatus: ${statusLabel}\n\nThis is a local summary generated by JanMitra AI. For the official document, use DigiLocker or the relevant government portal.`;
+    const blob = new Blob([fileContent], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${info.name.replace(/\s+/g, "-")}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function handleDeleteDoc(id: string) {
+    const doc = recommendedDocs.find((d) => d.id === id);
+    if (!doc) return;
+    const confirmed = window.confirm(`Remove "${content.recommendedDocs[doc.id].name}" from your document checklist?`);
+    if (confirmed) {
+      setRecommendedDocs((prev) => prev.filter((d) => d.id !== id));
+    }
+    setActiveMenuId(null);
   }
 
   const filteredDocs = search
@@ -189,13 +226,13 @@ export default function DocumentsPage() {
           </div>
           <div className="absolute inset-0" style={{ background: "linear-gradient(to right,rgba(245,243,255,0.97) 0%,rgba(245,243,255,0.88) 36%,transparent 62%)" }} aria-hidden="true" />
           <div className="relative z-10 px-5 py-6 sm:px-8 sm:py-8">
-            <h1 className="text-xl sm:text-2xl font-bold text-[#1A1340]">Documents</h1>
-            <p className="text-sm text-[#6B7280] mt-2">Get personalized document guidance and manage your documents easily.</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-[#1A1340]">{content.ui.title}</h1>
+            <p className="text-sm text-[#6B7280] mt-2">{content.ui.subtitle}</p>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-2 mt-4 sm:max-w-lg">
               <div className="flex-1 flex items-center gap-2 bg-white border border-[#E8E4F8] rounded-xl px-4 py-3.5 sm:py-4 shadow-sm focus-within:ring-2 focus-within:ring-[#6B3FFF]/20 min-w-0">
                 <Search size={15} className="text-[#9CA3AF] flex-shrink-0" aria-hidden="true" />
                 <input type="search" value={search} onChange={(e) => setSearch(e.target.value)} onKeyDown={handleSearchKey}
-                  placeholder="Search documents, certificates..."
+                  placeholder={content.ui.searchPlaceholder}
                   className="flex-1 min-w-0 text-sm text-[#374151] placeholder-[#9CA3AF] bg-transparent outline-none" aria-label="Search documents" />
                 <VoiceSearchButton onResult={setSearch} className="w-6 h-6" />
                 {search && (
@@ -205,9 +242,10 @@ export default function DocumentsPage() {
                 )}
               </div>
               <button
+                onClick={() => document.getElementById("ai-rec-heading")?.scrollIntoView({ behavior: "smooth", block: "start" })}
                 className="flex items-center justify-center gap-2 px-4 py-3.5 sm:py-4 rounded-xl text-sm font-semibold text-white hover:opacity-90 transition-all flex-shrink-0"
-                style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }} aria-label="Search">
-                <Search size={14} aria-hidden="true" /> Search
+                style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }} aria-label={t("common.search")}>
+                <Search size={14} aria-hidden="true" /> {t("common.search")}
               </button>
             </div>
           </div>
@@ -217,16 +255,16 @@ export default function DocumentsPage() {
         {uploadSuccess && (
           <div className="flex items-center gap-2 px-4 py-4 bg-green-50 rounded-xl border border-green-100 text-sm text-green-700" role="status" aria-live="polite">
             <Check size={15} className="text-green-600" aria-hidden="true" />
-            <strong>{uploadSuccess}</strong> uploaded successfully!
+            <strong>{uploadSuccess}</strong> {content.ui.uploadedSuffix}
           </div>
         )}
 
         {/* ── 3 feature cards ── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {[
-            { icon: Bot, iconBg: "#EDE9FE", iconColor: "#6B3FFF", title: "AI Document Advisor", sub: "Get personalized document list based on your needs.", color: "#6B3FFF", onClick: () => loadChecklist(selectedService.id) },
-            { icon: Shield, iconBg: "#D1FAE5", iconColor: "#10B981", title: "Check Eligibility", sub: "Check documents required for your eligibility.", color: "#10B981", onClick: () => { window.location.href = "/schemes"; } },
-            { icon: FileText, iconBg: "#FEF3C7", iconColor: "#F59E0B", title: "Missing Documents", sub: "Identify missing documents and how to obtain them.", color: "#F59E0B", onClick: () => { window.location.href = "/ai-assistant"; } },
+            { icon: Bot, iconBg: "#EDE9FE", iconColor: "#6B3FFF", title: content.ui.aiAdvisorTitle, sub: content.ui.aiAdvisorSub, color: "#6B3FFF", onClick: () => loadChecklist(selectedServiceId) },
+            { icon: Shield, iconBg: "#D1FAE5", iconColor: "#10B981", title: content.ui.checkEligibilityTitle, sub: content.ui.checkEligibilitySub, color: "#10B981", onClick: () => { window.location.href = "/schemes"; } },
+            { icon: FileText, iconBg: "#FEF3C7", iconColor: "#F59E0B", title: content.ui.missingDocsTitle, sub: content.ui.missingDocsSub, color: "#F59E0B", onClick: () => { window.location.href = "/ai-assistant"; } },
           ].map(({ icon: Icon, iconBg, iconColor, title, sub, color, onClick }) => (
             <button key={title}
               onClick={onClick}
@@ -255,36 +293,36 @@ export default function DocumentsPage() {
               <div className="px-6 py-4 border-b border-[#F3F0FF]">
                 <div className="flex items-center gap-2 mb-2">
                   <Sparkles size={15} className="text-[#6B3FFF]" aria-hidden="true" />
-                  <h2 id="ai-rec-heading" className="text-sm font-bold text-[#1A1340]">AI Recommended for You</h2>
+                  <h2 id="ai-rec-heading" className="text-sm font-bold text-[#1A1340]">{content.ui.aiRecommendedHeading}</h2>
                 </div>
-                <p className="text-xs text-[#9CA3AF]">Personalized document list based on your selected service</p>
+                <p className="text-xs text-[#9CA3AF]">{content.ui.aiRecommendedSub}</p>
 
                 <div className="flex items-center justify-between mt-4">
                   <div className="flex items-center gap-2">
-                    <span className="px-4 py-2 rounded-lg bg-[#F3F0FF] text-xs font-semibold text-[#6B3FFF]">Service Selected</span>
-                    <span className="text-sm font-semibold text-[#1A1340]">{selectedService.label}</span>
+                    <span className="px-4 py-2 rounded-lg bg-[#F3F0FF] text-xs font-semibold text-[#6B3FFF]">{content.ui.serviceSelected}</span>
+                    <span className="text-sm font-semibold text-[#1A1340]">{content.servicesList[selectedServiceId]}</span>
                   </div>
                   <div className="relative">
                     <button
                       onClick={() => setServiceMenuOpen((v) => !v)}
                       className="px-4 py-2 rounded-xl border border-[#E8E4F8] text-xs font-medium text-[#374151] hover:bg-[#F9F8FF] transition-colors"
-                      aria-label="Change selected service"
+                      aria-label={content.ui.changeService}
                       aria-haspopup="listbox"
                       aria-expanded={serviceMenuOpen}
                     >
-                      Change Service
+                      {content.ui.changeService}
                     </button>
                     {serviceMenuOpen && (
                       <ul className="absolute right-0 top-full mt-2 bg-white border border-[#E8E4F8] rounded-xl shadow-lg z-20 overflow-hidden min-w-[220px]" role="listbox">
-                        {SERVICES_LIST.map((svc) => (
+                        {SERVICES_LIST_META.map((svc) => (
                           <li key={svc.id}>
                             <button
                               role="option"
-                              aria-selected={selectedService.id === svc.id}
-                              onClick={() => { setSelectedService(svc); setServiceMenuOpen(false); }}
-                              className={cn("w-full text-left px-4 py-4 text-sm hover:bg-[#F9F8FF] transition-colors", selectedService.id === svc.id && "text-[#6B3FFF] font-semibold bg-[#F3F0FF]")}
+                              aria-selected={selectedServiceId === svc.id}
+                              onClick={() => { setSelectedServiceId(svc.id); setServiceMenuOpen(false); }}
+                              className={cn("w-full text-left px-4 py-4 text-sm hover:bg-[#F9F8FF] transition-colors", selectedServiceId === svc.id && "text-[#6B3FFF] font-semibold bg-[#F3F0FF]")}
                             >
-                              {svc.label}
+                              {svc.emoji} {content.servicesList[svc.id]}
                             </button>
                           </li>
                         ))}
@@ -298,9 +336,9 @@ export default function DocumentsPage() {
               {checklist ? (
                 <>
                   <div className="hidden sm:grid grid-cols-[1fr_130px_120px] gap-4 px-6 py-4 bg-[#F9F8FF] border-b border-[#F3F0FF]">
-                    <span className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">Document Name</span>
-                    <span className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">Required</span>
-                    <span className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">Action</span>
+                    <span className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">{content.ui.documentName}</span>
+                    <span className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">{content.ui.required}</span>
+                    <span className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">{content.ui.action}</span>
                   </div>
                   <ul className="divide-y divide-[#F9F8FF]" role="list">
                     {checklist.map((doc, i) => (
@@ -312,7 +350,7 @@ export default function DocumentsPage() {
                           </div>
                           <div className="flex items-center justify-between gap-2 sm:contents">
                             <span className={cn("px-2 py-2 rounded-full text-[10px] font-semibold border w-fit sm:mt-2", doc.required ? "bg-red-50 text-red-600 border-red-100" : "bg-gray-50 text-gray-600 border-gray-100")}>
-                              {doc.required ? "Required" : "Optional"}
+                              {doc.required ? content.ui.required : content.ui.optional}
                             </span>
                             <button
                               onClick={() => fileRef.current?.click()}
@@ -320,7 +358,7 @@ export default function DocumentsPage() {
                               style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
                               aria-label={`Upload ${doc.name}`}
                             >
-                              <Upload size={12} aria-hidden="true" /> Upload
+                              <Upload size={12} aria-hidden="true" /> {content.ui.upload}
                             </button>
                           </div>
                         </div>
@@ -331,18 +369,19 @@ export default function DocumentsPage() {
               ) : checklistLoading ? (
                 <div className="px-6 py-8 flex items-center justify-center gap-4">
                   <span className="w-5 h-5 border-2 border-[#6B3FFF]/30 border-t-[#6B3FFF] rounded-full animate-spin" aria-hidden="true" />
-                  <p className="text-sm text-[#9CA3AF]">Loading document checklist…</p>
+                  <p className="text-sm text-[#9CA3AF]">{content.ui.loadingChecklist}</p>
                 </div>
               ) : (
                 <>
                   <div className="hidden sm:grid grid-cols-[1fr_130px_120px] gap-4 px-6 py-4 bg-[#F9F8FF] border-b border-[#F3F0FF]">
-                    <span className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">Document Name</span>
-                    <span className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">Status</span>
-                    <span className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">Action</span>
+                    <span className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">{content.ui.documentName}</span>
+                    <span className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">{content.ui.status}</span>
+                    <span className="text-[11px] font-semibold text-[#9CA3AF] uppercase tracking-wide">{content.ui.action}</span>
                   </div>
                   <ul className="divide-y divide-[#F9F8FF]" role="list">
-                    {RECOMMENDED_DOCS.map((doc) => {
-                      const s = STATUS_MAP[doc.status];
+                    {recommendedDocs.map((doc) => {
+                      const s = STATUS_ICON[doc.status];
+                      const info = content.recommendedDocs[doc.id];
                       const StatusIcon = s.icon;
                       return (
                         <li key={doc.id}>
@@ -352,44 +391,50 @@ export default function DocumentsPage() {
                                 <doc.icon size={17} style={{ color: doc.iconColor }} />
                               </div>
                               <div className="min-w-0">
-                                <p className="text-sm font-semibold text-[#1A1340] truncate">{doc.name}</p>
-                                <p className="text-xs text-[#9CA3AF] truncate">{doc.description}</p>
+                                <p className="text-sm font-semibold text-[#1A1340] truncate">{info.name}</p>
+                                <p className="text-xs text-[#9CA3AF] truncate">{info.description}</p>
                               </div>
                             </div>
                             <div className="flex items-center justify-between gap-2 sm:contents">
                             <div className={cn("flex items-center gap-2 px-4 py-2 rounded-full w-fit", s.bg)}>
                               <StatusIcon size={12} style={{ color: s.dot }} aria-hidden="true" />
-                              <span className={cn("text-xs font-semibold", s.color)}>{s.label}</span>
+                              <span className={cn("text-xs font-semibold", s.color)}>{content.statusLabels[doc.status]}</span>
                             </div>
                             <div className="flex items-center gap-2">
                               {doc.status === "completed" ? (
-                                <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E8E4F8] text-xs font-medium text-[#374151] hover:bg-[#F9F8FF] transition-colors" aria-label={`View ${doc.name}`}>
-                                  <Eye size={12} aria-hidden="true" /> View
+                                <button onClick={() => downloadDocSummary(doc)} className="flex items-center gap-2 px-4 py-2 rounded-lg border border-[#E8E4F8] text-xs font-medium text-[#374151] hover:bg-[#F9F8FF] transition-colors" aria-label={`${content.ui.view} ${info.name}`}>
+                                  <Eye size={12} aria-hidden="true" /> {content.ui.view}
                                 </button>
                               ) : (
                                 <button
-                                  onClick={() => fileRef.current?.click()}
+                                  onClick={() => { setUploadTargetId(doc.id); fileRef.current?.click(); }}
                                   className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold text-white hover:opacity-90 transition-all"
                                   style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
-                                  aria-label={`Upload ${doc.name}`}
+                                  aria-label={`${content.ui.upload} ${info.name}`}
                                 >
-                                  <Upload size={12} aria-hidden="true" /> Upload
+                                  <Upload size={12} aria-hidden="true" /> {content.ui.upload}
                                 </button>
                               )}
                               <div className="relative">
                                 <button onClick={() => setActiveMenuId(activeMenuId === doc.id ? null : doc.id)}
                                   className="p-2 rounded-lg hover:bg-[#F3F0FF] text-[#9CA3AF] transition-colors"
-                                  aria-label={`More options for ${doc.name}`} aria-haspopup="true" aria-expanded={activeMenuId === doc.id}>
+                                  aria-label={`More options for ${info.name}`} aria-haspopup="true" aria-expanded={activeMenuId === doc.id}>
                                   <MoreVertical size={14} aria-hidden="true" />
                                 </button>
                                 {activeMenuId === doc.id && (
                                   <div className="absolute right-0 top-full mt-2 w-36 bg-white border border-[#E8E4F8] rounded-xl shadow-lg z-20 overflow-hidden" role="menu">
-                                    {["View Details", "Download", "Delete"].map((opt) => (
-                                      <button key={opt} role="menuitem" onClick={() => setActiveMenuId(null)}
-                                        className={cn("w-full text-left px-4 py-2 text-xs hover:bg-[#F9F8FF] transition-colors", opt === "Delete" ? "text-[#EF4444]" : "text-[#374151]")}>
-                                        {opt}
-                                      </button>
-                                    ))}
+                                    <button role="menuitem" onClick={() => { downloadDocSummary(doc); setActiveMenuId(null); }}
+                                      className="w-full text-left px-4 py-2 text-xs hover:bg-[#F9F8FF] transition-colors text-[#374151]">
+                                      {content.ui.viewDetails}
+                                    </button>
+                                    <button role="menuitem" onClick={() => { downloadDocSummary(doc); setActiveMenuId(null); }}
+                                      className="w-full text-left px-4 py-2 text-xs hover:bg-[#F9F8FF] transition-colors text-[#374151]">
+                                      {content.ui.download}
+                                    </button>
+                                    <button role="menuitem" onClick={() => handleDeleteDoc(doc.id)}
+                                      className="w-full text-left px-4 py-2 text-xs hover:bg-[#F9F8FF] transition-colors text-[#EF4444]">
+                                      {content.ui.delete}
+                                    </button>
                                   </div>
                                 )}
                               </div>
@@ -404,17 +449,18 @@ export default function DocumentsPage() {
               )}
 
               <div className="px-6 py-4 border-t border-[#F3F0FF] flex justify-center">
-                <button className="flex items-center gap-2 px-6 py-2 rounded-xl border border-[#6B3FFF]/30 text-sm font-semibold text-[#6B3FFF] hover:bg-[#F3F0FF] transition-all" aria-label="View full document list">
-                  View Full Document List <ChevronRight size={15} aria-hidden="true" />
-                </button>
+                <Link href={`/ai-assistant?q=${encodeURIComponent("What other documents might I need for common government services in India?")}`}
+                  className="flex items-center gap-2 px-6 py-2 rounded-xl border border-[#6B3FFF]/30 text-sm font-semibold text-[#6B3FFF] hover:bg-[#F3F0FF] transition-all" aria-label={content.ui.viewFullDocumentList}>
+                  {content.ui.viewFullDocumentList} <ChevronRight size={15} aria-hidden="true" />
+                </Link>
               </div>
             </section>
 
             {/* Recently Uploaded */}
             <section aria-labelledby="recent-docs-heading">
               <div className="flex items-center justify-between mb-4">
-                <h2 id="recent-docs-heading" className="text-sm font-bold text-[#1A1340]">Recently Uploaded Documents</h2>
-                <button onClick={() => setSearch("")} className="text-xs text-[#6B3FFF] hover:underline">View All</button>
+                <h2 id="recent-docs-heading" className="text-sm font-bold text-[#1A1340]">{content.ui.recentlyUploaded}</h2>
+                <button onClick={() => setSearch("")} className="text-xs text-[#6B3FFF] hover:underline">{t("common.viewAll")}</button>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {filteredDocs.slice(0, 8).map((doc) => (
@@ -436,13 +482,13 @@ export default function DocumentsPage() {
                     <p className="text-[10px] text-[#9CA3AF] mt-2">{doc.type} · {doc.size}</p>
                     <p className="text-[10px] text-[#9CA3AF]">{doc.date}</p>
                     <div className={cn("mt-2 text-center py-2 rounded-full text-[10px] font-semibold border", DOC_STATUS_BADGE[doc.status])}>
-                      {doc.status}
+                      {content.recentDocStatus[doc.status]}
                     </div>
                   </div>
                 ))}
               </div>
               {filteredDocs.length === 0 && (
-                <p className="text-sm text-[#9CA3AF] text-center py-6">No documents match &ldquo;{search}&rdquo;</p>
+                <p className="text-sm text-[#9CA3AF] text-center py-6">{content.ui.noDocumentsMatch.replace("{search}", search)}</p>
               )}
             </section>
           </div>
@@ -452,8 +498,8 @@ export default function DocumentsPage() {
             {/* Document Checklist Progress */}
             <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6" aria-labelledby="checklist-heading">
               <div className="flex items-center justify-between mb-4">
-                <h2 id="checklist-heading" className="text-sm font-bold text-[#1A1340]">Document Checklist</h2>
-                <button className="text-xs text-[#6B3FFF] hover:underline" onClick={() => loadChecklist(selectedService.id)}>Refresh</button>
+                <h2 id="checklist-heading" className="text-sm font-bold text-[#1A1340]">{content.ui.documentChecklist}</h2>
+                <button className="text-xs text-[#6B3FFF] hover:underline" onClick={() => loadChecklist(selectedServiceId)}>{content.ui.refresh}</button>
               </div>
 
               {/* Donut */}
@@ -465,14 +511,14 @@ export default function DocumentsPage() {
                       strokeDasharray={circumference} strokeDashoffset={dashOffset}
                       strokeLinecap="round" transform="rotate(-90 48 48)" />
                     <text x="48" y="45" textAnchor="middle" fontSize="14" fontWeight="bold" fill="#1A1340">{pct}%</text>
-                    <text x="48" y="58" textAnchor="middle" fontSize="8" fill="#9CA3AF">Completed</text>
+                    <text x="48" y="58" textAnchor="middle" fontSize="8" fill="#9CA3AF">{content.ui.completedPct}</text>
                   </svg>
                 </div>
                 <div className="space-y-2 flex-1">
                   {[
-                    { label: "Total Required", val: total, color: "#374151" },
-                    { label: "Completed", val: completed, color: "#10B981" },
-                    { label: "Missing", val: total - completed, color: "#EF4444" },
+                    { label: content.ui.totalRequired, val: total, color: "#374151" },
+                    { label: content.ui.completedLabel, val: completed, color: "#10B981" },
+                    { label: content.ui.missingLabel, val: total - completed, color: "#EF4444" },
                   ].map(({ label, val, color }) => (
                     <div key={label} className="flex items-center justify-between text-xs">
                       <span className="text-[#6B7280]">{label}</span>
@@ -484,13 +530,13 @@ export default function DocumentsPage() {
 
               <div className="flex items-start gap-2 bg-green-50 rounded-xl px-4 py-4 border border-green-100">
                 <CheckCircle2 size={14} className="text-[#10B981] flex-shrink-0 mt-2" aria-hidden="true" />
-                <p className="text-xs text-[#10B981] font-medium">Upload your pending documents to complete your application.</p>
+                <p className="text-xs text-[#10B981] font-medium">{content.ui.completeNote}</p>
               </div>
             </section>
 
             {/* Upload & AI Verify */}
             <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-6" aria-labelledby="upload-heading">
-              <h2 id="upload-heading" className="text-sm font-bold text-[#1A1340] mb-4">Upload &amp; AI Verify</h2>
+              <h2 id="upload-heading" className="text-sm font-bold text-[#1A1340] mb-4">{content.ui.uploadAiVerify}</h2>
               <input ref={fileRef} type="file" accept=".pdf,.jpg,.jpeg,.png" className="sr-only" aria-label="Upload document" onChange={handleFileChange} />
               <div
                 onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
@@ -510,35 +556,38 @@ export default function DocumentsPage() {
                   <Upload size={22} className="text-[#6B3FFF]" />
                 </div>
                 <p className="text-sm text-[#374151] text-center">
-                  Drag &amp; drop files here or{" "}
-                  <span className="text-[#6B3FFF] font-semibold underline">click to browse</span>
+                  {content.ui.dragDrop}{" "}
+                  <span className="text-[#6B3FFF] font-semibold underline">{content.ui.clickToBrowse}</span>
                 </p>
-                <p className="text-xs text-[#9CA3AF]">Supports PDF, JPG, PNG (Max 10MB)</p>
+                <p className="text-xs text-[#9CA3AF]">{content.ui.supportsFormats}</p>
               </div>
               <div className="flex items-center gap-2 mt-4 text-xs text-[#6B7280]">
                 <Shield size={12} className="text-[#10B981] flex-shrink-0" aria-hidden="true" />
-                Your documents are secure and encrypted
+                {content.ui.secureEncrypted}
               </div>
             </section>
 
             {/* Quick Links */}
             <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="qlinks-heading">
               <div className="flex items-center justify-between mb-4">
-                <h2 id="qlinks-heading" className="text-sm font-bold text-[#1A1340]">Quick Links</h2>
+                <h2 id="qlinks-heading" className="text-sm font-bold text-[#1A1340]">{content.ui.quickLinksHeading}</h2>
               </div>
               <div className="space-y-2">
-                {QUICK_LINKS.map((link) => (
-                  <a key={link.id} href={link.href} target="_blank" rel="noopener noreferrer"
+                {QUICK_LINKS_META.map((meta) => {
+                  const link = content.quickLinks[meta.id];
+                  return (
+                  <a key={meta.id} href={meta.href} target="_blank" rel="noopener noreferrer"
                     className="flex items-center gap-4 px-4 py-4 rounded-xl hover:bg-[#F9F8FF] border border-transparent hover:border-[#E8E4F8] transition-all group"
                     aria-label={link.label}>
-                    <span className="text-xl flex-shrink-0" aria-hidden="true">{link.icon}</span>
+                    <span className="text-xl flex-shrink-0" aria-hidden="true">{meta.icon}</span>
                     <div className="flex-1 min-w-0">
                       <p className="text-xs font-semibold text-[#1A1340] truncate">{link.label}</p>
                       <p className="text-[10px] text-[#9CA3AF] truncate">{link.sub}</p>
                     </div>
                     <ChevronRight size={14} className="text-[#D1D5DB] group-hover:text-[#6B3FFF] flex-shrink-0 transition-colors" aria-hidden="true" />
                   </a>
-                ))}
+                  );
+                })}
               </div>
             </section>
           </div>

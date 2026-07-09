@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import {
-  Send, Paperclip, Mic, ThumbsUp, ThumbsDown, Copy, Volume2, VolumeX,
+  Send, Mic, ThumbsUp, ThumbsDown, Copy, Volume2, VolumeX,
   ChevronRight, ChevronDown, RefreshCw, Shield, Sparkles, CheckCircle2,
   Clock, FileText, ExternalLink, ArrowRight, AlertCircle, Trash2, MicOff,
 } from "lucide-react";
@@ -14,8 +15,8 @@ import { useAccessibility } from "@/hooks/useAccessibility";
 import { useVoiceAssistant } from "@/hooks/useVoiceAssistant";
 
 const QUICK_ACTIONS = [
-  { id: "1", label: "Apply for Driving License", sub: "Start application", icon: "🪪", iconBg: "#EDE9FE", href: "/services" },
-  { id: "2", label: "Track a Complaint", sub: "View your complaint status", icon: "📋", iconBg: "#D1FAE5", href: "/complaints" },
+  { id: "1", label: "Apply for Driving License", sub: "Start application", icon: "🪪", iconBg: "#EDE9FE", href: "/services?service=dl-renewal" },
+  { id: "2", label: "Track a Complaint", sub: "View your complaint status", icon: "📋", iconBg: "#D1FAE5", href: "/complaints?tab=track" },
   { id: "3", label: "Find Schemes", sub: "Discover eligible schemes", icon: "🎁", iconBg: "#DBEAFE", href: "/schemes" },
   { id: "4", label: "Upload Documents", sub: "Manage your documents", icon: "📄", iconBg: "#FEF3C7", href: "/documents" },
 ];
@@ -56,6 +57,8 @@ export default function AIAssistantPage() {
   const { currentLanguage } = useLanguage();
   const { settings } = useAccessibility();
   const voice = useVoiceAssistant(currentLanguage.code);
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [input, setInput] = useState("");
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
@@ -65,10 +68,28 @@ export default function AIAssistantPage() {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const hasInteractedRef = useRef(false);
+  const autoSubmittedQueryRef = useRef<string | null>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
+
+  // Deep-link support: /ai-assistant?q=<question> auto-populates and sends
+  // the question, e.g. from the dashboard search, quick suggestions, or any
+  // "Chat Now" button across the app. Guards against re-sending the same
+  // query on re-renders and against sending while a previous reply is
+  // still loading.
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (!q || !q.trim()) return;
+    if (autoSubmittedQueryRef.current === q) return;
+    if (isLoading) return;
+    autoSubmittedQueryRef.current = q;
+    hasInteractedRef.current = true;
+    void sendMessage(q.trim(), currentLanguage.code);
+    router.replace("/ai-assistant", { scroll: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams, isLoading]);
 
   // Speak newly-arrived assistant replies aloud, once voice assistance is on,
   // spoken responses aren't muted, and the user has actually sent a message
@@ -565,9 +586,6 @@ export default function AIAssistantPage() {
             </p>
           )}
           <div className="flex items-end gap-2 sm:gap-4 bg-white rounded-[20px] border border-[#E8E4F8] shadow-sm px-4 sm:px-6 py-3 sm:py-4">
-            <button className="text-[#9CA3AF] hover:text-[#6B3FFF] transition-colors flex-shrink-0 w-9 h-9 flex items-center justify-center" aria-label="Attach file">
-              <Paperclip size={18} aria-hidden="true" />
-            </button>
             <textarea
               ref={inputRef}
               value={input}

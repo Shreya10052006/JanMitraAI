@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Menu, Bell, Globe, Check, User, LogOut, Settings, FileText } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { useLanguage } from "@/hooks/useLanguage";
+import { getDashboardContent } from "@/lib/i18n/content/dashboard";
 import { NOTIFICATIONS, USER_PROFILE } from "@/lib/mock-data";
 import type { Notification } from "@/types";
 
@@ -12,16 +14,35 @@ interface MobileTopBarProps {
 }
 
 export function MobileTopBar({ onMenuClick }: MobileTopBarProps) {
-  const { currentLanguage, setLanguage, languages } = useLanguage();
+  const router = useRouter();
+  const { currentLanguage, setLanguage, languages, t } = useLanguage();
+  const dashboardContent = getDashboardContent(currentLanguage.code);
   const [languageOpen, setLanguageOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [readIds, setReadIds] = useState<string[]>(() => NOTIFICATIONS.filter((n) => n.read).map((n) => n.id));
 
   const languageRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
 
-  const unreadCount = NOTIFICATIONS.filter((n) => !n.read).length;
+  const unreadCount = NOTIFICATIONS.filter((n) => !readIds.includes(n.id)).length;
+
+  function markAllRead() {
+    setReadIds(NOTIFICATIONS.map((n) => n.id));
+  }
+
+  function markRead(id: string) {
+    setReadIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
+  }
+
+  function handleSignOut() {
+    const confirmed = window.confirm("Are you sure you want to log out? Your saved data will remain on this device.");
+    if (confirmed) {
+      closeMenus();
+      router.push("/");
+    }
+  }
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -159,40 +180,45 @@ export function MobileTopBar({ onMenuClick }: MobileTopBarProps) {
           {notificationsOpen && (
             <div className="absolute right-0 top-full mt-2 w-80 max-w-[90vw] bg-white rounded-2xl shadow-2xl border border-[#EAE8F5] z-50 overflow-hidden">
               <div className="px-4 py-4 border-b border-[#F3F0FF] flex items-center justify-between">
-                <h2 className="font-semibold text-sm text-[#1A1340]">Notifications</h2>
+                <h2 className="font-semibold text-sm text-[#1A1340]">{t("topbar.notifications")}</h2>
                 <button
                   className="text-[10px] text-[#6B3FFF] font-medium hover:text-[#4C1D95] transition-colors"
-                  onClick={closeMenus}
+                  onClick={markAllRead}
                   aria-label="Mark all as read"
                 >
                   Mark all read
                 </button>
               </div>
               <div className="max-h-80 overflow-y-auto">
-                {NOTIFICATIONS.map((notification: Notification) => (
+                {NOTIFICATIONS.map((notification: Notification) => {
+                  const isRead = readIds.includes(notification.id);
+                  const text = dashboardContent.notifications[notification.id] ?? notification;
+                  return (
                   <button
                     key={notification.id}
+                    onClick={() => markRead(notification.id)}
                     className={cn(
                       "w-full text-left px-4 py-4 hover:bg-[#F9F8FF] active:bg-[#F9F8FF] transition-colors duration-150 border-b border-[#F9F8FF] last:border-0",
-                      !notification.read && "bg-[#F8F6FF]"
+                      !isRead && "bg-[#F8F6FF]"
                     )}
-                    aria-label={`${notification.title}: ${notification.body}`}
+                    aria-label={`${text.title}: ${text.body}`}
                   >
                     <div className="flex items-start gap-4">
-                      {!notification.read && (
+                      {!isRead && (
                         <span
                           className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6B3FFF] flex-shrink-0"
                           aria-hidden="true"
                         />
                       )}
-                      <div className={notification.read ? "ml-4" : ""}>
-                        <p className="text-xs font-semibold text-[#1A1340]">{notification.title}</p>
-                        <p className="text-xs text-[#6B7280] mt-2 leading-relaxed">{notification.body}</p>
-                        <p className="text-[10px] text-[#9CA3AF] mt-2">{notification.time}</p>
+                      <div className={isRead ? "ml-4" : ""}>
+                        <p className="text-xs font-semibold text-[#1A1340]">{text.title}</p>
+                        <p className="text-xs text-[#6B7280] mt-2 leading-relaxed">{text.body}</p>
+                        <p className="text-[10px] text-[#9CA3AF] mt-2">{text.time}</p>
                       </div>
                     </div>
                   </button>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
@@ -223,9 +249,9 @@ export function MobileTopBar({ onMenuClick }: MobileTopBarProps) {
               </div>
               <div className="p-2">
                 {[
-                  { label: "My Profile", href: "/profile", icon: User },
-                  { label: "My Documents", href: "/documents", icon: FileText },
-                  { label: "Settings", href: "/settings", icon: Settings },
+                  { label: t("topbar.myProfile"), href: "/profile", icon: User },
+                  { label: t("topbar.myDocuments"), href: "/documents", icon: FileText },
+                  { label: t("topbar.settings"), href: "/settings", icon: Settings },
                 ].map(({ label, href, icon: Icon }) => (
                   <a
                     key={label}
@@ -237,9 +263,9 @@ export function MobileTopBar({ onMenuClick }: MobileTopBarProps) {
                   </a>
                 ))}
                 <div className="my-2 border-t border-[#F3F0FF]" />
-                <button className="flex items-center gap-4 w-full px-4 py-4 rounded-xl text-sm text-[#EF4444] hover:bg-red-50 transition-colors duration-150">
+                <button onClick={handleSignOut} className="flex items-center gap-4 w-full px-4 py-4 rounded-xl text-sm text-[#EF4444] hover:bg-red-50 transition-colors duration-150">
                   <LogOut size={15} aria-hidden="true" />
-                  Sign Out
+                  {t("topbar.signOut")}
                 </button>
               </div>
             </div>

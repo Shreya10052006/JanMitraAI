@@ -7,18 +7,25 @@ import { cn } from "@/utils/cn";
 import { ReportIssueTab } from "./ReportIssueTab";
 import { MyComplaintsTab } from "./MyComplaintsTab";
 import { TrackComplaintTab } from "./TrackComplaintTab";
+import { useComplaints } from "@/hooks/useComplaints";
+import { useLanguage } from "@/hooks/useLanguage";
+import { getComplaintsContent } from "@/lib/i18n/content/complaints";
+import type { TranslationKey } from "@/lib/i18n/translations";
 import type { StoredComplaint } from "@/services/storage";
 
 const TABS = [
-  { id: "report", label: "Report an Issue" },
-  { id: "my", label: "My Complaints" },
-  { id: "track", label: "Track Complaint" },
+  { id: "report", label: "Report an Issue", labelKey: "complaints.reportIssue" as TranslationKey },
+  { id: "my", label: "My Complaints", labelKey: "complaints.myComplaints" as TranslationKey },
+  { id: "track", label: "Track Complaint", labelKey: "complaints.trackComplaint" as TranslationKey },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
 
 export default function ComplaintsPage() {
   const searchParams = useSearchParams();
+  const { findComplaint } = useComplaints();
+  const { t, currentLanguage } = useLanguage();
+  const content = getComplaintsContent(currentLanguage.code);
   const initialTab = (searchParams.get("tab") as TabId) ?? "report";
   const [activeTab, setActiveTab] = useState<TabId>(
     TABS.some((t) => t.id === initialTab) ? initialTab : "report"
@@ -32,6 +39,16 @@ export default function ComplaintsPage() {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setActiveTab(tab);
     }
+    // Deep-link support: /complaints?tab=track&id=<ticketId> pre-selects
+    // that complaint, e.g. from the dashboard's "Continue" list.
+    const id = searchParams.get("id");
+    if (id) {
+      const found = findComplaint(id);
+      if (found) {
+        setTrackComplaint(found);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   function handleTrack(complaint?: StoredComplaint) {
@@ -58,8 +75,8 @@ export default function ComplaintsPage() {
           <div className="absolute inset-0" style={{ background: "linear-gradient(to right,rgba(245,243,255,0.97) 0%,rgba(245,243,255,0.88) 38%,transparent 65%)" }} aria-hidden="true" />
 
           <div className="relative z-10 px-5 py-6 sm:px-8 sm:py-8">
-            <h1 className="text-xl sm:text-2xl font-bold text-[#1A1340]">Complaints</h1>
-            <p className="text-sm text-[#6B7280] mt-2">Report issues in your area and help build a better community</p>
+            <h1 className="text-xl sm:text-2xl font-bold text-[#1A1340]">{t("complaints.title")}</h1>
+            <p className="text-sm text-[#6B7280] mt-2">{t("complaints.subtitle")}</p>
 
             {/* Tab nav inside hero */}
             <div className="flex items-center gap-0 mt-6 overflow-x-auto -mx-5 px-5 sm:mx-0 sm:px-0" role="tablist" aria-label="Complaints sections">
@@ -77,7 +94,7 @@ export default function ComplaintsPage() {
                   )}
                   aria-controls={`tabpanel-${tab.id}`}
                 >
-                  {tab.label}
+                  {t(tab.labelKey)}
                 </button>
               ))}
             </div>
@@ -93,20 +110,18 @@ export default function ComplaintsPage() {
 
         {/* Footer trust bar */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4" role="list">
-          {[
-            { icon: "🔄", label: "Track in Real-time", sub: "Get updates at every step" },
-            { icon: "📋", label: "Transparent Process", sub: "Know where your issue stands" },
-            { icon: "⚡", label: "Faster Resolution", sub: "AI ensures quick routing" },
-            { icon: "🤝", label: "Better Communities", sub: "Together, we make change" },
-          ].map((item) => (
+          {["🔄", "📋", "⚡", "🤝"].map((icon, i) => {
+            const item = content.trustBar[i];
+            return (
             <div key={item.label} className="bg-white rounded-xl border border-[#E8E4F8] px-6 py-4 flex items-center gap-4" role="listitem">
-              <span className="text-xl" aria-hidden="true">{item.icon}</span>
+              <span className="text-xl" aria-hidden="true">{icon}</span>
               <div>
                 <p className="text-xs font-semibold text-[#1A1340]">{item.label}</p>
                 <p className="text-[10px] text-[#9CA3AF]">{item.sub}</p>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

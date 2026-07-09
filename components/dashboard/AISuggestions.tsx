@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { Leaf, Shield, FileText, Building2, ChevronRight } from "lucide-react";
 import { AI_SUGGESTIONS } from "@/lib/mock-data";
+import { useLanguage } from "@/hooks/useLanguage";
+import { getDashboardContent } from "@/lib/i18n/content/dashboard";
 
 const ICON_MAP = {
   Leaf,
@@ -14,6 +16,8 @@ const ICON_MAP = {
 type IconName = keyof typeof ICON_MAP;
 
 export function AISuggestions() {
+  const { t, currentLanguage } = useLanguage();
+  const content = getDashboardContent(currentLanguage.code);
   return (
     <section
       className="bg-white rounded-[20px] border border-[#EAE8F5] overflow-hidden"
@@ -25,14 +29,14 @@ export function AISuggestions() {
           id="ai-suggestions-heading"
           className="font-semibold text-[13.5px] text-[#1A1340]"
         >
-          AI Suggestions for You
+          {t("home.aiSuggestions")}
         </h2>
         <Link
           href="/suggestions"
           className="text-xs font-semibold text-[#6B3FFF] hover:text-[#4C1D95] transition-colors duration-200"
           aria-label="View all AI suggestions"
         >
-          View All
+          {t("common.viewAll")}
         </Link>
       </div>
 
@@ -40,12 +44,13 @@ export function AISuggestions() {
       <ul className="divide-y divide-[#FAFAFA]" role="list">
         {AI_SUGGESTIONS.map((suggestion) => {
           const IconComponent = ICON_MAP[suggestion.icon as IconName];
+          const text = content.aiSuggestions[suggestion.id] ?? suggestion;
           return (
             <li key={suggestion.id}>
               <Link
                 href={suggestion.href}
                 className="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3.5 sm:py-4 hover:bg-[#FAFAFA] transition-colors duration-200 group"
-                aria-label={`${suggestion.title}: ${suggestion.description}`}
+                aria-label={`${text.title}: ${text.description}`}
               >
                 {/* Icon */}
                 <div
@@ -64,10 +69,10 @@ export function AISuggestions() {
                 {/* Text */}
                 <div className="flex-1 min-w-0">
                   <p className="text-[13px] font-semibold text-[#1A1340] leading-tight">
-                    {suggestion.title}
+                    {text.title}
                   </p>
                   <p className="text-[11.5px] text-[#9CA3AF] mt-2">
-                    {suggestion.description}
+                    {text.description}
                   </p>
                 </div>
 

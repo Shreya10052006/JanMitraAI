@@ -9,10 +9,11 @@ import {
   Gift,
   Globe,
   ArrowRight,
-  LayoutGrid,
 } from "lucide-react";
 import { QUICK_ACTIONS } from "@/lib/mock-data";
 import { cn } from "@/utils/cn";
+import { useLanguage } from "@/hooks/useLanguage";
+import { getDashboardContent } from "@/lib/i18n/content/dashboard";
 
 const ICON_MAP = {
   Bot,
@@ -26,6 +27,8 @@ const ICON_MAP = {
 type IconName = keyof typeof ICON_MAP;
 
 export function QuickActions() {
+  const { t, currentLanguage } = useLanguage();
+  const content = getDashboardContent(currentLanguage.code);
   return (
     <section aria-labelledby="quick-actions-heading">
       <div className="flex items-center justify-between mb-4 lg:mb-6 gap-2">
@@ -33,15 +36,8 @@ export function QuickActions() {
           id="quick-actions-heading"
           className="text-sm sm:text-[15px] font-semibold text-[#1A1340]"
         >
-          What would you like to do today?
+          {t("home.whatToDoToday")}
         </h2>
-        <button
-          className="flex items-center gap-2 text-sm text-[#9CA3AF] hover:text-[#6B3FFF] transition-colors duration-200 flex-shrink-0"
-          aria-label="Customise quick actions layout"
-        >
-          <span className="hidden sm:inline">Customise</span>
-          <LayoutGrid size={15} aria-hidden="true" />
-        </button>
       </div>
 
       <div
@@ -51,6 +47,7 @@ export function QuickActions() {
       >
         {QUICK_ACTIONS.map((action) => {
           const IconComponent = ICON_MAP[action.icon as IconName];
+          const text = content.quickActions[action.id] ?? action;
           return (
             <Link
               key={action.id}
@@ -61,7 +58,7 @@ export function QuickActions() {
                 "hover:border-[#E8E4F8] hover:shadow-lg hover:shadow-purple-100/60 hover:-translate-y-[3px]",
                 "transition-all duration-200 focus-visible:ring-2 focus-visible:ring-[#6B3FFF] focus-visible:ring-offset-2"
               )}
-              aria-label={`${action.label}: ${action.description}`}
+              aria-label={`${text.label}: ${text.description}`}
             >
               <div>
                 {/* Icon */}
@@ -77,12 +74,12 @@ export function QuickActions() {
 
                 {/* Label */}
                 <h3 className="font-semibold text-[13px] text-[#1A1340] mb-2 leading-tight">
-                  {action.label}
+                  {text.label}
                 </h3>
 
                 {/* Description */}
                 <p className="text-[11.5px] text-[#6B7280] leading-relaxed">
-                  {action.description}
+                  {text.description}
                 </p>
               </div>
 

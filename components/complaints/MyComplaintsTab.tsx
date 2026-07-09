@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { ChevronRight, ChevronLeft, MapPin, Search } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { useComplaints } from "@/hooks/useComplaints";
+import { useLanguage } from "@/hooks/useLanguage";
+import { getComplaintsContent } from "@/lib/i18n/content/complaints";
 import type { ComplaintStatus } from "@/types";
 import type { StoredComplaint } from "@/services/storage";
 
@@ -25,6 +27,15 @@ const STATUS_LABELS: Record<ComplaintStatus, string> = {
   closed: "Closed",
 };
 
+const STATUS_TRANSLATION_KEY: Record<ComplaintStatus, "status.submitted" | "status.under_review" | "status.assigned" | "status.in_progress" | "status.resolved" | "status.closed"> = {
+  submitted: "status.submitted",
+  under_review: "status.under_review",
+  assigned: "status.assigned",
+  in_progress: "status.in_progress",
+  resolved: "status.resolved",
+  closed: "status.closed",
+};
+
 const CATEGORY_ICONS: Record<string, string> = {
   "Street Lighting": "💡",
   "Roads & Infrastructure": "🚧",
@@ -44,9 +55,13 @@ interface MyComplaintsTabProps {
 
 export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
   const { complaints, refreshComplaints } = useComplaints();
+  const { t, currentLanguage } = useLanguage();
+  const content = getComplaintsContent(currentLanguage.code);
+  const m = content.myComplaints;
   const [statusFilter, setStatusFilter] = useState("All Status");
   const [categoryFilter, setCategoryFilter] = useState("All Categories");
   const [timeFilter, setTimeFilter] = useState("All Time");
+  const [sortBy, setSortBy] = useState("Newest First");
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const perPage = 10;
@@ -90,8 +105,15 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
     return matchStatus && matchCategory && matchTime && matchSearch;
   });
 
-  const pageCount = Math.max(1, Math.ceil(filtered.length / perPage));
-  const paginated = filtered.slice((page - 1) * perPage, page * perPage);
+  const sorted = [...filtered].sort((a, b) => {
+    if (sortBy === "Newest First") return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    if (sortBy === "Oldest First") return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+    if (sortBy === "Status") return a.status.localeCompare(b.status);
+    return 0;
+  });
+
+  const pageCount = Math.max(1, Math.ceil(sorted.length / perPage));
+  const paginated = sorted.slice((page - 1) * perPage, page * perPage);
 
   // Donut chart data
   const categoryStats = complaints.reduce<Record<string, number>>((acc, c) => {
@@ -136,7 +158,7 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
   const recentActivity = complaints
     .slice(0, 4)
     .map((c) => ({
-      text: `Complaint #${c.ticketId} status: ${STATUS_LABELS[c.status]}`,
+      text: `Complaint #${c.ticketId} status: ${t(STATUS_TRANSLATION_KEY[c.status])}`,
       time: c.updatedAt,
       dot: c.status === "resolved" ? "bg-emerald-500" : c.status === "in_progress" ? "bg-blue-500" : "bg-orange-400",
     }));
@@ -150,11 +172,11 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
         {/* Stats row */}
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-4" role="list">
           {[
-            { label: "Total Complaints", value: total.toString(), sub: "All time", icon: "📋", iconBg: "#EDE9FE" },
-            { label: "Resolved", value: resolved.toString(), sub: total > 0 ? `${Math.round((resolved / total) * 100)}%` : "0%", icon: "✅", iconBg: "#D1FAE5" },
-            { label: "In Progress", value: inProgress.toString(), sub: total > 0 ? `${Math.round((inProgress / total) * 100)}%` : "0%", icon: "🕐", iconBg: "#FEF3C7" },
-            { label: "Under Review", value: underReview.toString(), sub: total > 0 ? `${Math.round((underReview / total) * 100)}%` : "0%", icon: "🔍", iconBg: "#DBEAFE" },
-            { label: "Avg. Resolution Time", value: "3.2 Days", sub: "This month", icon: "⏱️", iconBg: "#FCE7F3" },
+            { label: m.statsTotal, value: total.toString(), sub: m.allTime, icon: "📋", iconBg: "#EDE9FE" },
+            { label: m.statsResolved, value: resolved.toString(), sub: total > 0 ? `${Math.round((resolved / total) * 100)}%` : "0%", icon: "✅", iconBg: "#D1FAE5" },
+            { label: m.statsInProgress, value: inProgress.toString(), sub: total > 0 ? `${Math.round((inProgress / total) * 100)}%` : "0%", icon: "🕐", iconBg: "#FEF3C7" },
+            { label: m.statsUnderReview, value: underReview.toString(), sub: total > 0 ? `${Math.round((underReview / total) * 100)}%` : "0%", icon: "🔍", iconBg: "#DBEAFE" },
+            { label: m.statsAvgResolution, value: "3.2 Days", sub: m.thisMonth, icon: "⏱️", iconBg: "#FCE7F3" },
           ].map((stat) => (
             <div key={stat.label} className="bg-white rounded-[20px] border border-[#E8E4F8] px-4 sm:px-6 py-4 flex items-center gap-4" role="listitem">
               <div className="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0" style={{ backgroundColor: stat.iconBg }} aria-hidden="true">
@@ -172,8 +194,8 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
         {/* Complaints list card */}
         <div className="bg-white rounded-[20px] border border-[#E8E4F8] overflow-hidden">
           <div className="px-4 sm:px-6 py-4 border-b border-[#F3F0FF]">
-            <h2 className="text-sm font-bold text-[#1A1340]">Your Complaints</h2>
-            <p className="text-xs text-[#9CA3AF] mt-2">Track and manage all the issues you&apos;ve reported</p>
+            <h2 className="text-sm font-bold text-[#1A1340]">{m.yourComplaintsHeading}</h2>
+            <p className="text-xs text-[#9CA3AF] mt-2">{m.yourComplaintsSub}</p>
           </div>
 
           {/* Filters */}
@@ -183,18 +205,21 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
                 value: statusFilter,
                 onChange: (v: string) => { setStatusFilter(v); setPage(1); },
                 opts: ["All Status", "Submitted", "Under Review", "Assigned", "In Progress", "Resolved", "Closed"],
+                optLabels: [m.allStatus, t("status.submitted"), t("status.under_review"), t("status.assigned"), t("status.in_progress"), t("status.resolved"), t("status.closed")],
                 label: "status",
               },
               {
                 value: categoryFilter,
                 onChange: (v: string) => { setCategoryFilter(v); setPage(1); },
                 opts: ["All Categories", ...uniqueCategories],
+                optLabels: [m.allCategories, ...uniqueCategories.map((c) => content.categoryLabels[c] ?? c)],
                 label: "category",
               },
               {
                 value: timeFilter,
                 onChange: (v: string) => { setTimeFilter(v); setPage(1); },
                 opts: ["All Time", "This Week", "This Month", "Last Month"],
+                optLabels: [m.allTimeFilter, m.thisWeek, m.thisMonth, m.lastMonth],
                 label: "time",
               },
             ].map((f) => (
@@ -205,16 +230,26 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
                 className="text-xs border border-[#E8E4F8] rounded-lg px-4 py-2 text-[#374151] bg-white outline-none focus:ring-1 focus:ring-[#6B3FFF]/20 focus:border-[#6B3FFF]/40"
                 aria-label={`Filter by ${f.label}`}
               >
-                {f.opts.map((o) => <option key={o}>{o}</option>)}
+                {f.opts.map((o, i) => <option key={o} value={o}>{f.optLabels[i]}</option>)}
               </select>
             ))}
+            <select
+              value={sortBy}
+              onChange={(e) => { setSortBy(e.target.value); setPage(1); }}
+              className="text-xs border border-[#E8E4F8] rounded-lg px-4 py-2 text-[#374151] bg-white outline-none focus:ring-1 focus:ring-[#6B3FFF]/20 focus:border-[#6B3FFF]/40"
+              aria-label="Sort complaints"
+            >
+              {[["Newest First", m.sortNewest], ["Oldest First", m.sortOldest], ["Status", m.sortStatus]].map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
             <div className="relative ml-auto">
               <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-[#9CA3AF]" aria-hidden="true" />
               <input
                 type="search"
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                placeholder="Search by ID or keyword..."
+                placeholder={m.searchPlaceholder}
                 className="text-xs pl-8 pr-4 py-2 border border-[#E8E4F8] rounded-lg text-[#374151] bg-white outline-none focus:ring-1 focus:ring-[#6B3FFF]/20 w-44"
                 aria-label="Search complaints"
               />
@@ -224,8 +259,8 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
           {/* List */}
           {paginated.length === 0 ? (
             <div className="px-4 sm:px-6 py-10 text-center">
-              <p className="text-sm font-medium text-[#1A1340]">No complaints found</p>
-              <p className="text-xs text-[#9CA3AF] mt-2">Try adjusting your filters or report a new issue</p>
+              <p className="text-sm font-medium text-[#1A1340]">{m.noComplaintsFound}</p>
+              <p className="text-xs text-[#9CA3AF] mt-2">{m.noComplaintsHint}</p>
             </div>
           ) : (
             <ul className="divide-y divide-[#F9F8FF]" role="list">
@@ -247,10 +282,10 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
                       </p>
                     </div>
                     <div className="flex-shrink-0 text-center hidden sm:block">
-                      <p className="text-[10px] text-[#9CA3AF]">{c.category}</p>
+                      <p className="text-[10px] text-[#9CA3AF]">{content.categoryLabels[c.category] ?? c.category}</p>
                     </div>
                     <span className={cn("px-4 py-2 rounded-full text-[10px] font-semibold border flex-shrink-0", STATUS_COLORS[c.status])}>
-                      {STATUS_LABELS[c.status]}
+                      {t(STATUS_TRANSLATION_KEY[c.status])}
                     </span>
                     <span className="text-xs text-[#9CA3AF] flex-shrink-0 hidden sm:block">{c.createdAt}</span>
                     <ChevronRight size={14} className="text-[#D1D5DB] group-hover:text-[#6B3FFF] transition-colors flex-shrink-0" aria-hidden="true" />
@@ -294,7 +329,7 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
               </button>
             </div>
             <p className="text-xs text-[#9CA3AF]">
-              Showing {paginated.length} of {filtered.length}
+              {m.showing} {paginated.length} {m.of} {sorted.length}
             </p>
           </div>
         </div>
@@ -305,7 +340,7 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
         {/* Donut chart */}
         <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="chart-heading">
           <div className="flex items-center justify-between mb-4">
-            <h2 id="chart-heading" className="text-sm font-semibold text-[#1A1340]">Complaints by Category</h2>
+            <h2 id="chart-heading" className="text-sm font-semibold text-[#1A1340]">{m.byCategoryHeading}</h2>
           </div>
           {total > 0 ? (
             <div className="flex items-center gap-4">
@@ -315,27 +350,27 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
                 ))}
                 <circle cx="50" cy="50" r="24" fill="white" />
                 <text x="50" y="47" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#1A1340">{total}</text>
-                <text x="50" y="57" textAnchor="middle" fontSize="6" fill="#9CA3AF">Total</text>
+                <text x="50" y="57" textAnchor="middle" fontSize="6" fill="#9CA3AF">{m.donutTotal}</text>
               </svg>
               <div className="space-y-2">
                 {donutData.map((seg) => (
                   <div key={seg.label} className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: seg.color }} aria-hidden="true" />
-                    <span className="text-[11px] text-[#374151] truncate">{seg.label}</span>
+                    <span className="text-[11px] text-[#374151] truncate">{content.categoryLabels[seg.label] ?? seg.label}</span>
                     <span className="text-[10px] text-[#9CA3AF] ml-auto">{seg.count} ({seg.pct})</span>
                   </div>
                 ))}
               </div>
             </div>
           ) : (
-            <p className="text-xs text-[#9CA3AF] text-center py-4">No complaints yet. Report your first issue!</p>
+            <p className="text-xs text-[#9CA3AF] text-center py-4">{m.noComplaintsYet}</p>
           )}
         </section>
 
         {/* Recent Activity */}
         <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="activity-heading">
           <div className="flex items-center justify-between mb-4">
-            <h2 id="activity-heading" className="text-sm font-semibold text-[#1A1340]">Recent Activity</h2>
+            <h2 id="activity-heading" className="text-sm font-semibold text-[#1A1340]">{m.recentActivityHeading}</h2>
           </div>
           <div className="space-y-4">
             {recentActivity.length > 0 ? (
@@ -349,7 +384,7 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
                 </div>
               ))
             ) : (
-              <p className="text-xs text-[#9CA3AF]">No recent activity</p>
+              <p className="text-xs text-[#9CA3AF]">{m.noRecentActivity}</p>
             )}
           </div>
         </section>
@@ -358,8 +393,8 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
         <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="impact2-heading">
           <div className="flex items-start gap-4">
             <div className="flex-1">
-              <h2 id="impact2-heading" className="text-sm font-semibold text-[#1A1340] mb-2">Make a Bigger Impact!</h2>
-              <p className="text-xs text-[#6B7280] mb-4">Invite your friends and neighbors to report issues and create a better community together.</p>
+              <h2 id="impact2-heading" className="text-sm font-semibold text-[#1A1340] mb-2">{m.biggerImpactHeading}</h2>
+              <p className="text-xs text-[#6B7280] mb-4">{m.biggerImpactDesc}</p>
               <button
                 onClick={() => {
                   if (navigator.share) {
@@ -369,7 +404,7 @@ export function MyComplaintsTab({ onTrack }: MyComplaintsTabProps) {
                 className="px-4 py-2 rounded-xl text-xs font-semibold text-white hover:opacity-90 transition-all"
                 style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
               >
-                Invite Now
+                {m.inviteNow}
               </button>
             </div>
             <span className="text-3xl" aria-hidden="true">👥</span>

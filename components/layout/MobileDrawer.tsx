@@ -18,6 +18,8 @@ import {
 import { cn } from "@/utils/cn";
 import { AccessibilityPanel } from "@/components/dashboard/AccessibilityPanel";
 import { NAV_ITEMS } from "@/lib/mock-data";
+import { useLanguage } from "@/hooks/useLanguage";
+import type { TranslationKey } from "@/lib/i18n/translations";
 
 const ICON_MAP = {
   Home,
@@ -32,6 +34,17 @@ const ICON_MAP = {
 
 type IconName = keyof typeof ICON_MAP;
 
+const NAV_KEY_MAP: Record<string, TranslationKey> = {
+  home: "nav.home",
+  "ai-assistant": "nav.aiAssistant",
+  services: "nav.services",
+  complaints: "nav.complaints",
+  documents: "nav.documents",
+  schemes: "nav.schemes",
+  resources: "nav.resources",
+  profile: "nav.profile",
+};
+
 interface MobileDrawerProps {
   open: boolean;
   onClose: () => void;
@@ -39,6 +52,7 @@ interface MobileDrawerProps {
 
 export function MobileDrawer({ open, onClose }: MobileDrawerProps) {
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   // Close automatically after navigating to a new page.
   useEffect(() => {
@@ -152,7 +166,7 @@ export function MobileDrawer({ open, onClose }: MobileDrawerProps) {
                         aria-hidden="true"
                       />
                     )}
-                    <span>{item.label}</span>
+                    <span>{NAV_KEY_MAP[item.id] ? t(NAV_KEY_MAP[item.id]) : item.label}</span>
                   </Link>
                 </li>
               );
@@ -169,7 +183,7 @@ export function MobileDrawer({ open, onClose }: MobileDrawerProps) {
             aria-label="Get help and support"
           >
             <Headphones size={19} className="flex-shrink-0 text-[#4B5563]" aria-hidden="true" />
-            <span>Need Help?</span>
+            <span>{t("common.needHelp")}</span>
           </Link>
         </div>
       </aside>

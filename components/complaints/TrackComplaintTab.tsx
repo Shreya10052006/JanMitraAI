@@ -4,16 +4,28 @@ import { useState } from "react";
 import { Search, ChevronRight, CheckCircle2, Clock, AlertCircle } from "lucide-react";
 import { cn } from "@/utils/cn";
 import { useComplaints } from "@/hooks/useComplaints";
+import { useLanguage } from "@/hooks/useLanguage";
+import { getComplaintsContent } from "@/lib/i18n/content/complaints";
+import { DynamicLocationMap } from "@/components/ui/DynamicLocationMap";
+
+const DEFAULT_MAP_CENTER: [number, number] = [28.6139, 77.209];
+
+/** Pulls "Lat: 28.6139, Lng: 77.2090" out of a stored location string, if present. */
+function parseLatLng(location: string): [number, number] | null {
+  const match = location.match(/Lat:\s*(-?\d+(?:\.\d+)?),\s*Lng:\s*(-?\d+(?:\.\d+)?)/i);
+  if (!match) return null;
+  return [parseFloat(match[1]), parseFloat(match[2])];
+}
 import type { ComplaintStatus } from "@/types";
 import type { StoredComplaint } from "@/services/storage";
 
-const STATUS_LABELS: Record<ComplaintStatus, string> = {
-  submitted: "Submitted",
-  under_review: "Under Review",
-  assigned: "Assigned",
-  in_progress: "In Progress",
-  resolved: "Resolved",
-  closed: "Closed",
+const STATUS_TRANSLATION_KEY: Record<ComplaintStatus, "status.submitted" | "status.under_review" | "status.assigned" | "status.in_progress" | "status.resolved" | "status.closed"> = {
+  submitted: "status.submitted",
+  under_review: "status.under_review",
+  assigned: "status.assigned",
+  in_progress: "status.in_progress",
+  resolved: "status.resolved",
+  closed: "status.closed",
 };
 
 const STATUS_ICON: Record<ComplaintStatus, string> = {
@@ -42,6 +54,9 @@ interface TrackComplaintTabProps {
 
 export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabProps) {
   const { findComplaint } = useComplaints();
+  const { t, currentLanguage } = useLanguage();
+  const content = getComplaintsContent(currentLanguage.code);
+  const tr = content.track;
   const [inputId, setInputId] = useState(preSelectedComplaint?.ticketId ?? "");
   const [currentComplaint, setCurrentComplaint] = useState<StoredComplaint | undefined>(preSelectedComplaint);
   const [notFound, setNotFound] = useState(false);
@@ -82,8 +97,8 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
       <div className="space-y-6">
         {/* Search */}
         <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-4 sm:p-6">
-          <h2 className="text-base font-bold text-[#1A1340] mb-2">Track Your Complaint</h2>
-          <p className="text-xs text-[#6B7280] mb-4">Enter your complaint ID to track real-time status and timeline</p>
+          <h2 className="text-base font-bold text-[#1A1340] mb-2">{tr.heading}</h2>
+          <p className="text-xs text-[#6B7280] mb-4">{tr.subheading}</p>
           <div className="flex items-center gap-4">
             <div className="flex-1 flex items-center gap-2 border border-[#E8E4F8] rounded-xl px-4 py-4 focus-within:ring-2 focus-within:ring-[#6B3FFF]/20 focus-within:border-[#6B3FFF]/40 transition-all">
               <Search size={15} className="text-[#9CA3AF] flex-shrink-0" aria-hidden="true" />
@@ -92,7 +107,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
                 value={inputId}
                 onChange={(e) => { setInputId(e.target.value); setNotFound(false); }}
                 onKeyDown={handleKeyDown}
-                placeholder="Enter Complaint ID (e.g., CMP-2026-1452)"
+                placeholder={tr.inputPlaceholder}
                 className="flex-1 text-sm text-[#374151] placeholder-[#9CA3AF] bg-transparent outline-none"
                 aria-label="Enter complaint ID to track"
               />
@@ -109,7 +124,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
               ) : (
                 <Search size={15} aria-hidden="true" />
               )}
-              Track
+              {tr.trackButton}
             </button>
           </div>
 
@@ -117,7 +132,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
           {notFound && (
             <div className="mt-4 flex items-center gap-2 text-xs text-red-600 bg-red-50 rounded-xl px-4 py-4 border border-red-100">
               <AlertCircle size={13} aria-hidden="true" />
-              Complaint ID &ldquo;{inputId}&rdquo; not found. Please check the ID and try again.
+              {tr.notFound.replace("{id}", inputId)}
             </div>
           )}
         </div>
@@ -138,14 +153,14 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
                   <h3 className="text-base font-bold text-[#1A1340]">{c.title}</h3>
                 </div>
                 <span className={cn("px-4 py-2 rounded-full text-xs font-semibold", STATUS_COLOR[c.status].text, STATUS_COLOR[c.status].bg)}>
-                  {STATUS_LABELS[c.status]}
+                  {t(STATUS_TRANSLATION_KEY[c.status])}
                 </span>
               </div>
 
               {/* Progress bar */}
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-medium text-[#374151]">Resolution Progress</span>
+                  <span className="text-xs font-medium text-[#374151]">{tr.resolutionProgress}</span>
                   <span className="text-xs font-bold text-[#6B3FFF]">{resolvedPercentage}%</span>
                 </div>
                 <div className="h-2 bg-[#F3F0FF] rounded-full overflow-hidden" role="progressbar" aria-valuenow={resolvedPercentage} aria-valuemin={0} aria-valuemax={100} aria-label={`Resolution progress: ${resolvedPercentage}%`}>
@@ -159,13 +174,13 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
               {/* Details grid */}
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { label: "Category", value: c.category },
-                  { label: "Priority", value: c.priority.charAt(0).toUpperCase() + c.priority.slice(1) },
-                  { label: "Submitted", value: c.createdAt },
-                  { label: "Last Updated", value: c.updatedAt },
-                  { label: "Location", value: c.location, fullWidth: true },
-                  ...(c.assignedTo ? [{ label: "Assigned To", value: c.assignedTo, fullWidth: true }] : []),
-                  ...(c.department ? [{ label: "Department", value: c.department, fullWidth: true }] : []),
+                  { label: tr.category, value: content.categoryLabels[c.category] ?? c.category },
+                  { label: tr.priority, value: c.priority.charAt(0).toUpperCase() + c.priority.slice(1) },
+                  { label: tr.submitted, value: c.createdAt },
+                  { label: tr.lastUpdated, value: c.updatedAt },
+                  { label: tr.location, value: c.location, fullWidth: true },
+                  ...(c.assignedTo ? [{ label: tr.assignedTo, value: c.assignedTo, fullWidth: true }] : []),
+                  ...(c.department ? [{ label: tr.department, value: c.department, fullWidth: true }] : []),
                 ].map(({ label, value, fullWidth }) => (
                   <div key={label} className={cn("bg-[#F9F8FF] rounded-xl p-4", fullWidth && "col-span-2")}>
                     <p className="text-[10px] text-[#9CA3AF]">{label}</p>
@@ -173,11 +188,27 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
                   </div>
                 ))}
               </div>
+
+              {/* Location map */}
+              <div className="mt-4">
+                <DynamicLocationMap
+                  center={parseLatLng(c.location) ?? DEFAULT_MAP_CENTER}
+                  zoom={parseLatLng(c.location) ? 15 : 11}
+                  markers={[
+                    {
+                      lat: (parseLatLng(c.location) ?? DEFAULT_MAP_CENTER)[0],
+                      lng: (parseLatLng(c.location) ?? DEFAULT_MAP_CENTER)[1],
+                      label: c.location,
+                    },
+                  ]}
+                  heightClassName="h-40"
+                />
+              </div>
             </div>
 
             {/* Timeline */}
             <div className="bg-white rounded-[20px] border border-[#E8E4F8] p-4 sm:p-6">
-              <h3 className="text-sm font-bold text-[#1A1340] mb-4">Complaint Timeline</h3>
+              <h3 className="text-sm font-bold text-[#1A1340] mb-4">{tr.timelineHeading}</h3>
               <ol className="relative space-y-4 ml-2" aria-label="Complaint timeline">
                 {c.timeline.map((event, idx) => {
                   const isCompleted = true; // All timeline events in our model are completed
@@ -203,7 +234,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
                           <p className={cn("text-sm font-semibold", isCurrent ? "text-[#6B3FFF]" : "text-[#1A1340]")}>
                             {event.label}
                             {isCurrent && (
-                              <span className="ml-2 px-2 py-2 text-[9px] font-bold bg-[#6B3FFF] text-white rounded-full">Current</span>
+                              <span className="ml-2 px-2 py-2 text-[9px] font-bold bg-[#6B3FFF] text-white rounded-full">{tr.current}</span>
                             )}
                           </p>
                           <span className="text-[10px] text-[#9CA3AF] whitespace-nowrap flex items-center gap-2 flex-shrink-0">
@@ -221,8 +252,8 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
                   <li className="flex items-start gap-4 relative pl-6 opacity-40">
                     <div className="absolute left-0 w-3.5 h-3.5 rounded-full border-2 border-dashed border-[#D1D5DB] bg-white mt-2" aria-hidden="true" />
                     <div>
-                      <p className="text-sm font-semibold text-[#9CA3AF]">Resolved</p>
-                      <p className="text-xs text-[#9CA3AF] mt-2">Issue will be marked resolved when fixed</p>
+                      <p className="text-sm font-semibold text-[#9CA3AF]">{tr.upcomingResolved}</p>
+                      <p className="text-xs text-[#9CA3AF] mt-2">{tr.upcomingResolvedHint}</p>
                     </div>
                   </li>
                 )}
@@ -231,7 +262,7 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
               {c.status === "resolved" && (
                 <div className="mt-4 flex items-center gap-2 bg-green-50 rounded-xl px-4 py-4 border border-green-100">
                   <CheckCircle2 size={16} className="text-[#10B981]" aria-hidden="true" />
-                  <p className="text-xs font-semibold text-[#10B981]">Your complaint has been successfully resolved!</p>
+                  <p className="text-xs font-semibold text-[#10B981]">{tr.resolvedBanner}</p>
                 </div>
               )}
             </div>
@@ -244,9 +275,9 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
             <div className="w-14 h-14 rounded-2xl bg-[#EDE9FE] flex items-center justify-center mb-4" aria-hidden="true">
               <Search size={24} className="text-[#6B3FFF]" />
             </div>
-            <h3 className="text-sm font-bold text-[#1A1340] mb-2">Track Your Complaint</h3>
-            <p className="text-xs text-[#9CA3AF] max-w-[240px]">Enter your Complaint ID above to see real-time status and timeline.</p>
-            <p className="text-[10px] text-[#9CA3AF] mt-2">Try: CMP-2026-1452</p>
+            <h3 className="text-sm font-bold text-[#1A1340] mb-2">{tr.emptyTitle}</h3>
+            <p className="text-xs text-[#9CA3AF] max-w-[240px]">{tr.emptyHint}</p>
+            <p className="text-[10px] text-[#9CA3AF] mt-2">{tr.tryExample}</p>
           </div>
         )}
       </div>
@@ -255,19 +286,15 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
       <aside className="space-y-6" aria-label="Track complaint sidebar">
         {/* Status guide */}
         <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="status-guide-heading">
-          <h2 id="status-guide-heading" className="text-sm font-semibold text-[#1A1340] mb-4">Status Guide</h2>
+          <h2 id="status-guide-heading" className="text-sm font-semibold text-[#1A1340] mb-4">{tr.statusGuideHeading}</h2>
           <div className="space-y-4">
             {STEP_STATUSES.map((status) => (
               <div key={status} className="flex items-start gap-4">
                 <div className={cn("w-2.5 h-2.5 rounded-full flex-shrink-0 mt-2", STATUS_COLOR[status].dot)} aria-hidden="true" />
                 <div>
-                  <p className="text-xs font-semibold text-[#1A1340]">{STATUS_LABELS[status]}</p>
+                  <p className="text-xs font-semibold text-[#1A1340]">{t(STATUS_TRANSLATION_KEY[status])}</p>
                   <p className="text-[10px] text-[#9CA3AF] mt-2 leading-relaxed">
-                    {status === "submitted" && "Complaint received and registered in the system"}
-                    {status === "under_review" && "Being reviewed by the concerned department"}
-                    {status === "assigned" && "An officer/engineer has been assigned"}
-                    {status === "in_progress" && "Active work is being done to resolve the issue"}
-                    {status === "resolved" && "Issue has been fixed and complaint is closed"}
+                    {tr.statusDescriptions[status]}
                   </p>
                 </div>
               </div>
@@ -277,14 +304,9 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
 
         {/* Tips */}
         <section className="bg-[#F9F8FF] rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="tips-heading">
-          <h2 id="tips-heading" className="text-sm font-semibold text-[#1A1340] mb-4">💡 Tips for Faster Resolution</h2>
+          <h2 id="tips-heading" className="text-sm font-semibold text-[#1A1340] mb-4">{tr.tipsHeading}</h2>
           <ul className="space-y-2">
-            {[
-              "Add multiple photos for better visibility",
-              "Mention the exact location/landmark",
-              "Include how long the issue has persisted",
-              "Note peak hours when it's most problematic",
-            ].map((tip) => (
+            {tr.tips.map((tip) => (
               <li key={tip} className="flex items-start gap-2 text-xs text-[#374151]">
                 <ChevronRight size={13} className="text-[#6B3FFF] flex-shrink-0 mt-2" aria-hidden="true" />
                 {tip}
@@ -295,14 +317,14 @@ export function TrackComplaintTab({ preSelectedComplaint }: TrackComplaintTabPro
 
         {/* Need more help */}
         <section className="bg-white rounded-[20px] border border-[#E8E4F8] p-4" aria-labelledby="needhelp-heading">
-          <h2 id="needhelp-heading" className="text-sm font-semibold text-[#1A1340] mb-2">Need More Help?</h2>
-          <p className="text-xs text-[#6B7280] mb-4">Chat with JanMitra AI for real-time guidance on your complaint.</p>
+          <h2 id="needhelp-heading" className="text-sm font-semibold text-[#1A1340] mb-2">{tr.needMoreHelpHeading}</h2>
+          <p className="text-xs text-[#6B7280] mb-4">{tr.needMoreHelpDesc}</p>
           <a
             href="/ai-assistant"
             className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold text-white hover:opacity-90 transition-all inline-flex"
             style={{ background: "linear-gradient(135deg,#6B3FFF,#8B5CF6)" }}
           >
-            Chat with AI
+            {tr.chatWithAI}
             <ChevronRight size={13} aria-hidden="true" />
           </a>
         </section>

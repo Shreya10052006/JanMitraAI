@@ -8,6 +8,8 @@ import { cn } from "@/utils/cn";
 import { PROMPT_CHIPS } from "@/lib/mock-data";
 import { useAccessibility } from "@/hooks/useAccessibility";
 import { useVoiceAssistant } from "@/hooks/useVoiceAssistant";
+import { useLanguage } from "@/hooks/useLanguage";
+import { getDashboardContent } from "@/lib/i18n/content/dashboard";
 
 export function HeroSection() {
   const [query, setQuery] = useState("");
@@ -16,6 +18,8 @@ export function HeroSection() {
   const inputRef = useRef<HTMLInputElement>(null);
   const { settings } = useAccessibility();
   const { isSupported, isListening, startListening, stopListening } = useVoiceAssistant();
+  const { t, currentLanguage } = useLanguage();
+  const content = getDashboardContent(currentLanguage.code);
 
   function handleSearch() {
     const trimmed = query.trim();
@@ -67,7 +71,7 @@ export function HeroSection() {
           onKeyDown={handleKeyDown}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          placeholder={isListening ? "Listening…" : "Ask JanMitra AI anything..."}
+          placeholder={isListening ? "Listening…" : t("home.searchPlaceholder")}
           className="flex-1 bg-transparent px-6 py-4 text-sm text-[#374151] placeholder-[#B0AABB] outline-none rounded-[14px] min-w-0"
           aria-label="Search query"
           autoComplete="off"
@@ -116,18 +120,21 @@ export function HeroSection() {
         aria-label="Suggested queries"
       >
         <span className="text-xs text-[#9CA3AF] font-medium whitespace-nowrap">
-          Try asking about
+          {t("home.tryAskingAbout")}
         </span>
-        {PROMPT_CHIPS.map((chip) => (
+        {PROMPT_CHIPS.map((chip) => {
+          const label = content.promptChips[chip.id] ?? chip.label;
+          return (
           <button
             key={chip.id}
-            onClick={() => handleChipClick(chip.label)}
+            onClick={() => handleChipClick(label)}
             className="px-4 py-2 bg-white/85 border border-[#E2DCF5] rounded-full text-xs text-[#4B5563] hover:bg-white hover:border-[#6B3FFF]/40 hover:text-[#6B3FFF] hover:shadow-sm transition-all duration-200 font-medium backdrop-blur-sm"
-            aria-label={`Search for ${chip.label}`}
+            aria-label={`Search for ${label}`}
           >
-            {chip.label}
+            {label}
           </button>
-        ))}
+          );
+        })}
       </div>
     </>
   );
@@ -135,26 +142,32 @@ export function HeroSection() {
   const greeting = (
     <>
       <h1 className="text-2xl lg:text-[2rem] font-bold text-[#1A1340] mb-3 lg:mb-4 leading-tight tracking-tight">
-        Namaste, Shreya!{" "}
+        {t("home.greeting")}, Shreya!{" "}
         <span role="img" aria-label="Namaste hands">
           🙏
         </span>
       </h1>
-      <p className="text-sm lg:text-[15px] text-[#4B5563] mb-6 leading-relaxed">
-        I&apos;m JanMitra AI, here to{" "}
-        <span
-          className="font-semibold"
-          style={{
-            background: "linear-gradient(135deg, #6B3FFF, #7C3AED)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            backgroundClip: "text",
-          }}
-        >
-          simplify government services
-        </span>{" "}
-        for you.
-      </p>
+      {currentLanguage.code === "en" ? (
+        <p className="text-sm lg:text-[15px] text-[#4B5563] mb-6 leading-relaxed">
+          I&apos;m JanMitra AI, here to{" "}
+          <span
+            className="font-semibold"
+            style={{
+              background: "linear-gradient(135deg, #6B3FFF, #7C3AED)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
+            simplify government services
+          </span>{" "}
+          for you.
+        </p>
+      ) : (
+        <p className="text-sm lg:text-[15px] text-[#4B5563] mb-6 leading-relaxed">
+          {t("home.tagline")}
+        </p>
+      )}
     </>
   );
 
