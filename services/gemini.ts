@@ -84,6 +84,12 @@ async function callGemini(
         maxOutputTokens: maxTokens,
         topK: 40,
         topP: 0.95,
+        // gemini-2.5-flash spends part of maxOutputTokens on internal
+        // "thinking" tokens by default, which was silently truncating
+        // short structured-JSON responses (categorization, recommendations)
+        // before they reached a closing brace. None of this app's use
+        // cases need extended reasoning, so thinking is disabled outright.
+        thinkingConfig: { thinkingBudget: 0 },
       },
       safetySettings: [
         { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },

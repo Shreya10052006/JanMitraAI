@@ -27,7 +27,7 @@ export const MAX_LENGTHS = {
 
 export const AI_CONFIG = {
   /** Gemini model used for all AI features */
-  MODEL: "gemini-1.5-flash",
+  MODEL: "gemini-2.5-flash",
   /** Timeout for Gemini API requests (milliseconds) */
   REQUEST_TIMEOUT_MS: 15_000,
   /** Max chat messages sent in API context window */

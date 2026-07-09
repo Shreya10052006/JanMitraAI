@@ -227,9 +227,9 @@ export const NOTIFICATIONS: Notification[] = [
 ];
 
 export const USER_PROFILE = {
-  name: "Shreya",
-  fullName: "Shreya Sharma",
-  email: "shreya.sharma@example.com",
+  name: "Mithra",
+  fullName: "Mithra Sharma",
+  email: "mithra.sharma@example.com",
   avatar: null,
   location: "New Delhi, India",
 };

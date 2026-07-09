@@ -142,7 +142,7 @@ export function HeroSection() {
   const greeting = (
     <>
       <h1 className="text-2xl lg:text-[2rem] font-bold text-[#1A1340] mb-3 lg:mb-4 leading-tight tracking-tight">
-        {t("home.greeting")}, Shreya!{" "}
+        {t("home.greeting")}, Mithra!{" "}
         <span role="img" aria-label="Namaste hands">
           🙏
         </span>
